@@ -12,6 +12,8 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
+import { TamaguiProvider } from "tamagui";
+import config from "../tamagui.config";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 
@@ -24,20 +26,23 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+  const [interLoaded, interError] = useFonts({
+    Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
+    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
   });
 
   useEffect(() => {
-    if (loaded) {
+    if (interLoaded || interError) {
+      // Hide the splash screen after the fonts have loaded (or an error was returned) and the UI is ready.
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [interLoaded, interError]);
 
-  if (!loaded) {
+  if (!interLoaded && !interError) {
     return null;
   }
 
+  // Clerk token cache
   const tokenCache = {
     async getToken(key: string) {
       try {
@@ -69,14 +74,19 @@ export default function RootLayout() {
       publishableKey="pk_test_Y29tbXVuYWwtc3F1aXJyZWwtOC5jbGVyay5hY2NvdW50cy5kZXYk"
     >
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        <TamaguiProvider
+          config={config}
+          defaultTheme={colorScheme === "dark" ? "dark" : "light"}
         >
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        </ThemeProvider>
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </ThemeProvider>
+        </TamaguiProvider>
       </ConvexProviderWithClerk>
     </ClerkProvider>
   );

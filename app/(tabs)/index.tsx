@@ -7,6 +7,7 @@ import { useOAuth, useAuth } from "@clerk/clerk-expo";
 import * as WebBrowser from "expo-web-browser";
 import { useCallback } from "react";
 import { useQuery } from "convex/react";
+import { CustomButton } from "@/components/CustomButton";
 
 // This is important for OAuth flow
 WebBrowser.maybeCompleteAuthSession();
@@ -84,6 +85,7 @@ export default function HomeScreen() {
           <Button title="Sign Out" onPress={onLogoutPress} color="red" />
         )}
       </ThemedView>
+      {/* <CustomButton>Default Button</CustomButton> */}
     </ParallaxScrollView>
   );
 }
