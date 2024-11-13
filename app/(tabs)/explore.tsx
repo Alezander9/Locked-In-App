@@ -16,7 +16,7 @@ export default function TabTwoScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Explore</ThemedText>
       </ThemedView>
-      <Button mr="$4" bg="$purple8" color="$purple12">
+      <Button mr="$4" bg="$primary" color="$blue">
         Hello!
       </Button>
     </ParallaxScrollView>

@@ -10,12 +10,17 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
 import "react-native-reanimated";
 import { TamaguiProvider } from "tamagui";
 import config from "../tamagui.config";
-
 import { useColorScheme } from "@/hooks/useColorScheme";
+import {
+  OpenSans_300Light,
+  OpenSans_400Regular,
+  OpenSans_500Medium,
+  OpenSans_600SemiBold,
+  OpenSans_700Bold,
+} from "@expo-google-fonts/open-sans";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -26,19 +31,15 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [interLoaded, interError] = useFonts({
-    Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
-    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+  const [fontsLoaded] = useFonts({
+    "OpenSans-Light": OpenSans_300Light,
+    "OpenSans-Regular": OpenSans_400Regular,
+    "OpenSans-Medium": OpenSans_500Medium,
+    "OpenSans-SemiBold": OpenSans_600SemiBold,
+    "OpenSans-Bold": OpenSans_700Bold,
   });
 
-  useEffect(() => {
-    if (interLoaded || interError) {
-      // Hide the splash screen after the fonts have loaded (or an error was returned) and the UI is ready.
-      SplashScreen.hideAsync();
-    }
-  }, [interLoaded, interError]);
-
-  if (!interLoaded && !interError) {
+  if (!fontsLoaded) {
     return null;
   }
 
