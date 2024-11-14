@@ -1,62 +1,140 @@
-// import {
-//   Button as TamaguiButton,
-//   styled,
-//   GetProps,
-//   ButtonProps,
-// } from "tamagui";
+import { GetProps, Stack, Text, styled, useTheme } from "tamagui";
+import { forwardRef } from "react";
 
-// // Create styled variant of Tamagui button
-// export const CustomButton = styled(TamaguiButton, {
-//   name: "Button",
-//   backgroundColor: "$primary" as const, // Type assertion
-//   borderRadius: "$2",
-//   paddingVertical: "$3",
-//   paddingHorizontal: "$4",
+// Define size configurations
+const SIZE_CONFIGS = {
+  small: {
+    height: 32,
+    paddingHorizontal: 12,
+    fontSize: 14,
+  },
+  medium: {
+    height: 44,
+    paddingHorizontal: 16,
+    fontSize: 16,
+  },
+  large: {
+    height: 54,
+    paddingHorizontal: 20,
+    fontSize: 18,
+  },
+} as const;
 
-//   variants: {
-//     variant: {
-//       primary: {
-//         backgroundColor: "$primary" as const,
-//         color: "white" as const,
-//       },
-//       secondary: {
-//         backgroundColor: "$secondary" as const,
-//         color: "white" as const,
-//       },
-//       outline: {
-//         backgroundColor: "transparent" as const,
-//         borderWidth: 2,
-//         borderColor: "$primary" as const,
-//         color: "$primary" as const,
-//       },
-//     },
-//     size: {
-//       small: {
-//         paddingVertical: "$2",
-//         paddingHorizontal: "$3",
-//         fontSize: "$3",
-//       },
-//       medium: {
-//         paddingVertical: "$3",
-//         paddingHorizontal: "$4",
-//         fontSize: "$4",
-//       },
-//       large: {
-//         paddingVertical: "$4",
-//         paddingHorizontal: "$5",
-//         fontSize: "$5",
-//       },
-//     },
-//   },
+// Create the styled button component
+const StyledButton = styled(Stack, {
+  name: "Button",
+  borderRadius: 9999, // Circular edges
+  justifyContent: "center",
+  alignItems: "center",
+  flexDirection: "row",
+  position: "relative",
+  overflow: "hidden",
 
-//   defaultVariants: {
-//     variant: "primary",
-//     size: "medium",
-//   },
+  // Variants
+  variants: {
+    size: {
+      small: {
+        height: SIZE_CONFIGS.small.height,
+        paddingHorizontal: SIZE_CONFIGS.small.paddingHorizontal,
+      },
+      medium: {
+        height: SIZE_CONFIGS.medium.height,
+        paddingHorizontal: SIZE_CONFIGS.medium.paddingHorizontal,
+      },
+      large: {
+        height: SIZE_CONFIGS.large.height,
+        paddingHorizontal: SIZE_CONFIGS.large.paddingHorizontal,
+      },
+    },
+    variant: {
+      primary: {
+        backgroundColor: "$primary",
+        pressStyle: {
+          backgroundColor: "$secondary",
+          scale: 0.98,
+        },
+      },
+      secondary: {
+        backgroundColor: "transparent",
+        borderWidth: 1,
+        borderColor: "$primary",
+        pressStyle: {
+          backgroundColor: "$primary",
+          scale: 0.98,
+        },
+      },
+      disabled: {
+        backgroundColor: "transparent",
+        borderWidth: 1,
+        borderColor: "$gray",
+        opacity: 0.5,
+        cursor: "not-allowed",
+      },
+    },
+  },
 
-//   pressStyle: {
-//     opacity: 0.8,
-//   },
-// });
+  // Default props
+  defaultVariants: {
+    size: "medium",
+    variant: "primary",
+  },
+});
 
-// export type CustomButtonProps = GetProps<typeof CustomButton>;
+// Create the styled text component
+const ButtonText = styled(Text, {
+  textAlign: "center",
+
+  variants: {
+    size: {
+      small: {
+        fontSize: SIZE_CONFIGS.small.fontSize,
+      },
+      medium: {
+        fontSize: SIZE_CONFIGS.medium.fontSize,
+      },
+      large: {
+        fontSize: SIZE_CONFIGS.large.fontSize,
+      },
+    },
+    variant: {
+      primary: {
+        color: "$bg",
+      },
+      secondary: {
+        color: "$primary",
+      },
+      disabled: {
+        color: "$gray",
+      },
+    },
+  },
+});
+
+// Props type
+type ButtonProps = GetProps<typeof StyledButton> & {
+  label: string;
+};
+
+// Main button component
+export const Button = forwardRef<
+  React.ElementRef<typeof StyledButton>,
+  ButtonProps
+>(({ label, size, variant, disabled, ...props }, ref) => {
+  const buttonVariant = disabled ? "disabled" : variant ? variant : "primary";
+
+  return (
+    <StyledButton
+      ref={ref}
+      size={size}
+      variant={buttonVariant}
+      disabled={disabled}
+      {...props}
+    >
+      <ButtonText size={size} variant={buttonVariant}>
+        {label}
+      </ButtonText>
+    </StyledButton>
+  );
+});
+
+Button.displayName = "Button";
