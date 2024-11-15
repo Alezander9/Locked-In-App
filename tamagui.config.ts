@@ -9,6 +9,7 @@ const brandColors = {
   green: "#4EA72E",
   purple: "#A02B93",
   darkBlue: "#0A364F",
+  gray: "#757575",
 };
 
 // Modern font sizing based on iOS/Android standards
@@ -120,16 +121,22 @@ const config = createTamagui({
   tokens,
   themes: {
     light: {
-      bg: tokens.color.background,
-      color: tokens.color.foreground,
+      bg: tokens.color.white,
+      color: tokens.color.black,
       borderColor: "rgba(0,0,0,0.1)",
       shadowColor: "rgba(0,0,0,0.1)",
+      primary: tokens.color.blue,
+      secondary: tokens.color.darkBlue,
+      gray: tokens.color.gray,
     },
     dark: {
-      bg: "#121212",
+      bg: tokens.color.darkBlue,
       color: tokens.color.white,
       borderColor: "rgba(255,255,255,0.1)",
       shadowColor: "rgba(0,0,0,0.3)",
+      primary: tokens.color.lightBlue,
+      secondary: tokens.color.blue,
+      gray: tokens.color.gray,
     },
   },
   // Modern device breakpoints

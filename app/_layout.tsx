@@ -30,6 +30,32 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
 });
 
+// Clerk token cache
+const tokenCache = {
+  async getToken(key: string) {
+    try {
+      const item = await SecureStore.getItemAsync(key);
+      if (item) {
+        console.log(`${key} was used 🔐 \n`);
+      } else {
+        console.log("No values stored under key: " + key);
+      }
+      return item;
+    } catch (error) {
+      console.error("SecureStore get item error: ", error);
+      await SecureStore.deleteItemAsync(key);
+      return null;
+    }
+  },
+  async saveToken(key: string, value: string) {
+    try {
+      return SecureStore.setItemAsync(key, value);
+    } catch (err) {
+      return;
+    }
+  },
+};
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [fontsLoaded] = useFonts({
@@ -40,41 +66,15 @@ export default function RootLayout() {
     "OpenSans-Bold": OpenSans_700Bold,
   });
 
-  if (!fontsLoaded) {
-    return null;
-  }
-
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hide();
     }
   }, [fontsLoaded]);
 
-  // Clerk token cache
-  const tokenCache = {
-    async getToken(key: string) {
-      try {
-        const item = await SecureStore.getItemAsync(key);
-        if (item) {
-          console.log(`${key} was used 🔐 \n`);
-        } else {
-          console.log("No values stored under key: " + key);
-        }
-        return item;
-      } catch (error) {
-        console.error("SecureStore get item error: ", error);
-        await SecureStore.deleteItemAsync(key);
-        return null;
-      }
-    },
-    async saveToken(key: string, value: string) {
-      try {
-        return SecureStore.setItemAsync(key, value);
-      } catch (err) {
-        return;
-      }
-    },
-  };
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <ClerkProvider
@@ -89,9 +89,31 @@ export default function RootLayout() {
           <ThemeProvider
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
           >
-            <Stack>
+            <Stack screenOptions={{ headerShown: false }}>
+              {/* Auth group */}
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+
+              {/* Onboarding group */}
+              <Stack.Screen
+                name="(onboarding)"
+                options={{ headerShown: false }}
+              />
+
+              {/* Main tab navigation */}
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
+
+              {/* Modal screens */}
+              <Stack.Screen
+                name="settings/index"
+                options={{
+                  presentation: "modal",
+                  headerShown: true,
+                  title: "Settings",
+                }}
+              />
+
+              {/* Error handling */}
+              <Stack.Screen name="+not-found" options={{ title: "Oops!" }} />
             </Stack>
           </ThemeProvider>
         </TamaguiProvider>

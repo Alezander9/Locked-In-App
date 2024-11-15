@@ -12,7 +12,7 @@ import { CustomButton } from "@/components/CustomButton";
 // This is important for OAuth flow
 WebBrowser.maybeCompleteAuthSession();
 
-export default function HomeScreen() {
+export default function ClassesScreen() {
   const tasks = useQuery(api.queries.getTasks);
   const { isSignedIn, isLoaded, signOut } = useAuth();
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });

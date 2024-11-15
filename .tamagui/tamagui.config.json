@@ -27056,6 +27056,13 @@
           "val": "#0A364F",
           "variable": ""
         },
+        "gray": {
+          "isVar": true,
+          "key": "$gray",
+          "name": "c-gray",
+          "val": "#757575",
+          "variable": ""
+        },
         "background": {
           "isVar": true,
           "key": "$background",
@@ -27113,13 +27120,19 @@
         "color": "#000000",
         "borderColor": "rgba(0,0,0,0.1)",
         "shadowColor": "rgba(0,0,0,0.1)",
+        "primary": "#3B9AFA",
+        "secondary": "#0A364F",
+        "gray": "#757575",
         "id": "light"
       },
       "dark": {
-        "bg": "#121212",
+        "bg": "#0A364F",
         "color": "#F7F4F1",
         "borderColor": "rgba(255,255,255,0.1)",
         "shadowColor": "rgba(0,0,0,0.3)",
+        "primary": "#D7ECFE",
+        "secondary": "#3B9AFA",
+        "gray": "#757575",
         "id": "dark"
       }
     },
@@ -27463,6 +27476,13 @@
         "key": "$darkBlue",
         "name": "c-darkBlue",
         "val": "#0A364F",
+        "variable": ""
+      },
+      "$color.gray": {
+        "isVar": true,
+        "key": "$gray",
+        "name": "c-gray",
+        "val": "#757575",
         "variable": ""
       },
       "$color.background": {
