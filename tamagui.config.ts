@@ -122,6 +122,7 @@ const config = createTamagui({
   themes: {
     light: {
       bg: tokens.color.white,
+      background: tokens.color.white,
       color: tokens.color.black,
       borderColor: "rgba(0,0,0,0.1)",
       shadowColor: "rgba(0,0,0,0.1)",
@@ -131,6 +132,7 @@ const config = createTamagui({
     },
     dark: {
       bg: tokens.color.darkBlue,
+      background: tokens.color.darkBlue,
       color: tokens.color.white,
       borderColor: "rgba(255,255,255,0.1)",
       shadowColor: "rgba(0,0,0,0.3)",

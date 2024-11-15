@@ -27117,6 +27117,7 @@
     "themes": {
       "light": {
         "bg": "#F7F4F1",
+        "background": "#F7F4F1",
         "color": "#000000",
         "borderColor": "rgba(0,0,0,0.1)",
         "shadowColor": "rgba(0,0,0,0.1)",
@@ -27127,6 +27128,7 @@
       },
       "dark": {
         "bg": "#0A364F",
+        "background": "#0A364F",
         "color": "#F7F4F1",
         "borderColor": "rgba(255,255,255,0.1)",
         "shadowColor": "rgba(0,0,0,0.3)",

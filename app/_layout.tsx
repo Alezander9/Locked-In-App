@@ -11,7 +11,7 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import "react-native-reanimated";
-import { TamaguiProvider } from "tamagui";
+import { TamaguiProvider, YStack } from "tamagui";
 import config from "../tamagui.config";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import {
@@ -22,7 +22,7 @@ import {
   OpenSans_700Bold,
 } from "@expo-google-fonts/open-sans";
 import { useEffect } from "react";
-
+import { StyleSheet } from "react-native";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -89,32 +89,40 @@ export default function RootLayout() {
           <ThemeProvider
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
           >
-            <Stack screenOptions={{ headerShown: false }}>
-              {/* Auth group */}
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <YStack
+              flex={1}
+              backgroundColor="$bg"
+              position="absolute"
+              width="100%"
+              height="100%"
+            >
+              <Stack screenOptions={{ headerShown: false }}>
+                {/* Auth group */}
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
 
-              {/* Onboarding group */}
-              <Stack.Screen
-                name="(onboarding)"
-                options={{ headerShown: false }}
-              />
+                {/* Onboarding group */}
+                <Stack.Screen
+                  name="(onboarding)"
+                  options={{ headerShown: false }}
+                />
 
-              {/* Main tab navigation */}
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                {/* Main tab navigation */}
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
-              {/* Modal screens */}
-              <Stack.Screen
-                name="settings/index"
-                options={{
-                  presentation: "modal",
-                  headerShown: true,
-                  title: "Settings",
-                }}
-              />
+                {/* Modal screens */}
+                <Stack.Screen
+                  name="settings/index"
+                  options={{
+                    presentation: "modal",
+                    headerShown: true,
+                    title: "Settings",
+                  }}
+                />
 
-              {/* Error handling */}
-              <Stack.Screen name="+not-found" options={{ title: "Oops!" }} />
-            </Stack>
+                {/* Error handling */}
+                <Stack.Screen name="+not-found" options={{ title: "Oops!" }} />
+              </Stack>
+            </YStack>
           </ThemeProvider>
         </TamaguiProvider>
       </ConvexProviderWithClerk>
