@@ -7,7 +7,6 @@ import { useOAuth, useAuth } from "@clerk/clerk-expo";
 import * as WebBrowser from "expo-web-browser";
 import { useCallback } from "react";
 import { useQuery } from "convex/react";
-import { CustomButton } from "@/components/CustomButton";
 
 // This is important for OAuth flow
 WebBrowser.maybeCompleteAuthSession();
@@ -25,17 +24,17 @@ export default function ClassesScreen() {
           default: "http://localhost:3000",
         }),
         // Add restrictions for Google OAuth
-        strategy: "oauth_google",
-        allowedRedirectURIs: Platform.select({
-          native: ["your-app-scheme://oauth/callback"],
-          default: ["http://localhost:3000"],
-        }),
-        additionalScopes: ["email"], // Make sure email scope is included
-        emailAddress: "*@stanford.edu", // Restrict to specific domain
+        // strategy: "oauth_google",
+        // allowedRedirectURIs: Platform.select({
+        //   native: ["your-app-scheme://oauth/callback"],
+        //   default: ["http://localhost:3000"],
+        // }),
+        // additionalScopes: ["email"], // Make sure email scope is included
+        // emailAddress: "*@stanford.edu", // Restrict to specific domain
       });
 
       if (createdSessionId) {
-        setActive({ session: createdSessionId });
+        setActive?.({ session: createdSessionId });
       }
     } catch (err) {
       console.error("OAuth error", err);

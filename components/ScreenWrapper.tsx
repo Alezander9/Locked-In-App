@@ -1,6 +1,6 @@
 import { YStack } from "tamagui";
 
-export const ScreenWrapper = ({ children }) => {
+export const ScreenWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <YStack
       flex={1}
