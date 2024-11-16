@@ -1,16 +1,27 @@
 import { useState, useRef, useEffect } from "react";
-import { Input, XStack, styled, Button, Text, Stack, YStack } from "tamagui";
+import {
+  Input,
+  XStack,
+  styled,
+  Button,
+  Text,
+  Stack,
+  YStack,
+  useTheme,
+} from "tamagui";
 import {
   InputAccessoryView,
   Keyboard,
   Platform,
   Pressable,
   TextInput,
+  useColorScheme,
 } from "react-native";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { useDebounce } from "../hooks/useDebounce";
-
+import { MicrophoneIcon, SearchIcon } from "@/app/components/icons";
+import { getTokens } from "tamagui";
 const SearchInput = styled(Input, {
   flex: 1,
   borderWidth: 0,
@@ -45,23 +56,21 @@ const SearchContainer = styled(XStack, {
   },
 });
 
-const IconPlaceholder = styled(Text, {
-  fontSize: "$2",
-  color: "$color",
-});
-
 const KeyboardAccessory = styled(Stack, {
   backgroundColor: "$iosGray",
   borderTopWidth: 1,
   borderBottomWidth: 1,
   borderTopColor: "$iosGray2",
   borderBottomColor: "$iosGray2",
-  padding: "$2",
+  paddingTop: "$2",
+  paddingBottom: "$3",
+  paddingHorizontal: "$2",
 });
 
 const DoneButton = styled(Button, {
   backgroundColor: "transparent",
   color: "$primary",
+  minHeight: 18,
 });
 
 const DismissOverlay = styled(Stack, {
@@ -127,6 +136,9 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ onCourseSelect }: SearchBarProps) {
+  const theme = useTheme();
+  const colorScheme = useColorScheme();
+
   const [focused, setFocused] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const inputRef = useRef<TextInput>(null);
@@ -166,7 +178,11 @@ export function SearchBar({ onCourseSelect }: SearchBarProps) {
             inputRef.current?.focus();
           }}
         >
-          <IconPlaceholder>[Search]</IconPlaceholder>
+          <SearchIcon
+            size={18}
+            color={theme.color.val}
+            style={{ marginRight: 8 }}
+          />
           <SearchInput
             ref={inputRef}
             placeholder="Search..."
@@ -187,9 +203,7 @@ export function SearchBar({ onCourseSelect }: SearchBarProps) {
               setSearchTerm("");
             }}
           >
-            <IconPlaceholder>
-              {searchTerm ? "[Clear]" : "[Mic]"}
-            </IconPlaceholder>
+            <MicrophoneIcon size={14} color={theme.color.val} />
           </Button>
         </SearchContainer>
 
@@ -219,7 +233,7 @@ export function SearchBar({ onCourseSelect }: SearchBarProps) {
           <KeyboardAccessory>
             <XStack justifyContent="flex-end">
               <DoneButton onPress={dismissKeyboard}>
-                <Text color="$primary" fontSize="$3">
+                <Text color="$primary" fontSize="$4">
                   Done
                 </Text>
               </DoneButton>

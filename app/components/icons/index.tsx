@@ -231,3 +231,110 @@ export function MenuIcon({
     </Svg>
   );
 }
+
+export function SearchIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 517; // 517 is original width
+  const height = Math.round(522 * scale); // 522 is original height
+
+  // Transform coordinates to remove the translation
+  // Original paths were translated by (299, 1341)
+  const circle =
+    "M11.5 185.5C11.5 89.4 89.402 11.5 185.5 11.5 281.598 11.5 359.5 89.4 359.5 185.5 359.5 281.6 281.598 359.5 185.5 359.5 89.402 359.5 11.5 281.6 11.5 185.5Z";
+  const handle =
+    "M304.966 307.84C318.052 294.96 339.099 295.13 351.976 308.21L506.491 465.24C519.368 478.33 519.199 499.37 506.112 512.25L506.112 512.25C493.026 525.13 471.979 524.96 459.102 511.87L304.588 354.84C291.711 341.76 291.88 320.71 304.966 307.83Z";
+
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 517 522"
+      fill="none"
+      {...props}
+    >
+      <Path
+        d={circle}
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+      <Path d={handle} fill={color} fillRule="evenodd" />
+    </Svg>
+  );
+}
+
+export function MicrophoneIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 353; // 353 is original width
+  const height = Math.round(576 * scale); // 576 is original height
+
+  // Transform coordinates to remove the translation
+  // Original paths were translated by (1353, 1290)
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 353 576"
+      fill="none"
+      {...props}
+    >
+      {/* Main microphone body */}
+      <Path
+        d="M96.5 92C96.5 47.54 132.54 11.5 177 11.5L177 11.5C221.46 11.5 257.5 47.54 257.5 92L257.5 301C257.5 345.46 221.46 381.5 177 381.5L177 381.5C132.54 381.5 96.5 345.46 96.5 301Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Half-circle stand */}
+      <Path
+        d="M341.5 292.53C341.49 383.65 267.6 457.51 176.47 457.5 85.35 457.49 11.49 383.6 11.5 292.47 11.5 292.1 11.5 291.72 11.5 291.35"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Base rectangle */}
+      <Path
+        d="M22 556C22 544.95 30.95 536 42 536L310 536C321.05 536 330 544.95 330 556L330 556C330 567.05 321.05 576 310 576L42 576C30.95 576 22 567.05 22 556Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+
+      {/* Vertical stand connector */}
+      <Path
+        d="M176 459C187.05 459 196 467.95 196 479L196 555C196 566.05 187.05 575 176 575L176 575C164.95 575 156 566.05 156 555L156 479C156 467.95 164.95 459 176 459Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+
+      {/* Right rounded cap for half-circle */}
+      <Path
+        d="M341.5 260C347.85 260 353 265.15 353 271.5L353 291.5C353 297.85 347.85 303 341.5 303L341.5 303C335.15 303 330 297.85 330 291.5L330 271.5C330 265.15 335.15 260 341.5 260Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+
+      {/* Left rounded cap for half-circle */}
+      <Path
+        d="M11.5 260C17.85 260 23 265.15 23 271.5L23 291.5C23 297.85 17.85 303 11.5 303L11.5 303C5.15 303 0 297.85 0 291.5L0 271.5C0 265.15 5.15 260 11.5 260Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}

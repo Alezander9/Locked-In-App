@@ -44693,7 +44693,11 @@ var brandColors = {
   green: "#4EA72E",
   purple: "#A02B93",
   darkBlue: "#0A364F",
-  gray: "#757575"
+  gray: "#757575",
+  iosGray: "#D0D3D9",
+  iosGray2: "#AAB0BB",
+  iosGray3: "#283B49",
+  iosGray4: "#425059"
 };
 var openSansFont = (0, import_core56.createFont)({
   family: "OpenSans, 'Open Sans', system-ui, sans-serif",
@@ -44839,7 +44843,9 @@ var config = createTamagui({
       shadowColor: "rgba(0,0,0,0.1)",
       primary: tokens.color.blue,
       secondary: tokens.color.darkBlue,
-      gray: tokens.color.gray
+      gray: tokens.color.gray,
+      iosGray: tokens.color.iosGray,
+      iosGray2: tokens.color.iosGray2
     },
     dark: {
       bg: tokens.color.darkBlue,
@@ -44849,7 +44855,9 @@ var config = createTamagui({
       shadowColor: "rgba(0,0,0,0.3)",
       primary: tokens.color.lightBlue,
       secondary: tokens.color.blue,
-      gray: tokens.color.gray
+      gray: tokens.color.gray,
+      iosGray: tokens.color.iosGray3,
+      iosGray2: tokens.color.iosGray4
     }
   },
   // Modern device breakpoints
