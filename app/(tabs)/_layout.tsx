@@ -35,7 +35,7 @@ export default function TabLayout() {
           title: "Classes",
           tabBarLabel: "Classes",
           tabBarIcon: ({ color, focused }) => (
-            <ClassesIcon color={color} size={30} />
+            <ClassesIcon color={color} size={34} />
           ),
         }}
       />
@@ -55,7 +55,7 @@ export default function TabLayout() {
           title: "Groups",
           tabBarLabel: "Groups",
           tabBarIcon: ({ color, focused }) => (
-            <GroupsIcon color={color} size={30} />
+            <GroupsIcon color={color} size={32} />
           ),
         }}
       />

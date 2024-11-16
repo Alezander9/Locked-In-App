@@ -1,10 +1,6 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { StyleSheet } from "react-native";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { Button } from "@/components/CustomButton";
-import { YStack, XStack, H2, H3, Separator, Theme } from "tamagui";
+import { YStack, XStack, H1, H2, Separator, Theme, H3 } from "tamagui";
+import { ScreenWrapper } from "@/components/ScreenWrapper";
 
 function ButtonSet({ title }: { title: string }) {
   return (
@@ -39,18 +35,9 @@ function ButtonSet({ title }: { title: string }) {
 
 export default function GroupsScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
-      headerImage={
-        <Ionicons size={310} name="code-slash" style={styles.headerImage} />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
+    <ScreenWrapper>
       <YStack padding="$4" space="$6">
-        <H2 color="$color">Current Theme Buttons</H2>
-        <ButtonSet title="System Theme" />
+        {/* <ButtonSet title="System Theme" /> */}
 
         <Separator marginVertical="$4" />
 
@@ -82,19 +69,6 @@ export default function GroupsScreen() {
           </Theme>
         </XStack>
       </YStack>
-    </ParallaxScrollView>
+    </ScreenWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  headerImage: {
-    color: "#808080",
-    bottom: -90,
-    left: -35,
-    position: "absolute",
-  },
-  titleContainer: {
-    flexDirection: "row",
-    gap: 8,
-  },
-});

@@ -1,12 +1,12 @@
-import { Image, StyleSheet, Button, Platform } from "react-native";
+import { StyleSheet, Button, Platform } from "react-native";
 import { api } from "@/convex/_generated/api";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { useOAuth, useAuth } from "@clerk/clerk-expo";
 import * as WebBrowser from "expo-web-browser";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useQuery } from "convex/react";
+import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { H1, H2, H3, XStack, YStack } from "tamagui";
+import { Course, SearchBar } from "@/components/SearchBar";
 
 // This is important for OAuth flow
 WebBrowser.maybeCompleteAuthSession();
@@ -23,6 +23,7 @@ export default function ClassesScreen() {
           native: "your-app-scheme://oauth/callback",
           default: "http://localhost:3000",
         }),
+        // This code does not work, fix later
         // Add restrictions for Google OAuth
         // strategy: "oauth_google",
         // allowedRedirectURIs: Platform.select({
@@ -49,43 +50,36 @@ export default function ClassesScreen() {
     }
   }, [signOut]);
 
+  const handleCourseSelect = (course: Course) => {
+    // Handle course selection here
+    console.log("Selected course:", course);
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/partial-react-logo.png")}
-          style={styles.reactLogo}
-        />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Test 1: connect to Convex</ThemedText>
-        <ThemedText>If connected, you should see tasks below.</ThemedText>
-        {tasks?.map((task) => (
-          <ThemedText key={task._id}>{task.text}</ThemedText>
-        ))}
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Test 2: Sign in with Clerk</ThemedText>
-        <ThemedText>
-          {isLoaded
-            ? isSignedIn
-              ? "You are signed in!"
-              : "Please sign in."
-            : "Loading..."}
-        </ThemedText>
-        {!isSignedIn ? (
-          <Button title="Sign in with Google" onPress={onLoginPress} />
-        ) : (
-          <Button title="Sign Out" onPress={onLogoutPress} color="red" />
-        )}
-      </ThemedView>
+    <ScreenWrapper>
+      <YStack flex={1} backgroundColor="$background">
+        <SearchBar onCourseSelect={handleCourseSelect} />
+      </YStack>
+
+      <H3>Welcome!</H3>
+      <H2>Test 1: connect to Convex</H2>
+      <H1>If connected, you should see tasks below.</H1>
+      {tasks?.map((task) => <H1 key={task._id}>{task.text}</H1>)}
+      <H2>Test 2: Sign in with Clerk</H2>
+      <H1>
+        {isLoaded
+          ? isSignedIn
+            ? "You are signed in!"
+            : "Please sign in."
+          : "Loading..."}
+      </H1>
+      {!isSignedIn ? (
+        <Button title="Sign in with Google" onPress={onLoginPress} />
+      ) : (
+        <Button title="Sign Out" onPress={onLogoutPress} color="red" />
+      )}
       {/* <CustomButton>Default Button</CustomButton> */}
-    </ParallaxScrollView>
+    </ScreenWrapper>
   );
 }
 

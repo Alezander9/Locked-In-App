@@ -27063,6 +27063,34 @@
           "val": "#757575",
           "variable": ""
         },
+        "iosGray": {
+          "isVar": true,
+          "key": "$iosGray",
+          "name": "c-iosGray",
+          "val": "#D0D3D9",
+          "variable": ""
+        },
+        "iosGray2": {
+          "isVar": true,
+          "key": "$iosGray2",
+          "name": "c-iosGray2",
+          "val": "#AAB0BB",
+          "variable": ""
+        },
+        "iosGray3": {
+          "isVar": true,
+          "key": "$iosGray3",
+          "name": "c-iosGray3",
+          "val": "#283B49",
+          "variable": ""
+        },
+        "iosGray4": {
+          "isVar": true,
+          "key": "$iosGray4",
+          "name": "c-iosGray4",
+          "val": "#425059",
+          "variable": ""
+        },
         "background": {
           "isVar": true,
           "key": "$background",
@@ -27124,6 +27152,8 @@
         "primary": "#3B9AFA",
         "secondary": "#0A364F",
         "gray": "#757575",
+        "iosGray": "#D0D3D9",
+        "iosGray2": "#AAB0BB",
         "id": "light"
       },
       "dark": {
@@ -27135,6 +27165,8 @@
         "primary": "#D7ECFE",
         "secondary": "#3B9AFA",
         "gray": "#757575",
+        "iosGray": "#283B49",
+        "iosGray2": "#425059",
         "id": "dark"
       }
     },
@@ -27485,6 +27517,34 @@
         "key": "$gray",
         "name": "c-gray",
         "val": "#757575",
+        "variable": ""
+      },
+      "$color.iosGray": {
+        "isVar": true,
+        "key": "$iosGray",
+        "name": "c-iosGray",
+        "val": "#D0D3D9",
+        "variable": ""
+      },
+      "$color.iosGray2": {
+        "isVar": true,
+        "key": "$iosGray2",
+        "name": "c-iosGray2",
+        "val": "#AAB0BB",
+        "variable": ""
+      },
+      "$color.iosGray3": {
+        "isVar": true,
+        "key": "$iosGray3",
+        "name": "c-iosGray3",
+        "val": "#283B49",
+        "variable": ""
+      },
+      "$color.iosGray4": {
+        "isVar": true,
+        "key": "$iosGray4",
+        "name": "c-iosGray4",
+        "val": "#425059",
         "variable": ""
       },
       "$color.background": {
