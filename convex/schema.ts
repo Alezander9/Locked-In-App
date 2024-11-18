@@ -11,10 +11,7 @@ export default defineSchema({
     code: v.string(),
     department: v.string(),
     title: v.string(),
-    description: v.string(),
     terms: v.array(v.string()),
     units: v.string(),
-  })
-    .index("by_code", ["code"])
-    .index("by_title", ["title"]),
+  }).index("by_code", ["code"]),
 });

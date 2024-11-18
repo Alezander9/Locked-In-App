@@ -15,6 +15,11 @@ const brandColors = {
   iosGray2: "#AAB0BB",
   iosGray3: "#283B49",
   iosGray4: "#425059",
+
+  lightModeLightSeparator: "#FFFFFF",
+  lightModeDarkSeparator: "#757575",
+  darkModeLightSeparator: "#526A79",
+  darkModeDarkSeparator: "#051B27",
 };
 
 // Modern font sizing based on iOS/Android standards
@@ -134,6 +139,8 @@ const config = createTamagui({
       primary: tokens.color.blue,
       secondary: tokens.color.darkBlue,
       gray: tokens.color.gray,
+      lightSeparator: tokens.color.lightModeLightSeparator,
+      darkSeparator: tokens.color.lightModeDarkSeparator,
       iosGray: tokens.color.iosGray,
       iosGray2: tokens.color.iosGray2,
     },
@@ -146,6 +153,8 @@ const config = createTamagui({
       primary: tokens.color.lightBlue,
       secondary: tokens.color.blue,
       gray: tokens.color.gray,
+      lightSeparator: tokens.color.darkModeLightSeparator,
+      darkSeparator: tokens.color.darkModeDarkSeparator,
       iosGray: tokens.color.iosGray3,
       iosGray2: tokens.color.iosGray4,
     },

@@ -15,26 +15,17 @@ export const searchCourses = query({
   handler: async (ctx, args) => {
     const { searchTerm } = args;
     const cleanedTerm = searchTerm.trim().toUpperCase();
-    console.log("Input search term:", searchTerm);
-    console.log("Cleaned term:", cleanedTerm);
 
     if (!cleanedTerm) {
       return [];
     }
 
-    // Use the index directly on the code field
-    const results = await ctx.db
+    return await ctx.db
       .query("courses")
-      .withIndex("by_code") // We'll need to update the schema to add this index
-      .filter((q) =>
-        q.and(
-          q.gte(q.field("code"), cleanedTerm),
-          q.lt(q.field("code"), cleanedTerm + "\uffff")
-        )
+      .withIndex("by_code", (q) =>
+        // Narrow down the range as much as possible
+        q.gte("code", cleanedTerm).lt("code", cleanedTerm + "\uffff")
       )
       .take(10);
-
-    console.log("Results:", results);
-    return results;
   },
 });

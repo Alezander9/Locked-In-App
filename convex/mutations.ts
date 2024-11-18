@@ -25,7 +25,6 @@ export const importCourses = internalMutation({
         code: course.code,
         department: course.department,
         title: course.title,
-        description: course.description,
         terms: course.terms,
         units: course.units,
       })

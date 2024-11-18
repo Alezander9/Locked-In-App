@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import {
   Input,
   XStack,
@@ -21,7 +21,6 @@ import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { useDebounce } from "../hooks/useDebounce";
 import { MicrophoneIcon, SearchIcon } from "@/app/components/icons";
-import { getTokens } from "tamagui";
 const SearchInput = styled(Input, {
   flex: 1,
   borderWidth: 0,
@@ -39,7 +38,8 @@ const SearchContainer = styled(XStack, {
   backgroundColor: "$bg",
   height: 44,
   borderRadius: "$2",
-  paddingHorizontal: "$3",
+  paddingLeft: "$3",
+  paddingRight: "$2",
   marginHorizontal: "$3",
   alignItems: "center",
   borderWidth: 1,
@@ -143,7 +143,7 @@ export function SearchBar({ onCourseSelect }: SearchBarProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const inputRef = useRef<TextInput>(null);
 
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const debouncedSearchTerm = useDebounce(searchTerm, 200);
 
   const searchResults = useQuery(api.queries.searchCourses, {
     searchTerm: debouncedSearchTerm,
@@ -215,9 +215,7 @@ export function SearchBar({ onCourseSelect }: SearchBarProps) {
                 onPress={() => handleCourseSelect(course)}
               >
                 <XStack alignItems="center" space="$2">
-                  <ResultCode>
-                    {course.department} {course.code}:
-                  </ResultCode>
+                  <ResultCode>{course.code}:</ResultCode>
                   <ResultTitle numberOfLines={1} ellipsizeMode="tail">
                     {course.title}
                   </ResultTitle>

@@ -1,4 +1,4 @@
-import { GetProps, Stack, Text, styled, useTheme } from "tamagui";
+import { GetProps, Stack, Text, styled } from "tamagui";
 import { forwardRef } from "react";
 
 // Define size configurations

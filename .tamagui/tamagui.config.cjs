@@ -44697,7 +44697,11 @@ var brandColors = {
   iosGray: "#D0D3D9",
   iosGray2: "#AAB0BB",
   iosGray3: "#283B49",
-  iosGray4: "#425059"
+  iosGray4: "#425059",
+  lightModeLightSeparator: "#FFFFFF",
+  lightModeDarkSeparator: "#757575",
+  darkModeLightSeparator: "#526A79",
+  darkModeDarkSeparator: "#051B27"
 };
 var openSansFont = (0, import_core56.createFont)({
   family: "OpenSans, 'Open Sans', system-ui, sans-serif",
@@ -44844,6 +44848,8 @@ var config = createTamagui({
       primary: tokens.color.blue,
       secondary: tokens.color.darkBlue,
       gray: tokens.color.gray,
+      lightSeparator: tokens.color.lightModeLightSeparator,
+      darkSeparator: tokens.color.lightModeDarkSeparator,
       iosGray: tokens.color.iosGray,
       iosGray2: tokens.color.iosGray2
     },
@@ -44856,6 +44862,8 @@ var config = createTamagui({
       primary: tokens.color.lightBlue,
       secondary: tokens.color.blue,
       gray: tokens.color.gray,
+      lightSeparator: tokens.color.darkModeLightSeparator,
+      darkSeparator: tokens.color.darkModeDarkSeparator,
       iosGray: tokens.color.iosGray3,
       iosGray2: tokens.color.iosGray4
     }

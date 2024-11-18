@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { ClassesIcon, GroupsIcon, TasksIcon } from "../components/icons";
+import { EventIcon, GroupsIcon, TasksIcon } from "../components/icons";
 import { useTheme } from "tamagui";
 
 export default function TabLayout() {
@@ -30,13 +30,14 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="classes/index"
+        name="events/index"
         options={{
-          title: "Classes",
-          tabBarLabel: "Classes",
+          title: "Events",
+          tabBarLabel: "Events",
           tabBarIcon: ({ color, focused }) => (
-            <ClassesIcon color={color} size={34} />
+            <EventIcon color={color} size={28} />
           ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -55,7 +56,7 @@ export default function TabLayout() {
           title: "Groups",
           tabBarLabel: "Groups",
           tabBarIcon: ({ color, focused }) => (
-            <GroupsIcon color={color} size={32} />
+            <GroupsIcon color={color} size={38} />
           ),
         }}
       />

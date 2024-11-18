@@ -4,27 +4,30 @@
     "slug": "Locked-In-App",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/LockedInLogo1024x1024.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#F7F4F1"
+      "image": "./assets/images/LockedInLogo256x256.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#F7F4F1",
+      "dark": {
+        "backgroundColor": "#0A364F"
+      }
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/LockedInLogo1024x1024.png",
         "backgroundColor": "#F7F4F1"
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/LockedInLogo.png"
+      "favicon": "./assets/images/LockedInLogo64x64.png"
     },
     "plugins": ["expo-router", "expo-font", "expo-secure-store"],
     "experiments": {

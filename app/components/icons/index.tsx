@@ -338,3 +338,173 @@ export function MicrophoneIcon({
     </Svg>
   );
 }
+
+export function CheckIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 257; // 257 is original width
+  const height = Math.round(185 * scale); // 185 is original height
+
+  // Transform coordinates to remove the translation
+  // Original paths were translated by (2380, 1471)
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 257 185"
+      fill="none"
+      {...props}
+    >
+      {/* Long diagonal stroke */}
+      <Path
+        d="M79.42 178.26C71.67 170.57 71.63 158.05 79.33 150.31L222.82 5.93C230.51 -1.81 243.03 -1.85 250.77 5.84L250.77 5.84C258.51 13.54 258.55 26.05 250.86 33.8L107.37 178.18C99.67 185.92 87.16 185.96 79.42 178.26Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+
+      {/* Short diagonal stroke */}
+      <Path
+        d="M6.49 79.85C14.06 72.23 26.37 72.19 33.99 79.77L105.56 150.89C113.18 158.47 113.22 170.78 105.65 178.4L105.65 178.4C98.08 186.02 85.76 186.06 78.14 178.49L6.57 107.36C-1.05 99.79 -1.09 87.47 6.49 79.85Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
+
+export function XIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scalingFactor = 0.8;
+  const scale = (size / 184) * scalingFactor; // 184 is original width
+  const height = Math.round(185 * scale); // 185 is original height
+
+  // Transform coordinates to remove the translation
+  // Original paths were translated by (3466, 1471)
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 184 185"
+      fill="none"
+      {...props}
+    >
+      {/* Top-left to bottom-right diagonal */}
+      <Path
+        d="M6.33 178.27C-1.41 170.57 -1.45 158.06 6.24 150.31L149.73 5.93C157.43 -1.81 169.94 -1.85 177.69 5.84L177.68 5.84C185.43 13.54 185.47 26.05 177.77 33.8L34.28 178.18C26.59 185.92 14.07 185.96 6.33 178.26Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+
+      {/* Top-right to bottom-left diagonal */}
+      <Path
+        d="M178.22 177.2C170.52 184.94 158.01 184.98 150.26 177.28L5.88 33.8C-1.86 26.1 -1.9 13.59 5.8 5.84L5.8 5.84C13.49 -1.9 26.01 -1.94 33.75 5.76L178.13 149.24C185.87 156.94 185.91 169.45 178.22 177.2Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
+
+export function EventIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 571; // 571 is original width
+  const height = Math.round(594 * scale); // 594 is original height
+
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 571 594"
+      fill="none"
+      {...props}
+    >
+      {/* Calendar outline broken into segments to appear behind tabs */}
+
+      {/* Left segment */}
+      <Path
+        d="M11.5 112.81C11.5 92.75 27.75 76.5 47.81 76.5L105 76.5"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Center segment */}
+      <Path
+        d="M195 76.5L375 76.5"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Right segment */}
+      <Path
+        d="M465 76.5L523.19 76.5C543.25 76.5 559.5 92.75 559.5 112.81L559.5 546.19C559.5 566.25 543.25 582.5 523.19 582.5L47.81 582.5C27.75 582.5 11.5 566.25 11.5 546.19L11.5 112.81"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Calendar header divider line */}
+      <Path d="M19 201H552V224H19Z" fill={color} />
+
+      {/* Left hanging tab */}
+      <Path
+        d="M111.5 26.44C111.5 18.19 118.19 11.5 126.44 11.5L173.56 11.5C181.81 11.5 188.5 18.19 188.5 26.44L188.5 108.56C188.5 116.81 181.81 123.5 173.56 123.5L126.44 123.5C118.19 123.5 111.5 116.81 111.5 108.56Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Right hanging tab */}
+      <Path
+        d="M382.5 26.63C382.5 18.27 389.27 11.5 397.63 11.5L445.37 11.5C453.73 11.5 460.5 18.27 460.5 26.63L460.5 108.37C460.5 116.73 453.73 123.5 445.37 123.5L397.63 123.5C389.27 123.5 382.5 116.73 382.5 108.37Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Star with rounded edges */}
+      <Path
+        d="M165.5 362.21
+        C165.5 362.21 237.18 349.64 243.18 349.64
+        C249.18 349.64 275.5 275.5 278.5 275.5
+        C281.5 275.5 307.82 349.64 313.82 349.64
+        C319.82 349.64 391.5 362.21 391.5 362.21
+        C391.5 362.21 338.65 417.59 335.65 420.59
+        C332.65 423.59 348.34 502.5 348.34 502.5
+        C348.34 502.5 281.5 464.45 278.5 464.45
+        C275.5 464.45 208.66 502.5 208.66 502.5
+        C208.66 502.5 224.35 423.59 221.35 420.59
+        C218.35 417.59 165.5 362.21 165.5 362.21Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeMiterlimit="10"
+        fill="none"
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
