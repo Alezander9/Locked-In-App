@@ -5,7 +5,7 @@ import { Button } from "@/components/CustomButton";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
 import { useCallback, useState } from "react";
 import { Platform } from "react-native";
-import { CheckIcon, TasksIcon, XIcon } from "@/app/components/icons";
+import { CheckIcon, XIcon } from "@/app/components/icons";
 import { CircleIconButton } from "@/components/CircleIconButton";
 
 // This is important for OAuth flow

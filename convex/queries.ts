@@ -29,3 +29,20 @@ export const searchCourses = query({
       .take(10);
   },
 });
+
+export const getUpcomingEvents = query({
+  args: {
+    limit: v.optional(v.number()),
+    cursor: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const { limit = 20, cursor } = args;
+    const now = Date.now();
+
+    return await ctx.db
+      .query("events")
+      .withIndex("by_date", (q) => q.gte("date", cursor ?? now))
+      .order("asc")
+      .take(limit);
+  },
+});

@@ -7,6 +7,13 @@ export default defineSchema({
     isCompleted: v.boolean(),
   }),
 
+  users: defineTable({
+    clerkId: v.string(),
+    firstName: v.string(),
+    lastName: v.string(),
+    notificationsEnabled: v.optional(v.boolean()),
+  }),
+
   courses: defineTable({
     code: v.string(),
     department: v.string(),
@@ -14,4 +21,15 @@ export default defineSchema({
     terms: v.array(v.string()),
     units: v.string(),
   }).index("by_code", ["code"]),
+
+  events: defineTable({
+    title: v.string(),
+    description: v.string(),
+    location: v.string(),
+    date: v.number(),
+    duration: v.number(),
+    public: v.boolean(),
+    yesList: v.array(v.id("users")),
+    noList: v.array(v.id("users")),
+  }).index("by_date", ["date"]),
 });

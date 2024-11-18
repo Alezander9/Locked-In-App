@@ -1,50 +1,46 @@
-import { StyleSheet, Button, Platform, SafeAreaView } from "react-native";
+import { SafeAreaView } from "react-native";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
-import { H1, H2, H3, XStack, YStack } from "tamagui";
+import { Spinner, YStack } from "tamagui";
 import { Course, SearchBar } from "@/components/SearchBar";
+import EventList, { Event } from "@/components/EventCard";
 
 export default function EventsScreen() {
-  const tasks = useQuery(api.queries.getTasks);
+  const events = useQuery(api.queries.getUpcomingEvents, { limit: 10 });
 
   const handleCourseSelect = (course: Course) => {
-    // Handle course selection here
     console.log("Selected course:", course);
   };
 
+  // Handle loading state
+  if (events === undefined) {
+    return (
+      <ScreenWrapper>
+        <SafeAreaView style={{ flex: 1 }}>
+          <YStack
+            flex={1}
+            backgroundColor="$background"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Spinner size="large" />
+          </YStack>
+        </SafeAreaView>
+      </ScreenWrapper>
+    );
+  }
+
   return (
     <ScreenWrapper>
-      <SafeAreaView>
-        <YStack flex={1} backgroundColor="$background" marginBottom={50}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <YStack flex={1} backgroundColor="$background">
           <SearchBar onCourseSelect={handleCourseSelect} />
+          <YStack flex={1} marginTop="$3">
+            <EventList events={events as Event[]} />
+          </YStack>
         </YStack>
-
-        <H3>Welcome!</H3>
-        <H2>Test 1: connect to Convex</H2>
-        <H1>If connected, you should see tasks below.</H1>
-        {tasks?.map((task) => <H1 key={task._id}>{task.text}</H1>)}
-        <H2>Test 2: Sign in with Clerk</H2>
       </SafeAreaView>
     </ScreenWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
-  },
-});
