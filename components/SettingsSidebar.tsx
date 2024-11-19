@@ -8,7 +8,9 @@ import {
   SafeAreaView,
 } from "react-native";
 import { UserCheckIcon } from "@/app/components/icons";
-import { Text, XStack, YStack, Stack } from "tamagui";
+import { Text, XStack, YStack, Stack, useTheme } from "tamagui";
+import { useAuth } from "@clerk/clerk-expo";
+import { router } from "expo-router";
 
 const SIDEBAR_WIDTH = Dimensions.get("window").width * 0.75; // 75% of screen width
 
@@ -25,6 +27,8 @@ export const SettingsSidebar = ({
 }: SettingsSidebarProps) => {
   const slideAnim = useRef(new Animated.Value(-SIDEBAR_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const theme = useTheme();
+  const { signOut } = useAuth();
 
   useEffect(() => {
     if (isOpen) {
@@ -57,7 +61,8 @@ export const SettingsSidebar = ({
   }, [isOpen]);
 
   const handleSignOut = () => {
-    console.log("signing out, TODO: implement this");
+    signOut();
+    router.replace("/(auth)/login");
   };
 
   return (
@@ -107,7 +112,7 @@ export const SettingsSidebar = ({
                     justifyContent="center"
                     alignItems="center"
                   >
-                    <UserCheckIcon size={30} color="$color" />
+                    <UserCheckIcon size={30} color={theme.color.val} />
                   </Stack>
                 )}
               </XStack>
