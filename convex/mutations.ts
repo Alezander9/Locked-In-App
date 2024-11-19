@@ -1,4 +1,4 @@
-import { internalMutation } from "./_generated/server";
+import { internalMutation, mutation } from "./_generated/server";
 import { v } from "convex/values";
 
 interface CourseInput {
@@ -39,5 +39,72 @@ export const importCourses = internalMutation({
     }
 
     return courses.length;
+  },
+});
+
+export const toggleEventResponse = mutation({
+  args: {
+    eventId: v.id("events"),
+    userId: v.id("users"),
+    response: v.union(v.literal("yes"), v.literal("no")),
+  },
+  handler: async (ctx, args) => {
+    const { eventId, userId, response } = args;
+
+    // Get current event
+    const event = await ctx.db.get(eventId);
+    if (!event) throw new Error("Event not found");
+
+    // Create new lists removing user from both
+    const newYesList = event.yesList.filter((id) => id !== userId);
+    const newNoList = event.noList.filter((id) => id !== userId);
+
+    // Add user to appropriate list if they're not already there
+    // or if they're toggling the opposite response
+    if (response === "yes") {
+      if (!event.yesList.includes(userId)) {
+        newYesList.push(userId);
+      }
+    } else if (response === "no") {
+      if (!event.noList.includes(userId)) {
+        newNoList.push(userId);
+      }
+    }
+
+    // Update the event
+    await ctx.db.patch(eventId, {
+      yesList: newYesList,
+      noList: newNoList,
+    });
+  },
+});
+
+export const createUser = mutation({
+  args: {
+    clerkId: v.string(),
+    email: v.string(),
+    firstName: v.string(),
+    lastName: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Check if user already exists
+    const existingUser = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
+      .first();
+
+    if (existingUser) {
+      return existingUser._id;
+    }
+
+    // Create new user if they don't exist
+    const userId = await ctx.db.insert("users", {
+      clerkId: args.clerkId,
+      email: args.email,
+      firstName: args.firstName,
+      lastName: args.lastName,
+    });
+
+    return userId;
   },
 });

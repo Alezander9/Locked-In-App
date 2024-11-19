@@ -1,19 +1,41 @@
-import { useOAuth, useAuth } from "@clerk/clerk-expo";
+import { useOAuth, useAuth, useUser } from "@clerk/clerk-expo";
 import * as WebBrowser from "expo-web-browser";
-import { H2 } from "tamagui";
 import { Button } from "@/components/CustomButton";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Platform } from "react-native";
-import { CheckIcon, XIcon } from "@/app/components/icons";
-import { CircleIconButton } from "@/components/CircleIconButton";
+import { api } from "@/convex/_generated/api";
+import { useMutation } from "convex/react";
 
-// This is important for OAuth flow
 WebBrowser.maybeCompleteAuthSession();
 
 export default function TasksScreen() {
-  const { isSignedIn, isLoaded, signOut } = useAuth();
+  const { isSignedIn, isLoaded, signOut, userId } = useAuth();
+  const { user } = useUser();
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
+  const createUser = useMutation(api.mutations.createUser);
+
+  const startCreateUser = useCallback(async () => {
+    if (userId && user) {
+      console.log("userId", userId);
+      console.log("email", user.primaryEmailAddress?.emailAddress);
+      console.log("firstName + middleName", user.firstName);
+      console.log("lastName", user.lastName);
+
+      const newUserId = await createUser({
+        clerkId: userId,
+        email: user.primaryEmailAddress?.emailAddress || "",
+        firstName: (user.firstName || "").split(" ")[0],
+        lastName: user.lastName || "",
+      });
+    }
+  }, [userId, user, createUser]);
+
+  useEffect(() => {
+    if (userId && user) {
+      startCreateUser();
+    }
+  }, [userId, user]);
 
   const onLoginPress = useCallback(async () => {
     try {
@@ -22,17 +44,7 @@ export default function TasksScreen() {
           native: "your-app-scheme://oauth/callback",
           default: "http://localhost:3000",
         }),
-        // This code does not work, fix later
-        // Add restrictions for Google OAuth
-        // strategy: "oauth_google",
-        // allowedRedirectURIs: Platform.select({
-        //   native: ["your-app-scheme://oauth/callback"],
-        //   default: ["http://localhost:3000"],
-        // }),
-        // additionalScopes: ["email"], // Make sure email scope is included
-        // emailAddress: "*@stanford.edu", // Restrict to specific domain
       });
-
       if (createdSessionId) {
         setActive?.({ session: createdSessionId });
       }
@@ -48,6 +60,7 @@ export default function TasksScreen() {
       console.error("Error signing out:", err);
     }
   }, [signOut]);
+
   return (
     <ScreenWrapper>
       {!isSignedIn ? (
@@ -65,12 +78,6 @@ export default function TasksScreen() {
           variant="secondary"
         />
       )}
-      <CircleIconButton icon={CheckIcon} size="small" variant="primaryOff" />
-      <CircleIconButton icon={CheckIcon} size="medium" variant="primaryOff" />
-      <CircleIconButton icon={CheckIcon} size="large" variant="primaryOn" />
-      <CircleIconButton icon={XIcon} size="small" variant="secondaryOff" />
-      <CircleIconButton icon={XIcon} size="medium" variant="secondaryOff" />
-      <CircleIconButton icon={XIcon} size="large" variant="secondaryOn" />
     </ScreenWrapper>
   );
 }

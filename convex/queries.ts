@@ -46,3 +46,18 @@ export const getUpcomingEvents = query({
       .take(limit);
   },
 });
+
+export const getUserByClerkId = query({
+  args: { clerkId: v.string() },
+  handler: async (ctx, args) => {
+    if (!args.clerkId) {
+      return null;
+    }
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
+      .first();
+
+    return user;
+  },
+});

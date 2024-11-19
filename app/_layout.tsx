@@ -22,7 +22,7 @@ import {
   OpenSans_700Bold,
 } from "@expo-google-fonts/open-sans";
 import { useEffect } from "react";
-import { StyleSheet } from "react-native";
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 

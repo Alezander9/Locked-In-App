@@ -9,10 +9,11 @@ export default defineSchema({
 
   users: defineTable({
     clerkId: v.string(),
+    email: v.string(),
     firstName: v.string(),
     lastName: v.string(),
     notificationsEnabled: v.optional(v.boolean()),
-  }),
+  }).index("by_clerkId", ["clerkId"]),
 
   courses: defineTable({
     code: v.string(),
