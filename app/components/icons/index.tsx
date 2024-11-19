@@ -508,3 +508,285 @@ export function EventIcon({
     </Svg>
   );
 }
+
+export function ClockIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 563; // 563 is original width
+  const height = Math.round(564 * scale); // 564 is original height
+
+  // Transform coordinates to remove the translation
+  // Original paths were translated by (1316, 1281)
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 563 564"
+      fill="none"
+      {...props}
+    >
+      {/* Clock face circle */}
+      <Path
+        d="M11.5 282C11.5 132.61 132.38 11.5 281.5 11.5C430.62 11.5 551.5 132.61 551.5 282C551.5 431.39 430.62 552.5 281.5 552.5C132.38 552.5 11.5 431.39 11.5 282Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Hour hand (vertical) */}
+      <Path
+        d="M281.5 78C291.16 78 299 85.83 299 95.5L299 277.5C299 287.17 291.16 295 281.5 295L281.5 295C271.83 295 264 287.17 264 277.5L264 95.5C264 85.83 271.83 78 281.5 78Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+
+      {/* Minute hand (horizontal) */}
+      <Path
+        d="M263 278C263 268.61 270.61 261 280 261L453 261C462.39 261 470 268.61 470 278L470 278C470 287.39 462.39 295 453 295L280 295C270.61 295 263 287.39 263 278Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
+
+export function LocationIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 390; // 390 is original width
+  const height = Math.round(630 * scale); // 630 is original height
+
+  // Transform coordinates to remove the translation
+  // Original paths were translated by (352, 1261)
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 390 630"
+      fill="none"
+      {...props}
+    >
+      {/* Inner circle of the map marker */}
+      <Path
+        d="M129.5 163C129.5 126.83 158.602 97.5 194.5 97.5C230.399 97.5 259.5 126.83 259.5 163C259.5 199.17 230.399 228.5 194.5 228.5C158.602 228.5 129.5 199.17 129.5 163Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Paper shape with folded bottom */}
+      <Path
+        d="M49.562 423.5L160.944 423.5L195 494.86L229.056 423.5L340.438 423.5L378.5 618.5L11.5 618.5Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeLinejoin="round"
+        strokeMiterlimit="10"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Map marker outline */}
+      <Path
+        d="M194.5 11.5C275.134 11.5 340.5 77.08 340.5 157.97C340.5 188.31 331.308 216.49 315.565 239.87L314.861 240.72L194.5 494.5L74.139 240.72L73.435 239.87C57.692 216.49 48.5 188.31 48.5 157.97C48.5 77.08 113.866 11.5 194.5 11.5Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeLinejoin="round"
+        strokeMiterlimit="10"
+        fill="none"
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
+
+export function UserCheckIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 555; // 555 is original width
+  const height = Math.round(448 * scale); // 448 is original height
+
+  // Transform coordinates to remove the translation
+  // Original paths were translated by (2314, 1349)
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 555 448"
+      fill="none"
+      {...props}
+    >
+      {/* User head circle */}
+      <Path
+        d="M90.5 92C90.5 47.54 126.54 11.5 171 11.5C215.46 11.5 251.5 47.54 251.5 92C251.5 136.46 215.46 172.5 171 172.5C126.54 172.5 90.5 136.46 90.5 92Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* User body shape */}
+      <Path
+        d="M171 206.5C241.11 206.5 301.26 254.74 326.95 323.5L330.5 336.45L330.5 410.79C330.5 424.99 319.02 436.5 304.85 436.5L37.15 436.5C22.98 436.5 11.5 424.99 11.5 410.79L11.5 336.45L15.05 323.5C40.75 254.74 100.9 206.5 171 206.5Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Check mark - long diagonal */}
+      <Path
+        d="M396.15 254.52C389.25 247.66 389.21 236.51 396.07 229.61L523.92 100.97C530.77 94.07 541.92 94.04 548.82 100.89L548.82 100.89C555.72 107.75 555.75 118.9 548.9 125.8L421.05 254.44C414.2 261.34 403.04 261.38 396.15 254.52Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+
+      {/* Check mark - short diagonal */}
+      <Path
+        d="M331.17 166.83C337.91 160.05 348.89 160.01 355.68 166.76L419.44 230.13C426.23 236.88 426.27 247.85 419.52 254.64L419.52 254.64C412.77 261.43 401.8 261.46 395.01 254.72L331.24 191.34C324.45 184.6 324.42 173.62 331.17 166.83Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
+
+export function UserXIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 522; // 522 is original width
+  const height = Math.round(448 * scale); // 448 is original height
+
+  // Transform coordinates to remove the translation
+  // Original paths were translated by (3365, 1347)
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 522 448"
+      fill="none"
+      {...props}
+    >
+      {/* User head circle */}
+      <Path
+        d="M90.5 92C90.5 47.54 126.54 11.5 171 11.5C215.46 11.5 251.5 47.54 251.5 92C251.5 136.46 215.46 172.5 171 172.5C126.54 172.5 90.5 136.46 90.5 92Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* User body shape */}
+      <Path
+        d="M171 206.5C241.11 206.5 301.26 254.74 326.95 323.5L330.5 336.45L330.5 410.79C330.5 424.99 319.02 436.5 304.85 436.5L37.15 436.5C22.98 436.5 11.5 424.99 11.5 410.79L11.5 336.45L15.05 323.5C40.75 254.74 100.9 206.5 171 206.5Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* X mark - top-left to bottom-right diagonal */}
+      <Path
+        d="M363.42 254.24C356.52 247.38 356.49 236.23 363.34 229.33L491.19 100.69C498.05 93.79 509.2 93.76 516.1 100.61L516.1 100.61C522.99 107.47 523.03 118.62 516.17 125.52L388.33 254.16C381.47 261.06 370.32 261.09 363.42 254.24Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+
+      {/* X mark - top-right to bottom-left diagonal */}
+      <Path
+        d="M516.57 252.13C509.71 259.03 498.56 259.06 491.66 252.2L363.02 124.36C356.12 117.5 356.09 106.35 362.95 99.45L362.95 99.45C369.8 92.55 380.95 92.52 387.85 99.38L516.49 227.22C523.39 234.08 523.43 245.23 516.57 252.13Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
+
+export function LockIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // The actual content of the icon is much smaller than the original viewBox
+  // New width is approximately 370 units (from paths analysis)
+  // New height is approximately 390 units (from paths analysis)
+  const scale = size / 370; // Using new width for scaling
+  const height = Math.round(390 * scale); // Using new height for scaling
+
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="335 350 500 520"
+      fill="none"
+      {...props}
+    >
+      {/* Letter 'n' shape (converted from text) */}
+      <Path
+        d="M521.31675 364.90771q46.06104 0 74.10938 25.21778 28.04834 24.96045 28.04834 80.28515V658h-78.48389V489.96729q0-30.87891-11.32226-46.57569-11.06495-15.69678-34.9961-15.69678-36.02539 0-49.14892 24.4458-13.12354 24.4458-13.12354 70.50683V658h-78.483885V370.31152h59.956545l10.55029 36.79737h4.37451q9.26367-14.92481 22.90186-24.18848 13.89551-9.26367 30.62158-13.63818 16.9834-4.37452 34.99609-4.37452z"
+        fill={color}
+        fillRule="evenodd"
+      />
+
+      {/* Lock body shape */}
+      <Path
+        d="M489.88 608.419c-19.322 0-34.982 14.172-34.982 31.655 0 6.556 2.202 12.647 5.974 17.699l3.827 4.199-5.648 29.97h0.104l-0.906 4.806 0.681 3.378c1.639 3.88 5.476 6.603 9.947 6.603h41.993c4.48 0 8.31-2.723 9.95-6.603l0.79-3.911-1.34-7.109-0.14-0.214-5.08-26.92 3.83-4.199c3.77-5.052 5.97-11.143 5.97-17.699 0-17.483-15.66-31.655-34.97-31.655zM345.529 552h288.941c4.71 0 8.53 3.825 8.53 8.542v211.916c0 4.718-3.82 8.542-8.53 8.542H345.529c-4.71 0-8.529-3.824-8.529-8.542V560.542c0-4.717 3.819-8.542 8.529-8.542z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
+
+export function UnlockIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // The actual content of the icon fits in a smaller space
+  const scale = size / 370; // Using optimized width
+  const height = Math.round(390 * scale); // Using optimized height
+
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="340 1290 500 520"
+      fill="none"
+      {...props}
+    >
+      {/* Modified 'n' shape (rotated and cut) */}
+      <Path
+        d="M226.47754 -291.51602c-6.9263-1.05074-14.22813-1.57553-21.90496-1.57553-12.00845 0-23.6731 1.45751-34.99536 4.37385-11.1507 2.91634-21.35912 7.46223-30.62278 13.638-9.09212 6.17577-16.72488 14.23865-22.90066 24.18851l-4.37491 0.0008-10.5508-36.79839-59.956692-0.00013L41.172362-0.00000879 119.65567 0.00025l-0.00065-135.35371c0-30.70732 4.37536-54.20967 13.12438-70.50686 8.74901-16.29719 25.1322-24.44438 49.14911-24.44438 15.95408 0 27.61892 5.23154 34.99555 15.69605 7.54816 10.46451 11.32354 25.98951 11.32354 46.57543l-0.00034 68.988798 78.48376-0.633873-0.00007-87.910705c0-36.88309-9.34976-63.64563-28.04863-80.28592-14.02416-12.60887-31.42587-20.48888-52.20478-23.6411z"
+        fill={color}
+        transform="rotate(-8.720178 10933.007 -1604.142)"
+      />
+
+      {/* Lock body */}
+      <Path
+        d="M523.875 1629.42c-19.317 0-34.977 14.17-34.977 31.65 0 6.56 2.202 12.65 5.974 17.7l3.827 4.2-5.648 29.97h0.104l-0.906 4.81 0.681 3.38c1.639 3.88 5.475 6.6 9.947 6.6h41.997c4.471 0 8.308-2.72 9.947-6.6l0.788-3.92-1.339-7.1-0.145-0.22-5.074-26.92 3.828-4.2c3.772-5.05 5.974-11.14 5.974-17.7 0-17.48-15.66-31.65-34.978-31.65zM379.529 1573h288.942c4.71 0 8.529 3.82 8.529 8.54v211.92c0 4.72-3.819 8.54-8.529 8.54H379.529c-4.71 0-8.529-3.82-8.529-8.54v-211.92c0-4.72 3.819-8.54 8.529-8.54z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}

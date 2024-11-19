@@ -73,8 +73,8 @@ const openSansFont = createFont({
 // Modern spacing scale based on 4-point grid
 const size = {
   0: 0,
-  1: 4, // Tiny spacing
-  2: 8, // Small spacing
+  1: 8, // Tiny spacing MODIFIED from 4 to 8
+  2: 10, // Small spacing MODIFIED from 8 to 10
   3: 12, // Medium-small spacing
   4: 16, // Base spacing
   5: 24, // Medium spacing

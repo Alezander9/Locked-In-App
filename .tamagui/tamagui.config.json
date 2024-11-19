@@ -26751,14 +26751,14 @@
           "isVar": true,
           "key": "$1",
           "name": "t-size-1",
-          "val": 4,
+          "val": 8,
           "variable": ""
         },
         "2": {
           "isVar": true,
           "key": "$2",
           "name": "t-size-2",
-          "val": 8,
+          "val": 10,
           "variable": ""
         },
         "3": {
@@ -26823,14 +26823,14 @@
           "isVar": true,
           "key": "$1",
           "name": "t-space-1",
-          "val": 4,
+          "val": 8,
           "variable": ""
         },
         "2": {
           "isVar": true,
           "key": "$2",
           "name": "t-space-2",
-          "val": 8,
+          "val": 10,
           "variable": ""
         },
         "3": {
@@ -27249,14 +27249,14 @@
         "isVar": true,
         "key": "$1",
         "name": "t-size-1",
-        "val": 4,
+        "val": 8,
         "variable": ""
       },
       "$size.2": {
         "isVar": true,
         "key": "$2",
         "name": "t-size-2",
-        "val": 8,
+        "val": 10,
         "variable": ""
       },
       "$size.3": {
@@ -27319,14 +27319,14 @@
         "isVar": true,
         "key": "$1",
         "name": "t-space-1",
-        "val": 4,
+        "val": 8,
         "variable": ""
       },
       "$space.2": {
         "isVar": true,
         "key": "$2",
         "name": "t-space-2",
-        "val": 8,
+        "val": 10,
         "variable": ""
       },
       "$space.3": {

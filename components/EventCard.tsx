@@ -3,11 +3,12 @@ import { FlatList } from "react-native";
 import {
   CheckIcon,
   XIcon,
-  //   LockIcon,
-  //   UnlockIcon,
-  //   MapPinIcon,
-  //   ClockIcon,
-  //   UsersIcon,
+  LockIcon,
+  UnlockIcon,
+  LocationIcon,
+  ClockIcon,
+  UserCheckIcon,
+  UserXIcon,
 } from "@/app/components/icons";
 import { format } from "date-fns";
 import { XStack, YStack, Text, useTheme } from "tamagui";
@@ -43,6 +44,10 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const theme = useTheme();
 
+  const myUserId = useQuery(api.queries.getUserByClerkId, {
+    clerkId: userId || "",
+  });
+
   const [optimisticYesNo, setOptimisticYesNo] = React.useState<
     "yes" | "no" | null
   >(null);
@@ -56,16 +61,12 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
     } else {
       setOptimisticYesNo(null);
     }
-  }, [event]);
+  }, [event, myUserId]);
 
   const startDate = new Date(event.date);
   const endDate = new Date(event.date + event.duration * 60 * 1000);
   const dateStr = format(startDate, "EEE MM/dd");
   const timeStr = `${format(startDate, "h:mma")} - ${format(endDate, "h:mma")}`;
-
-  const myUserId = useQuery(api.queries.getUserByClerkId, {
-    clerkId: userId || "",
-  });
 
   const handleResponse = (response: "yes" | "no") => {
     if (!myUserId) return;
@@ -80,7 +81,6 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
       newState = response;
     }
 
-    console.log("setting YesNo", newState);
     // Update state immediately
     setOptimisticYesNo(newState);
 
@@ -113,17 +113,20 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
       >
         <XStack space="$2" alignItems="center">
           {event.public ? (
-            <XIcon size={14} color={theme.seperatorText.val} />
+            <UnlockIcon size={14} color={theme.seperatorText.val} />
           ) : (
-            <XIcon size={14} color={theme.seperatorText.val} />
+            <LockIcon size={14} color={theme.seperatorText.val} />
           )}
           <Text color="$separatorText" fontSize="$2">
             {event.public ? "PUBLIC STUDY SESSION" : "PRIVATE STUDY SESSION"}
           </Text>
         </XStack>
-        <Text color="$separatorText" fontSize="$2">
-          {`${dateStr} ${timeStr}`}
-        </Text>
+        <XStack space="$2" alignItems="center">
+          <ClockIcon size={14} color={theme.color.val} />
+          <Text color="$separatorText" fontSize="$2">
+            {`${dateStr} ${timeStr}`}
+          </Text>
+        </XStack>
       </XStack>
 
       <YStack space="$2" margin="$4">
@@ -141,11 +144,11 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
       >
         <YStack space="$2">
           <XStack space="$2" alignItems="center">
-            <XIcon size={16} color={theme.color.val} />
+            <LocationIcon size={10} color={theme.color.val} />
             <Text>{event.location}</Text>
           </XStack>
           <XStack space="$2" alignItems="center">
-            <XIcon size={16} color={theme.color.val} />
+            <UserCheckIcon size={18} color={theme.color.val} />
             <Text color={theme.color.val} fontSize="$3">
               {event.yesList.length} people attending
             </Text>
