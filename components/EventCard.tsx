@@ -44,7 +44,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const theme = useTheme();
 
-  const myUserId = useQuery(api.queries.getUserByClerkId, {
+  const user = useQuery(api.queries.getUserByClerkId, {
     clerkId: userId || "",
   });
 
@@ -53,15 +53,15 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   >(null);
 
   useEffect(() => {
-    if (!myUserId) return;
-    if (event.yesList.includes(myUserId._id)) {
+    if (!user) return;
+    if (event.yesList.includes(user._id)) {
       setOptimisticYesNo("yes");
-    } else if (event.noList.includes(myUserId._id)) {
+    } else if (event.noList.includes(user._id)) {
       setOptimisticYesNo("no");
     } else {
       setOptimisticYesNo(null);
     }
-  }, [event, myUserId]);
+  }, [event, user]);
 
   const startDate = new Date(event.date);
   const endDate = new Date(event.date + event.duration * 60 * 1000);
@@ -69,13 +69,13 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const timeStr = `${format(startDate, "h:mma")} - ${format(endDate, "h:mma")}`;
 
   const handleResponse = (response: "yes" | "no") => {
-    if (!myUserId) return;
+    if (!user) return;
 
     // Determine new state
     let newState: "yes" | "no" | null;
-    if (response === "yes" && event.yesList.includes(myUserId._id)) {
+    if (response === "yes" && event.yesList.includes(user._id)) {
       newState = null;
-    } else if (response === "no" && event.noList.includes(myUserId._id)) {
+    } else if (response === "no" && event.noList.includes(user._id)) {
       newState = null;
     } else {
       newState = response;
@@ -89,7 +89,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
       try {
         await toggleEventResponse({
           eventId: event._id,
-          userId: myUserId._id,
+          userId: user._id,
           response: response,
         });
       } catch (error) {
@@ -160,9 +160,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
             icon={XIcon}
             size="medium"
             variant={
-              myUserId && optimisticYesNo === "no"
-                ? "secondaryOn"
-                : "secondaryOff"
+              user && optimisticYesNo === "no" ? "secondaryOn" : "secondaryOff"
             }
             onPress={() => handleResponse("no")}
             disabled={isLoading}
@@ -171,7 +169,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
             icon={CheckIcon}
             size="medium"
             variant={
-              myUserId && optimisticYesNo === "yes" ? "primaryOn" : "primaryOff"
+              user && optimisticYesNo === "yes" ? "primaryOn" : "primaryOff"
             }
             onPress={() => handleResponse("yes")}
             disabled={isLoading}

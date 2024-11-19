@@ -170,7 +170,7 @@ export function SearchBar({ onCourseSelect }: SearchBarProps) {
         />
       )}
 
-      <YStack>
+      <YStack width="100%">
         <SearchContainer
           focused={focused}
           pressStyle={{ scale: 0.99 }}

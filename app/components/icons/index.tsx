@@ -790,3 +790,46 @@ export function UnlockIcon({
     </Svg>
   );
 }
+
+export function SettingsIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 565; // 565 is original width
+  const height = Math.round(566 * scale); // 566 is original height
+
+  // Transform coordinates to remove the translation
+  // Original paths were translated by (1965, 1296)
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 565 566"
+      fill="none"
+      {...props}
+    >
+      {/* Inner circle */}
+      <Path
+        d="M179.5 283C179.5 225.84 225.61 179.5 282.5 179.5C339.39 179.5 385.5 225.84 385.5 283C385.5 340.16 339.39 386.5 282.5 386.5C225.61 386.5 179.5 340.16 179.5 283Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Outer gear shape */}
+      <Path
+        d="M282.5 11.5C291.85 11.5 301.1 11.97 310.21 12.9L326.66 15.42L352 63.65L372.49 70.01L388.34 78.61L439.77 62.62L474.13 91.02L502.47 125.44L486.62 176.63L495.51 193.02L501.91 213.62L549.59 238.76L552.1 255.24C553.03 264.37 553.5 273.63 553.5 283C553.5 292.37 553.03 301.63 552.1 310.76L549.59 327.24L501.91 352.38L495.51 372.98L486.62 389.37L502.47 440.56L474.13 474.98L439.77 503.38L388.34 487.39L372.49 495.99L352 502.35L326.66 550.58L310.21 553.1C301.1 554.03 291.85 554.5 282.5 554.5C273.15 554.5 263.9 554.03 254.79 553.1L238.34 550.58L213 502.35L192.51 495.99L176.66 487.39L125.23 503.38L90.87 474.98L62.53 440.56L78.39 389.37L69.49 372.98L63.09 352.38L15.41 327.24L12.9 310.76C11.97 301.63 11.5 292.37 11.5 283C11.5 273.63 11.97 264.37 12.9 255.24L15.41 238.76L63.09 213.62L69.49 193.02L78.39 176.63L62.53 125.44L90.87 91.02L125.23 62.62L176.66 78.61L192.51 70.01L213 63.65L238.34 15.42L254.79 12.9C263.9 11.97 273.15 11.5 282.5 11.5Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeLinejoin="round"
+        strokeMiterlimit="10"
+        fill="none"
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
