@@ -67,6 +67,7 @@ export const SettingsSidebar = ({
 
   const handleSignOut = () => {
     signOut();
+    // TODO: Figure out why this doesnt sent to the login screen
     router.replace("/(auth)/login");
   };
 

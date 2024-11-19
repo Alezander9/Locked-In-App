@@ -17,15 +17,11 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 // Animation Configuration
 const ANIMATION_CONFIG = {
   // Timing
-  HOLD_DURATION: 2000, // How long to hold before fade out (ms)
-  FADE_DURATION: 800, // How long the fade out takes (ms)
+  HOLD_DURATION: 1000, // How long to hold before fade out (ms)
+  FADE_DURATION: 400, // How long the fade out takes (ms)
 
   // Logo Animation
   LOGO: {
-    INITIAL_DELAY: 200, // Delay before animation starts
-    HOLD_DURATION: 2000, // How long to hold before fade out
-    FADE_DURATION: 800, // How long the fade out takes
-
     SIZE: 200, // Base size of the logo
     SLIDE: {
       DISTANCE: 120, // Final position to the right
