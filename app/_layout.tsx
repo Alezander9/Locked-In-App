@@ -21,7 +21,9 @@ import {
   OpenSans_600SemiBold,
   OpenSans_700Bold,
 } from "@expo-google-fonts/open-sans";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { AnimatedSplash } from "@/components/AnimatedSplash";
+import { Image } from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -29,6 +31,28 @@ SplashScreen.preventAutoHideAsync();
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
 });
+
+// Preload function for images
+const preloadImages = async () => {
+  const images = [
+    require("../assets/images/LockedInLogoSplash.png"),
+    require("../assets/images/LockedInLogoSplashText.png"),
+  ];
+
+  const loadImage = (image: number) => {
+    return new Promise((resolve) => {
+      Image.prefetch(Image.resolveAssetSource(image).uri)
+        .then(() => resolve(true))
+        .catch(() => resolve(false));
+    });
+  };
+
+  try {
+    await Promise.all(images.map(loadImage));
+  } catch (error) {
+    console.warn("Image preloading error:", error);
+  }
+};
 
 // Clerk token cache
 const tokenCache = {
@@ -58,6 +82,7 @@ const tokenCache = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const [appIsReady, setAppIsReady] = useState(false);
   const [fontsLoaded] = useFonts({
     "OpenSans-Light": OpenSans_300Light,
     "OpenSans-Regular": OpenSans_400Regular,
@@ -71,6 +96,34 @@ export default function RootLayout() {
       SplashScreen.hide();
     }
   }, [fontsLoaded]);
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        // Keep splash screen visible while we fetch resources
+        await SplashScreen.preventAutoHideAsync();
+
+        // Preload images in parallel with other initialization
+        const preloadPromise = preloadImages();
+
+        // Any other initialization can go here
+        // Wait for both preload and any other initialization
+        await Promise.all([
+          preloadPromise,
+          new Promise((resolve) => setTimeout(resolve, 100)),
+        ]);
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    prepare();
+  }, []);
+
+  const onAnimationComplete = useCallback(() => {
+    console.log("Animation complete, showing main app");
+    setAppIsReady(true);
+  }, []);
 
   if (!fontsLoaded) {
     return null;
@@ -96,32 +149,45 @@ export default function RootLayout() {
               width="100%"
               height="100%"
             >
-              <Stack screenOptions={{ headerShown: false }}>
-                {/* Auth group */}
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              {!appIsReady ? (
+                <AnimatedSplash onAnimationComplete={onAnimationComplete} />
+              ) : (
+                <Stack screenOptions={{ headerShown: false }}>
+                  {/* Auth group */}
+                  <Stack.Screen
+                    name="(auth)"
+                    options={{ headerShown: false }}
+                  />
 
-                {/* Onboarding group */}
-                <Stack.Screen
-                  name="(onboarding)"
-                  options={{ headerShown: false }}
-                />
+                  {/* Onboarding group */}
+                  <Stack.Screen
+                    name="(onboarding)"
+                    options={{ headerShown: false }}
+                  />
 
-                {/* Main tab navigation */}
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  {/* Main tab navigation */}
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
+                  />
 
-                {/* Modal screens */}
-                <Stack.Screen
-                  name="settings/index"
-                  options={{
-                    presentation: "modal",
-                    headerShown: true,
-                    title: "Settings",
-                  }}
-                />
+                  {/* Modal screens */}
+                  <Stack.Screen
+                    name="settings/index"
+                    options={{
+                      presentation: "modal",
+                      headerShown: true,
+                      title: "Settings",
+                    }}
+                  />
 
-                {/* Error handling */}
-                <Stack.Screen name="+not-found" options={{ title: "Oops!" }} />
-              </Stack>
+                  {/* Error handling */}
+                  <Stack.Screen
+                    name="+not-found"
+                    options={{ title: "Oops!" }}
+                  />
+                </Stack>
+              )}
             </YStack>
           </ThemeProvider>
         </TamaguiProvider>

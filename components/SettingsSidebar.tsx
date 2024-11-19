@@ -11,6 +11,8 @@ import { UserCheckIcon } from "@/app/components/icons";
 import { Text, XStack, YStack, Stack, useTheme } from "tamagui";
 import { useAuth } from "@clerk/clerk-expo";
 import { router } from "expo-router";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 const SIDEBAR_WIDTH = Dimensions.get("window").width * 0.75; // 75% of screen width
 
@@ -28,7 +30,10 @@ export const SettingsSidebar = ({
   const slideAnim = useRef(new Animated.Value(-SIDEBAR_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const theme = useTheme();
-  const { signOut } = useAuth();
+  const { userId, signOut } = useAuth();
+  const user = useQuery(api.queries.getUserByClerkId, {
+    clerkId: userId || "",
+  });
 
   useEffect(() => {
     if (isOpen) {

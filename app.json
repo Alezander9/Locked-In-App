@@ -8,8 +8,7 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/LockedInLogo256x256.png",
-      "resizeMode": "cover",
+      "image": "./assets/images/LockedInLogoSplash.png",
       "backgroundColor": "#F7F4F1",
       "dark": {
         "backgroundColor": "#0A364F"
