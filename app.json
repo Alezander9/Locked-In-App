@@ -28,7 +28,12 @@
       "output": "static",
       "favicon": "./assets/images/LockedInLogo64x64.png"
     },
-    "plugins": ["expo-router", "expo-font", "expo-secure-store"],
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-secure-store",
+      "expo-image-picker"
+    ],
     "experiments": {
       "typedRoutes": true
     }

@@ -110,3 +110,20 @@ export const createUser = mutation({
     return userId;
   },
 });
+
+export const generateUploadUrl = mutation(async (ctx) => {
+  return await ctx.storage.generateUploadUrl();
+});
+
+export const saveProfilePicture = mutation({
+  args: {
+    storageId: v.id("_storage"),
+    userID: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userID, {
+      profilePictureStorageId: args.storageId,
+      pictureCompressed: false,
+    });
+  },
+});

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, ChangeEvent } from "react";
 import {
   TouchableOpacity,
   Animated,
@@ -11,22 +11,20 @@ import { UserCheckIcon } from "@/app/components/icons";
 import { Text, XStack, YStack, Stack, useTheme } from "tamagui";
 import { useAuth } from "@clerk/clerk-expo";
 import { router } from "expo-router";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import * as ImagePicker from "expo-image-picker";
+import { Platform } from "react-native";
+import * as ImageManipulator from "expo-image-manipulator";
 
 const SIDEBAR_WIDTH = Dimensions.get("window").width * 0.75; // 75% of screen width
 
 export interface SettingsSidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  userPhoto?: string | null;
 }
 
-export const SettingsSidebar = ({
-  isOpen,
-  onClose,
-  userPhoto = null, // optional user photo URL
-}: SettingsSidebarProps) => {
+export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
   const slideAnim = useRef(new Animated.Value(-SIDEBAR_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const theme = useTheme();
@@ -34,6 +32,75 @@ export const SettingsSidebar = ({
   const user = useQuery(api.queries.getUserByClerkId, {
     clerkId: userId || "",
   });
+
+  const generateUploadUrl = useMutation(api.mutations.generateUploadUrl);
+  const saveProfilePicture = useMutation(api.mutations.saveProfilePicture);
+
+  const imageUrl = useQuery(
+    api.queries.getImageUrl,
+    user?.profilePictureStorageId
+      ? { storageId: user.profilePictureStorageId }
+      : "skip"
+  );
+
+  const handleImageUpload = async () => {
+    try {
+      const permissionResult =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        alert("Permission to access camera roll is required!");
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        const imageUri = result.assets[0].uri;
+
+        // Manipulate the image before upload
+        const manipulatedImage = await ImageManipulator.manipulateAsync(
+          imageUri,
+          [
+            { resize: { width: 1000, height: 1000 } },
+            // You can add more operations like rotate, flip, crop, etc.
+          ],
+          {
+            compress: 0.7,
+            format: ImageManipulator.SaveFormat.JPEG,
+          }
+        );
+
+        if (user && user._id) {
+          // Get upload URL from Convex
+          const postUrl = await generateUploadUrl();
+
+          // For iOS, we need to read the file as a blob
+          const response = await fetch(manipulatedImage.uri);
+          const blob = await response.blob();
+
+          // Upload to storage with proper content type
+          const uploadResult = await fetch(postUrl, {
+            method: "POST",
+            body: blob,
+            headers: {
+              "Content-Type": "image/jpeg",
+            },
+          });
+
+          const { storageId } = await uploadResult.json();
+          await saveProfilePicture({ storageId, userID: user._id });
+        }
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      alert("Failed to upload image. Please try again.");
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -106,22 +173,27 @@ export const SettingsSidebar = ({
               marginLeft="$6"
               gap="$2"
             >
-              <YStack>
-                {userPhoto ? (
-                  <Image source={{ uri: userPhoto }} style={styles.userPhoto} />
-                ) : (
-                  <Stack
-                    width={80}
-                    height={80}
-                    borderRadius={40}
-                    backgroundColor="$iosGray"
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <UserCheckIcon size={30} color={theme.color.val} />
-                  </Stack>
-                )}
-              </YStack>
+              <TouchableOpacity onPress={handleImageUpload}>
+                <YStack>
+                  {user?.profilePictureStorageId ? (
+                    <Image
+                      source={{ uri: imageUrl }}
+                      style={styles.userPhoto}
+                    />
+                  ) : (
+                    <Stack
+                      width={80}
+                      height={80}
+                      borderRadius={40}
+                      backgroundColor="$iosGray"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <UserCheckIcon size={30} color={theme.color.val} />
+                    </Stack>
+                  )}
+                </YStack>
+              </TouchableOpacity>
               <Text color="$color" fontSize="$4">
                 {user?.firstName} {user?.lastName}
               </Text>
