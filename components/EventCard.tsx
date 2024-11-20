@@ -8,7 +8,6 @@ import {
   LocationIcon,
   ClockIcon,
   UserCheckIcon,
-  UserXIcon,
 } from "@/app/components/icons";
 import { format } from "date-fns";
 import { XStack, YStack, Text, useTheme } from "tamagui";
@@ -40,13 +39,13 @@ interface EventListProps {
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const { userId } = useAuth();
-  const toggleEventResponse = useMutation(api.mutations.toggleEventResponse);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const theme = useTheme();
-
   const user = useQuery(api.queries.getUserByClerkId, {
     clerkId: userId || "",
   });
+
+  const toggleEventResponse = useMutation(api.mutations.toggleEventResponse);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const theme = useTheme();
 
   const [optimisticYesNo, setOptimisticYesNo] = React.useState<
     "yes" | "no" | null

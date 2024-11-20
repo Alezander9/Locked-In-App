@@ -85,6 +85,7 @@ export const createUser = mutation({
     email: v.string(),
     firstName: v.string(),
     lastName: v.string(),
+    completedOnboarding: v.boolean(),
   },
   handler: async (ctx, args) => {
     // Check if user already exists
@@ -103,6 +104,7 @@ export const createUser = mutation({
       email: args.email,
       firstName: args.firstName,
       lastName: args.lastName,
+      completedOnboarding: args.completedOnboarding,
     });
 
     return userId;

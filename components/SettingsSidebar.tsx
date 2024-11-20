@@ -100,13 +100,13 @@ export const SettingsSidebar = ({
         >
           <SafeAreaView style={{ flex: 1 }}>
             <YStack
-              height={120}
               justifyContent="center"
-              alignItems="flex-start"
               borderBottomWidth={1}
               borderBottomColor="$lightSeparator"
+              marginLeft="$6"
+              gap="$2"
             >
-              <XStack marginLeft="$6">
+              <YStack>
                 {userPhoto ? (
                   <Image source={{ uri: userPhoto }} style={styles.userPhoto} />
                 ) : (
@@ -114,19 +114,25 @@ export const SettingsSidebar = ({
                     width={80}
                     height={80}
                     borderRadius={40}
-                    backgroundColor="$lightSeparator"
+                    backgroundColor="$iosGray"
                     justifyContent="center"
                     alignItems="center"
                   >
                     <UserCheckIcon size={30} color={theme.color.val} />
                   </Stack>
                 )}
-              </XStack>
+              </YStack>
+              <Text color="$color" fontSize="$4">
+                {user?.firstName} {user?.lastName}
+              </Text>
+              <Text color="$color" fontSize="$3">
+                {user?.email}
+              </Text>
             </YStack>
 
             <TouchableOpacity
               onPress={() => {
-                onClose();
+                console.log("Profile");
               }}
             >
               <XStack
@@ -143,7 +149,7 @@ export const SettingsSidebar = ({
 
             <TouchableOpacity
               onPress={() => {
-                onClose();
+                console.log("Preferences");
               }}
             >
               <XStack

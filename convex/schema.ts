@@ -12,6 +12,7 @@ export default defineSchema({
     email: v.string(),
     firstName: v.string(),
     lastName: v.string(),
+    completedOnboarding: v.optional(v.boolean()),
     notificationsEnabled: v.optional(v.boolean()),
   }).index("by_clerkId", ["clerkId"]),
 

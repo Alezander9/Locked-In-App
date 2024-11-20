@@ -25,7 +25,7 @@ export default function TabLayout() {
           tabBarInactiveTintColor: theme.gray.val,
           tabBarStyle: {
             backgroundColor: theme.bg.val,
-            borderTopColor: theme.borderColor.val,
+            borderTopColor: theme.darkSeparator.val,
           },
           // Header styling
           headerStyle: {
