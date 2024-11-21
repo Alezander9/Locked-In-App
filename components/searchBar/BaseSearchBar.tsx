@@ -79,14 +79,13 @@ const DismissOverlay = styled(Stack, {
   backgroundColor: "transparent",
 });
 
-const INPUT_ACCESSORY_ID = "searchBarAccessoryID";
-
 interface BaseSearchBarProps {
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
   showDismissOverlay?: boolean;
   onDismiss?: () => void;
+  accessoryId?: string; // New prop for unique accessory ID
 }
 
 export function BaseSearchBar({
@@ -95,6 +94,7 @@ export function BaseSearchBar({
   placeholder = "Search...",
   showDismissOverlay = false,
   onDismiss,
+  accessoryId = "defaultSearchBarAccessoryID", // Default value
 }: BaseSearchBarProps) {
   const theme = useTheme();
   const [focused, setFocused] = useState(false);
@@ -137,7 +137,7 @@ export function BaseSearchBar({
             color="$color"
             placeholderTextColor="$color"
             inputAccessoryViewID={
-              Platform.OS === "ios" ? INPUT_ACCESSORY_ID : undefined
+              Platform.OS === "ios" ? accessoryId : undefined
             }
             value={value}
             onChangeText={onChangeText}
@@ -157,7 +157,7 @@ export function BaseSearchBar({
       </YStack>
 
       {Platform.OS === "ios" && (
-        <InputAccessoryView nativeID={INPUT_ACCESSORY_ID}>
+        <InputAccessoryView nativeID={accessoryId}>
           <KeyboardAccessory>
             <XStack justifyContent="flex-end">
               <DoneButton onPress={dismissKeyboard}>

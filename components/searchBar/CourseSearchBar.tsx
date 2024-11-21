@@ -75,6 +75,7 @@ export function CourseSearchBar({ onCourseSelect }: CourseSearchBarProps) {
         onChangeText={setSearchTerm}
         placeholder="Search courses..."
         showDismissOverlay={true}
+        accessoryId="courseSearchAccessoryID"
       />
 
       {searchResults && searchResults.length > 0 && (

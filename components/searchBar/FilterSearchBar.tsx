@@ -25,6 +25,7 @@ export function FilterSearchBar({
       onChangeText={setSearchTerm}
       placeholder={placeholder}
       showDismissOverlay={false}
+      accessoryId="filterSearchAccessoryID"
     />
   );
 }
