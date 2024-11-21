@@ -44699,7 +44699,7 @@ var brandColors = {
   iosGray3: "#283B49",
   iosGray4: "#425059",
   lightModeLightSeparator: "#FFFFFF",
-  lightModeDarkSeparator: "#757575",
+  lightModeDarkSeparator: "#D9D9D9",
   darkModeLightSeparator: "#526A79",
   darkModeDarkSeparator: "#051B27"
 };

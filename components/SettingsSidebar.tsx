@@ -182,7 +182,7 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
                 <YStack>
                   {user?.profilePictureStorageId ? (
                     <Image
-                      source={{ uri: imageUrl }}
+                      source={{ uri: imageUrl || "" }}
                       style={styles.userPhoto}
                     />
                   ) : (

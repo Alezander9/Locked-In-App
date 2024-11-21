@@ -27102,7 +27102,7 @@
           "isVar": true,
           "key": "$lightModeDarkSeparator",
           "name": "c-lightModeDarkSeparator",
-          "val": "#757575",
+          "val": "#D9D9D9",
           "variable": ""
         },
         "darkModeLightSeparator": {
@@ -27181,7 +27181,7 @@
         "secondary": "#0A364F",
         "gray": "#757575",
         "lightSeparator": "#FFFFFF",
-        "darkSeparator": "#757575",
+        "darkSeparator": "#D9D9D9",
         "seperatorText": "#757575",
         "iosGray": "#D0D3D9",
         "iosGray2": "#AAB0BB",
@@ -27592,7 +27592,7 @@
         "isVar": true,
         "key": "$lightModeDarkSeparator",
         "name": "c-lightModeDarkSeparator",
-        "val": "#757575",
+        "val": "#D9D9D9",
         "variable": ""
       },
       "$color.darkModeLightSeparator": {

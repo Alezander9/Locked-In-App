@@ -4,23 +4,20 @@ import {
   XStack,
   styled,
   Button,
-  Text,
   Stack,
   YStack,
+  Text,
   useTheme,
 } from "tamagui";
 import {
   InputAccessoryView,
   Keyboard,
   Platform,
-  Pressable,
   TextInput,
   useColorScheme,
 } from "react-native";
-import { useQuery } from "convex/react";
-import { api } from "../convex/_generated/api";
-import { useDebounce } from "../hooks/useDebounce";
 import { MicrophoneIcon, SearchIcon } from "@/app/components/icons";
+
 const SearchInput = styled(Input, {
   flex: 1,
   borderWidth: 0,
@@ -82,87 +79,36 @@ const DismissOverlay = styled(Stack, {
   backgroundColor: "transparent",
 });
 
-const ResultsContainer = styled(YStack, {
-  position: "absolute",
-  top: 48, // height of search bar + small gap
-  left: "$3",
-  right: "$3",
-  backgroundColor: "$bg",
-  borderRadius: "$2",
-  padding: "$2",
-  shadowColor: "$shadowColor",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.15,
-  shadowRadius: 3,
-  elevation: 3, // for Android shadow
-  zIndex: 1000,
-});
-
-const ResultRow = styled(Pressable, {
-  paddingVertical: "$2",
-  paddingHorizontal: "$3",
-  backgroundColor: "$bg",
-
-  // Add hover/pressed state
-  pressStyle: {
-    backgroundColor: "$gray",
-    opacity: 0.1,
-  },
-});
-
-const ResultCode = styled(Text, {
-  color: "$color",
-  fontSize: "$3",
-  fontWeight: "500",
-});
-
-const ResultTitle = styled(Text, {
-  color: "$color",
-  fontSize: "$3",
-  opacity: 0.7,
-  flex: 1,
-});
-
-export interface Course {
-  department: string;
-  code: string;
-  title: string;
-}
-
 const INPUT_ACCESSORY_ID = "searchBarAccessoryID";
 
-interface SearchBarProps {
-  onCourseSelect?: (course: Course) => void;
+interface BaseSearchBarProps {
+  value: string;
+  onChangeText: (text: string) => void;
+  placeholder?: string;
+  showDismissOverlay?: boolean;
+  onDismiss?: () => void;
 }
 
-export function SearchBar({ onCourseSelect }: SearchBarProps) {
+export function BaseSearchBar({
+  value,
+  onChangeText,
+  placeholder = "Search...",
+  showDismissOverlay = false,
+  onDismiss,
+}: BaseSearchBarProps) {
   const theme = useTheme();
-  const colorScheme = useColorScheme();
-
   const [focused, setFocused] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const inputRef = useRef<TextInput>(null);
-
-  const debouncedSearchTerm = useDebounce(searchTerm, 200);
-
-  const searchResults = useQuery(api.queries.searchCourses, {
-    searchTerm: debouncedSearchTerm,
-  });
 
   const dismissKeyboard = () => {
     Keyboard.dismiss();
     setFocused(false);
-  };
-
-  const handleCourseSelect = (course: Course) => {
-    onCourseSelect?.(course);
-    dismissKeyboard();
-    setSearchTerm("");
+    onDismiss?.();
   };
 
   return (
     <>
-      {focused && (
+      {showDismissOverlay && focused && (
         <DismissOverlay
           enterStyle={{ opacity: 0 }}
           exitStyle={{ opacity: 0 }}
@@ -185,7 +131,7 @@ export function SearchBar({ onCourseSelect }: SearchBarProps) {
           />
           <SearchInput
             ref={inputRef}
-            placeholder="Search..."
+            placeholder={placeholder}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             color="$color"
@@ -193,37 +139,21 @@ export function SearchBar({ onCourseSelect }: SearchBarProps) {
             inputAccessoryViewID={
               Platform.OS === "ios" ? INPUT_ACCESSORY_ID : undefined
             }
-            value={searchTerm}
-            onChangeText={setSearchTerm}
+            value={value}
+            onChangeText={onChangeText}
           />
-          <Button
-            chromeless
-            paddingHorizontal="$2"
-            onPress={() => {
-              setSearchTerm("");
-            }}
-          >
-            <MicrophoneIcon size={14} color={theme.color.val} />
-          </Button>
+          {value.length > 0 && (
+            <Button
+              chromeless
+              paddingHorizontal="$2"
+              onPress={() => {
+                onChangeText("");
+              }}
+            >
+              <MicrophoneIcon size={14} color={theme.color.val} />
+            </Button>
+          )}
         </SearchContainer>
-
-        {focused && searchResults && searchResults.length > 0 && (
-          <ResultsContainer enterStyle={{ opacity: 0, scale: 0.95 }}>
-            {searchResults.map((course: Course) => (
-              <ResultRow
-                key={`${course.department}${course.code}`}
-                onPress={() => handleCourseSelect(course)}
-              >
-                <XStack alignItems="center" space="$2">
-                  <ResultCode>{course.code}:</ResultCode>
-                  <ResultTitle numberOfLines={1} ellipsizeMode="tail">
-                    {course.title}
-                  </ResultTitle>
-                </XStack>
-              </ResultRow>
-            ))}
-          </ResultsContainer>
-        )}
       </YStack>
 
       {Platform.OS === "ios" && (
