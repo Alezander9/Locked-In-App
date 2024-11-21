@@ -3,6 +3,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import {
   EventIcon,
   GroupsIcon,
+  MenuIcon,
   SettingsIcon,
   TasksIcon,
   UserCheckIcon,
@@ -75,12 +76,13 @@ export default function TabLayout() {
         onPress={() => setIsSidebarOpen(true)}
         style={{
           position: "absolute",
-          top: 58,
-          left: 20,
+          top: 50,
+          left: 10,
           zIndex: 1,
+          padding: 10,
         }}
       >
-        <SettingsIcon size={24} color={theme.color.val} />
+        <MenuIcon size={24} color={theme.color.val} />
       </TouchableOpacity>
       <SettingsSidebar
         isOpen={isSidebarOpen}

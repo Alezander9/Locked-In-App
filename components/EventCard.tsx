@@ -128,7 +128,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
         </XStack>
       </XStack>
 
-      <YStack space="$2" margin="$4">
+      <YStack space="$2" marginHorizontal="$4" marginBottom="$4" marginTop="$2">
         <Text fontWeight="bold" fontSize="$4">
           {event.title}
         </Text>
@@ -137,7 +137,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
       <XStack
         marginHorizontal="$4"
-        marginBottom="$4"
+        marginBottom="$1"
         justifyContent="space-between"
         alignItems="center"
       >
@@ -155,24 +155,37 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
         </YStack>
 
         <XStack space="$2">
-          <CircleIconButton
-            icon={XIcon}
-            size="medium"
-            variant={
-              user && optimisticYesNo === "no" ? "secondaryOn" : "secondaryOff"
-            }
-            onPress={() => handleResponse("no")}
-            disabled={isLoading}
-          />
-          <CircleIconButton
-            icon={CheckIcon}
-            size="medium"
-            variant={
-              user && optimisticYesNo === "yes" ? "primaryOn" : "primaryOff"
-            }
-            onPress={() => handleResponse("yes")}
-            disabled={isLoading}
-          />
+          <YStack alignItems="center" space={4}>
+            <CircleIconButton
+              icon={XIcon}
+              size="medium"
+              variant={
+                user && optimisticYesNo === "no"
+                  ? "secondaryOn"
+                  : "secondaryOff"
+              }
+              onPress={() => handleResponse("no")}
+              disabled={isLoading}
+            />
+            <Text fontSize="$2" color="$color">
+              Can't Go
+            </Text>
+          </YStack>
+
+          <YStack alignItems="center" space={4}>
+            <CircleIconButton
+              icon={CheckIcon}
+              size="medium"
+              variant={
+                user && optimisticYesNo === "yes" ? "primaryOn" : "primaryOff"
+              }
+              onPress={() => handleResponse("yes")}
+              disabled={isLoading}
+            />
+            <Text fontSize="$2" color="$color">
+              Going
+            </Text>
+          </YStack>
         </XStack>
       </XStack>
 

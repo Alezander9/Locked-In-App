@@ -7,7 +7,7 @@ import {
   Image,
   SafeAreaView,
 } from "react-native";
-import { UserCheckIcon } from "@/app/components/icons";
+import { UserCheckIcon, UserIcon } from "@/app/components/icons";
 import { Text, XStack, YStack, Stack, useTheme } from "tamagui";
 import { useAuth } from "@clerk/clerk-expo";
 import { router } from "expo-router";
@@ -28,7 +28,7 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
   const slideAnim = useRef(new Animated.Value(-SIDEBAR_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const theme = useTheme();
-  const { userId, signOut } = useAuth();
+  const { userId, signOut, isSignedIn, isLoaded } = useAuth();
   const user = useQuery(api.queries.getUserByClerkId, {
     clerkId: userId || "",
   });
@@ -134,9 +134,13 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
 
   const handleSignOut = () => {
     signOut();
-    // TODO: Figure out why this doesnt sent to the login screen
-    router.replace("/(auth)/login");
   };
+  // Reroute to login screen if user is not signed in
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.replace("/(auth)/login");
+    }
+  }, [isSignedIn, isLoaded]);
 
   return (
     <Stack
@@ -170,7 +174,8 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
               justifyContent="center"
               borderBottomWidth={1}
               borderBottomColor="$lightSeparator"
-              marginLeft="$6"
+              paddingLeft="$6"
+              paddingBottom="$4"
               gap="$2"
             >
               <TouchableOpacity onPress={handleImageUpload}>
@@ -189,7 +194,7 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
                       justifyContent="center"
                       alignItems="center"
                     >
-                      <UserCheckIcon size={30} color={theme.color.val} />
+                      <UserIcon size={30} color={theme.color.val} />
                     </Stack>
                   )}
                 </YStack>
@@ -202,7 +207,7 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
               </Text>
             </YStack>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 console.log("Profile");
               }}
@@ -234,7 +239,7 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
                   Preferences
                 </Text>
               </XStack>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <TouchableOpacity onPress={handleSignOut}>
               <XStack

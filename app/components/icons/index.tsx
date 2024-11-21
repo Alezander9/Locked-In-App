@@ -833,3 +833,102 @@ export function SettingsIcon({
     </Svg>
   );
 }
+
+export function UserIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 450; // 450 is original width
+  const height = Math.round(591 * scale); // 591 is original height
+
+  // Transform coordinates to remove the translation
+  // Original paths were translated by (463, 1260)
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 450 591"
+      fill="none"
+      {...props}
+    >
+      {/* Head circle */}
+      <Path
+        d="M117.5 119.5C117.5 59.85 165.629 11.5 225 11.5C284.371 11.5 332.5 59.85 332.5 119.5C332.5 179.15 284.371 227.5 225 227.5C165.629 227.5 117.5 179.15 117.5 119.5Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Body shape */}
+      <Path
+        d="M225 272.5C318.84 272.5 399.355 336.9 433.747 428.67L438.5 445.95L438.5 545.18C438.5 564.13 423.128 579.5 404.165 579.5L45.835 579.5C26.872 579.5 11.5 564.13 11.5 545.18L11.5 445.96L16.254 428.67C50.646 336.9 131.161 272.5 225 272.5Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
+
+export function WriteIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 573; // 573 is original width
+  const height = Math.round(561 * scale); // 561 is original height
+
+  // Transform coordinates to remove the translation
+  // Original paths were translated by (1140, 1275)
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 573 561"
+      fill="none"
+      {...props}
+    >
+      {/* Base square/document shape */}
+      <Path
+        d="M62.66 88.5L409.25 88.5L266.47 231.15C255.9 241.71 250.62 255.55 250.63 269.38L251.14 271.99L234.56 339.07L300.92 322.64L304.84 323.4C318.71 323.39 332.57 318.11 343.14 307.54L488.5 162.32L488.5 498.46C488.5 526.65 465.6 549.5 437.34 549.5L62.66 549.5C34.4 549.5 11.5 526.65 11.5 498.46L11.5 139.54C11.5 111.35 34.4 88.5 62.66 88.5Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Pencil shape */}
+      <Path
+        d="M507.06 11.83C520.91 11.82 534.76 17.1 545.33 27.65L545.33 27.65C566.47 48.77 566.49 83.02 545.38 104.16L342.51 307.3C331.95 317.87 318.11 323.16 304.27 323.17L300.35 322.42L234.09 338.85L250.64 271.72L250.14 269.11C250.13 255.27 255.4 241.42 265.95 230.85L468.82 27.71C479.38 17.13 493.22 11.84 507.06 11.83Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeLinejoin="round"
+        strokeMiterlimit="10"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Horizontal mark in square */}
+      <Path
+        d="M102 471.5C102 460.73 110.73 452 121.5 452L409.5 452C420.27 452 429 460.73 429 471.5L429 471.5C429 482.27 420.27 491 409.5 491L121.5 491C110.73 491 102 482.27 102 471.5Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+
+      {/* Vertical mark in square */}
+      <Path
+        d="M409.5 393C420.27 393 429 401.73 429 412.5L429 471.5C429 482.27 420.27 491 409.5 491L409.5 491C398.73 491 390 482.27 390 471.5L390 412.5C390 401.73 398.73 393 409.5 393Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
