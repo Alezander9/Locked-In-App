@@ -32,26 +32,63 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
 });
 
-// Preload function for images
-const preloadImages = async () => {
+// Create a global promise to track asset loading
+let ASSETS_LOADED: Promise<void> | null = null;
+
+// Preload all assets once and cache the promise
+const preloadAssets = async () => {
   const images = [
-    require("../assets/images/LockedInLogoSplash.png"),
-    require("../assets/images/LockedInLogoSplashText.png"),
+    require("../assets/images/LockedInLogoSplash.webp"),
+    require("../assets/images/LockedInLogoSplashText.webp"),
+    require("../assets/images/EventsGraphic.webp"),
   ];
 
-  const loadImage = (image: number) => {
-    return new Promise((resolve) => {
-      Image.prefetch(Image.resolveAssetSource(image).uri)
-        .then(() => resolve(true))
-        .catch(() => resolve(false));
-    });
-  };
+  const imagePromises = images.map((image) => {
+    return Image.prefetch(Image.resolveAssetSource(image).uri);
+  });
 
-  try {
-    await Promise.all(images.map(loadImage));
-  } catch (error) {
-    console.warn("Image preloading error:", error);
-  }
+  // Add any other asset loading here (e.g., animations, videos)
+  await Promise.all(imagePromises);
+};
+
+// Custom hook to manage loading state
+const useAppLoading = () => {
+  const [isReady, setIsReady] = useState(false);
+  const [fontsLoaded] = useFonts({
+    "OpenSans-Light": OpenSans_300Light,
+    "OpenSans-Regular": OpenSans_400Regular,
+    "OpenSans-Medium": OpenSans_500Medium,
+    "OpenSans-SemiBold": OpenSans_600SemiBold,
+    "OpenSans-Bold": OpenSans_700Bold,
+  });
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        // Initialize the global assets promise if not already done
+        if (!ASSETS_LOADED) {
+          ASSETS_LOADED = preloadAssets();
+        }
+
+        // Wait for both fonts and assets
+        await Promise.all([
+          ASSETS_LOADED,
+          new Promise((resolve) => fontsLoaded && resolve(true)),
+        ]);
+
+        // Add a small delay to ensure smooth transition
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
+        setIsReady(true);
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    prepare();
+  }, [fontsLoaded]);
+
+  return isReady;
 };
 
 // Clerk token cache
@@ -82,56 +119,21 @@ const tokenCache = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [appIsReady, setAppIsReady] = useState(false);
-  const [fontsLoaded] = useFonts({
-    "OpenSans-Light": OpenSans_300Light,
-    "OpenSans-Regular": OpenSans_400Regular,
-    "OpenSans-Medium": OpenSans_500Medium,
-    "OpenSans-SemiBold": OpenSans_600SemiBold,
-    "OpenSans-Bold": OpenSans_700Bold,
-  });
+  const isReady = useAppLoading();
+  const [showAnimatedSplash, setShowAnimatedSplash] = useState(true);
 
   useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hide();
-    }
-  }, [fontsLoaded]);
-
-  useEffect(() => {
-    async function prepare() {
-      try {
-        // Keep splash screen visible while we fetch resources
-        await SplashScreen.preventAutoHideAsync();
-
-        // Preload images in parallel with other initialization
-        const preloadPromise = preloadImages();
-
-        // Any other initialization can go here
-        // Wait for both preload and any other initialization
-        await Promise.all([
-          preloadPromise,
-          new Promise((resolve) => setTimeout(resolve, 100)),
-        ]);
-      } catch (e) {
-        console.warn(e);
-      }
-    }
-
-    prepare();
-  }, []);
-
-  const onAnimationComplete = useCallback(() => {
-    console.log("Animation complete, showing main app");
-    setAppIsReady(true);
-  }, []);
-
-  useEffect(() => {
-    if (fontsLoaded) {
+    if (isReady) {
+      // Only hide the native splash screen when we're ready to show the animated splash
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [isReady]);
 
-  if (!fontsLoaded) {
+  const onAnimationComplete = useCallback(() => {
+    setShowAnimatedSplash(false);
+  }, []);
+
+  if (!isReady) {
     return null;
   }
 
@@ -155,7 +157,7 @@ export default function RootLayout() {
               width="100%"
               height="100%"
             >
-              {!appIsReady ? (
+              {showAnimatedSplash ? (
                 <AnimatedSplash onAnimationComplete={onAnimationComplete} />
               ) : (
                 <Stack screenOptions={{ headerShown: false }}>

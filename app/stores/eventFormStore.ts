@@ -30,3 +30,5 @@ export const useEventFormStore = create<EventFormState>((set) => ({
   updateField: (field, value) => set((state) => ({ [field]: value })),
   resetForm: () => set(initialState),
 }));
+
+export default useEventFormStore;

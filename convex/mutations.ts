@@ -123,7 +123,6 @@ export const saveProfilePicture = mutation({
   handler: async (ctx, args) => {
     await ctx.db.patch(args.userID, {
       profilePictureStorageId: args.storageId,
-      pictureCompressed: false,
     });
   },
 });

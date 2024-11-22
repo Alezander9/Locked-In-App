@@ -26,20 +26,20 @@ WebBrowser.maybeCompleteAuthSession();
 const FEATURE_DATA = [
   {
     id: 1,
-    image: require("@/assets/images/EventsGraphic.png"),
+    image: require("@/assets/images/EventsGraphic.webp"),
     title: "Join Public Study Sessions",
     description: "View and host study sessions for your whole campus",
   },
   {
     id: 2,
-    image: require("@/assets/images/TasksGraphic.png"),
+    image: require("@/assets/images/TasksGraphic.webp"),
     title: "Deconstruct Assignments",
     description:
       "Upload class materials and assignments and let our AI deconstruct them into manageable tasks",
   },
   {
     id: 3,
-    image: require("@/assets/images/GroupsGraphic.png"),
+    image: require("@/assets/images/GroupsGraphic.webp"),
     title: "Match With Study Buddies",
     description:
       "Create a study profile and get matched with compatible study buddies in your classes for weekly study sessions",
@@ -154,7 +154,7 @@ export default function LoginScreen() {
                     }}
                   >
                     <Image
-                      source={require("@/assets/images/LockedInLogoFull.png")}
+                      source={require("@/assets/images/LockedInLogoFull.webp")}
                       style={{
                         width: 200,
                         height: 60,

@@ -968,3 +968,27 @@ export function ArrowRightIcon({
     </Svg>
   );
 }
+
+const Icons = {
+  Classes: ClassesIcon,
+  Tasks: TasksIcon,
+  Groups: GroupsIcon,
+  Menu: MenuIcon,
+  Search: SearchIcon,
+  Microphone: MicrophoneIcon,
+  Check: CheckIcon,
+  X: XIcon,
+  Event: EventIcon,
+  Clock: ClockIcon,
+  Location: LocationIcon,
+  UserCheck: UserCheckIcon,
+  UserX: UserXIcon,
+  Lock: LockIcon,
+  Unlock: UnlockIcon,
+  Settings: SettingsIcon,
+  User: UserIcon,
+  Write: WriteIcon,
+  ArrowRight: ArrowRightIcon,
+};
+
+export default Icons;

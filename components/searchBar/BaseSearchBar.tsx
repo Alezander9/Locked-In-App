@@ -142,7 +142,7 @@ export function BaseSearchBar({
             value={value}
             onChangeText={onChangeText}
           />
-          {value.length > 0 && (
+          {/* {value.length > 0 && (
             <Button
               chromeless
               paddingHorizontal="$2"
@@ -152,7 +152,7 @@ export function BaseSearchBar({
             >
               <MicrophoneIcon size={14} color={theme.color.val} />
             </Button>
-          )}
+          )} */}
         </SearchContainer>
       </YStack>
 

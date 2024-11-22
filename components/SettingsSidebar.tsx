@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, ChangeEvent } from "react";
+import React, { useRef, useEffect, ChangeEvent, useState } from "react";
 import {
   TouchableOpacity,
   Animated,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Image,
   SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 import { UserCheckIcon, UserIcon } from "@/app/components/icons";
 import { Text, XStack, YStack, Stack, useTheme } from "tamagui";
@@ -42,6 +43,8 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
       ? { storageId: user.profilePictureStorageId }
       : "skip"
   );
+
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const handleImageUpload = async () => {
     try {
@@ -132,8 +135,14 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
     }
   }, [isOpen]);
 
-  const handleSignOut = () => {
-    signOut();
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Error signing out:", error);
+      setIsSigningOut(false);
+    }
   };
   // Reroute to login screen if user is not signed in
   useEffect(() => {
@@ -241,7 +250,7 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
               </XStack>
             </TouchableOpacity> */}
 
-            <TouchableOpacity onPress={handleSignOut}>
+            <TouchableOpacity onPress={handleSignOut} disabled={isSigningOut}>
               <XStack
                 marginTop="auto"
                 padding="$4"
@@ -251,14 +260,39 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
                 borderBottomColor="$lightSeparator"
                 alignItems="center"
               >
-                <Text color="$red" fontSize="$4">
-                  Sign Out
+                <Text fontSize="$4">
+                  {isSigningOut ? (
+                    <ActivityIndicator size="small" color={theme.color.val} />
+                  ) : (
+                    "Sign Out"
+                  )}
                 </Text>
               </XStack>
             </TouchableOpacity>
           </SafeAreaView>
         </YStack>
       </Animated.View>
+
+      {isSigningOut && (
+        <Stack
+          position="absolute"
+          left={0}
+          right={0}
+          top={0}
+          bottom={0}
+          backgroundColor="rgba(0, 0, 0, 0.5)"
+          justifyContent="center"
+          alignItems="center"
+          zIndex={2000}
+        >
+          <YStack gap="$4" alignItems="center">
+            <ActivityIndicator size="large" color={theme.color.val} />
+            <Text color="white" fontSize="$4">
+              Signing out...
+            </Text>
+          </YStack>
+        </Stack>
+      )}
     </Stack>
   );
 };

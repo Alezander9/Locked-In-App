@@ -15,7 +15,6 @@ export default defineSchema({
     completedOnboarding: v.optional(v.boolean()),
     notificationsEnabled: v.optional(v.boolean()),
     profilePictureStorageId: v.optional(v.string()),
-    pictureCompressed: v.optional(v.boolean()),
   }).index("by_clerkId", ["clerkId"]),
 
   courses: defineTable({

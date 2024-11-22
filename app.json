@@ -4,11 +4,12 @@
     "slug": "Locked-In-App",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/LockedInLogo1024x1024.png",
+    "icon": "./assets/images/LockedInLogo1024x1024.webp",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/LockedInLogoSplash.png",
+      "image": "./assets/images/LockedInLogoSplash.webp",
       "backgroundColor": "#F7F4F1",
       "dark": {
         "backgroundColor": "#0A364F"
@@ -19,14 +20,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/LockedInLogo1024x1024.png",
+        "foregroundImage": "./assets/images/LockedInLogo1024x1024.webp",
         "backgroundColor": "#F7F4F1"
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/LockedInLogo64x64.png"
+      "favicon": "./assets/images/LockedInLogo64x64.webp"
     },
     "plugins": [
       "expo-router",
