@@ -2,7 +2,7 @@ import { Stack, XStack, YStack, Text } from "tamagui";
 import { router } from "expo-router";
 import { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useEventFormStore } from "@/app/stores/eventFormStore";
+import { useEventFormStore } from "@/stores/eventFormStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
 

@@ -24,6 +24,7 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { AnimatedSplash } from "@/components/AnimatedSplash";
 import { Image } from "react-native";
+import { ToastProvider, useToast } from "@/features/toast";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -150,53 +151,55 @@ export default function RootLayout() {
           <ThemeProvider
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
           >
-            <YStack
-              flex={1}
-              backgroundColor="$bg"
-              position="absolute"
-              width="100%"
-              height="100%"
-            >
-              {showAnimatedSplash ? (
-                <AnimatedSplash onAnimationComplete={onAnimationComplete} />
-              ) : (
-                <Stack screenOptions={{ headerShown: false }}>
-                  {/* Auth group */}
-                  <Stack.Screen
-                    name="(auth)"
-                    options={{ headerShown: false }}
-                  />
+            <ToastProvider>
+              <YStack
+                flex={1}
+                backgroundColor="$bg"
+                position="absolute"
+                width="100%"
+                height="100%"
+              >
+                {showAnimatedSplash ? (
+                  <AnimatedSplash onAnimationComplete={onAnimationComplete} />
+                ) : (
+                  <Stack screenOptions={{ headerShown: false }}>
+                    {/* Auth group */}
+                    <Stack.Screen
+                      name="(auth)"
+                      options={{ headerShown: false }}
+                    />
 
-                  {/* Onboarding group */}
-                  <Stack.Screen
-                    name="(onboarding)"
-                    options={{ headerShown: false }}
-                  />
+                    {/* Onboarding group */}
+                    <Stack.Screen
+                      name="(onboarding)"
+                      options={{ headerShown: false }}
+                    />
 
-                  {/* Main tab navigation */}
-                  <Stack.Screen
-                    name="(tabs)"
-                    options={{ headerShown: false }}
-                  />
+                    {/* Main tab navigation */}
+                    <Stack.Screen
+                      name="(tabs)"
+                      options={{ headerShown: false }}
+                    />
 
-                  {/* Modal screens */}
-                  <Stack.Screen
-                    name="settings/index"
-                    options={{
-                      presentation: "modal",
-                      headerShown: true,
-                      title: "Settings",
-                    }}
-                  />
+                    {/* Modal screens */}
+                    <Stack.Screen
+                      name="settings/index"
+                      options={{
+                        presentation: "modal",
+                        headerShown: true,
+                        title: "Settings",
+                      }}
+                    />
 
-                  {/* Error handling */}
-                  <Stack.Screen
-                    name="+not-found"
-                    options={{ title: "Oops!" }}
-                  />
-                </Stack>
-              )}
-            </YStack>
+                    {/* Error handling */}
+                    <Stack.Screen
+                      name="+not-found"
+                      options={{ title: "Oops!" }}
+                    />
+                  </Stack>
+                )}
+              </YStack>
+            </ToastProvider>
           </ThemeProvider>
         </TamaguiProvider>
       </ConvexProviderWithClerk>

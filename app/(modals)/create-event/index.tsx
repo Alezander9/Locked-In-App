@@ -2,7 +2,7 @@ import { Stack, YStack, XStack, Text } from "tamagui";
 import { router } from "expo-router";
 import { FormSection } from "@/components/forms/FormSection";
 import { FormRow } from "@/components/forms/FormRow";
-import { useEventFormStore } from "@/app/stores/eventFormStore";
+import { useEventFormStore } from "@/stores/eventFormStore";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FormRowTextInput } from "@/components/forms/FormRowTextInput";
