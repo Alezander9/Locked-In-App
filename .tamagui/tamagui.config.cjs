@@ -44850,7 +44850,7 @@ var config = createTamagui({
       gray: tokens.color.gray,
       lightSeparator: tokens.color.lightModeLightSeparator,
       darkSeparator: tokens.color.lightModeDarkSeparator,
-      seperatorText: tokens.color.gray,
+      separatorText: tokens.color.gray,
       iosGray: tokens.color.iosGray,
       iosGray2: tokens.color.iosGray2
     },
@@ -44865,7 +44865,7 @@ var config = createTamagui({
       gray: tokens.color.gray,
       lightSeparator: tokens.color.darkModeLightSeparator,
       darkSeparator: tokens.color.darkModeDarkSeparator,
-      seperatorText: tokens.color.white,
+      separatorText: tokens.color.darkModeDarkSeparator,
       iosGray: tokens.color.iosGray3,
       iosGray2: tokens.color.iosGray4
     }

@@ -932,3 +932,39 @@ export function WriteIcon({
     </Svg>
   );
 }
+
+export function ArrowRightIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 185; // 185 is original width
+  const height = Math.round(332 * scale); // 332 is original height
+
+  // Transform coordinates to remove the translation
+  // Original paths were translated by (2131, 1386)
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 185 332"
+      fill="none"
+      {...props}
+    >
+      {/* Bottom diagonal line */}
+      <Path
+        d="M6.49 325.49C-1.25 317.8 -1.29 305.28 6.41 297.54L149.89 153.16C157.59 145.42 170.1 145.38 177.85 153.07L177.85 153.07C185.59 160.77 185.63 173.28 177.93 181.03L34.44 325.41C26.75 333.15 14.23 333.19 6.49 325.49Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+
+      {/* Top diagonal line */}
+      <Path
+        d="M178.83 177.81C171.13 185.55 158.62 185.59 150.87 177.9L6.49 34.41C-1.25 26.72 -1.29 14.2 6.41 6.46L6.41 6.46C14.1 -1.29 26.62 -1.32 34.36 6.37L178.74 149.86C186.48 157.55 186.52 170.07 178.83 177.81Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}

@@ -9,6 +9,7 @@ import { useTheme } from "tamagui";
 import { FilterSearchBar } from "@/components/searchBar/FilterSearchBar";
 import EventList, { Event } from "@/components/EventCard";
 import { useMemo, useState } from "react";
+import { router } from "expo-router";
 
 export default function EventsScreen() {
   const events = useQuery(api.queries.getUpcomingEvents, { limit: 10 });
@@ -39,8 +40,12 @@ export default function EventsScreen() {
   };
 
   const handleMakeEvent = () => {
-    console.log("Make event clicked");
-    // TODO: Implement event creation logic
+    router.push({
+      pathname: "/(modals)/create-event",
+      params: {
+        presentation: "modal",
+      },
+    });
   };
 
   // Handle loading state

@@ -127,3 +127,44 @@ export const saveProfilePicture = mutation({
     });
   },
 });
+
+export const createEvent = mutation({
+  args: {
+    title: v.string(),
+    description: v.string(),
+    location: v.string(),
+    date: v.number(),
+    duration: v.number(),
+    isPublic: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // Get the user ID from their clerk ID
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Create the event with the current user in the yesList
+    const eventId = await ctx.db.insert("events", {
+      title: args.title,
+      description: args.description,
+      location: args.location,
+      date: args.date,
+      duration: args.duration,
+      public: args.isPublic,
+      yesList: [],
+      noList: [],
+    });
+
+    return eventId;
+  },
+});

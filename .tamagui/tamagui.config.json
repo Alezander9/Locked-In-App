@@ -27182,7 +27182,7 @@
         "gray": "#757575",
         "lightSeparator": "#FFFFFF",
         "darkSeparator": "#D9D9D9",
-        "seperatorText": "#757575",
+        "separatorText": "#757575",
         "iosGray": "#D0D3D9",
         "iosGray2": "#AAB0BB",
         "id": "light"
@@ -27198,7 +27198,7 @@
         "gray": "#757575",
         "lightSeparator": "#526A79",
         "darkSeparator": "#051B27",
-        "seperatorText": "#F7F4F1",
+        "separatorText": "#051B27",
         "iosGray": "#283B49",
         "iosGray2": "#425059",
         "id": "dark"

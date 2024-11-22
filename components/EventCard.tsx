@@ -112,16 +112,16 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
       >
         <XStack space="$2" alignItems="center">
           {event.public ? (
-            <UnlockIcon size={14} color={theme.seperatorText.val} />
+            <UnlockIcon size={14} color={theme.separatorText.val} />
           ) : (
-            <LockIcon size={14} color={theme.seperatorText.val} />
+            <LockIcon size={14} color={theme.separatorText.val} />
           )}
           <Text color="$separatorText" fontSize="$2">
             {event.public ? "PUBLIC STUDY SESSION" : "PRIVATE STUDY SESSION"}
           </Text>
         </XStack>
         <XStack space="$2" alignItems="center">
-          <ClockIcon size={14} color={theme.color.val} />
+          <ClockIcon size={14} color={theme.separatorText.val} />
           <Text color="$separatorText" fontSize="$2">
             {`${dateStr} ${timeStr}`}
           </Text>
