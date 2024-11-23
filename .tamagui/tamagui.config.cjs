@@ -44852,7 +44852,10 @@ var config = createTamagui({
       darkSeparator: tokens.color.lightModeDarkSeparator,
       separatorText: tokens.color.gray,
       iosGray: tokens.color.iosGray,
-      iosGray2: tokens.color.iosGray2
+      iosGray2: tokens.color.iosGray2,
+      toastBackground: tokens.color.darkBlue,
+      toastText: tokens.color.white,
+      toastButton: tokens.color.blue
     },
     dark: {
       bg: tokens.color.darkBlue,
@@ -44867,7 +44870,10 @@ var config = createTamagui({
       darkSeparator: tokens.color.darkModeDarkSeparator,
       separatorText: tokens.color.darkModeDarkSeparator,
       iosGray: tokens.color.iosGray3,
-      iosGray2: tokens.color.iosGray4
+      iosGray2: tokens.color.iosGray4,
+      toastBackground: tokens.color.blue,
+      toastText: tokens.color.white,
+      toastButton: tokens.color.darkBlue
     }
   },
   // Modern device breakpoints

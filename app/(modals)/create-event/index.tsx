@@ -136,6 +136,7 @@ export default function CreateEventModal() {
                   onChangeText={(text) => updateField("description", text)}
                   placeholder="Enter description..."
                   multiline
+                  numberOfLines={3}
                 />
                 <FormRowTextInput
                   label="Location"

@@ -3,7 +3,6 @@ import { ArrowRightIcon } from "@/app/components/icons";
 
 const FormRowContainer = styled(Stack, {
   flexDirection: "row",
-  alignItems: "center",
   justifyContent: "space-between",
   paddingVertical: 12,
   paddingHorizontal: 16,
@@ -35,6 +34,7 @@ interface FormRowTextInputProps {
   onChangeText: (text: string) => void;
   placeholder?: string;
   multiline?: boolean;
+  numberOfLines?: number;
 }
 
 export const FormRowTextInput = ({
@@ -43,16 +43,16 @@ export const FormRowTextInput = ({
   onChangeText,
   placeholder,
   multiline = false,
+  numberOfLines = 1,
 }: FormRowTextInputProps) => {
   return (
-    <FormRowContainer>
+    <FormRowContainer height={numberOfLines * 20 + 25}>
       <Label>{label}</Label>
       <StyledInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder || label}
         multiline={multiline}
-        numberOfLines={multiline ? 4 : 1}
         placeholderTextColor="$separatorText"
       />
     </FormRowContainer>

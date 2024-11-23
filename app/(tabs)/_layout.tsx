@@ -11,7 +11,8 @@ import {
 import { useTheme, YStack } from "tamagui";
 import { SettingsSidebar } from "@/components/SettingsSidebar";
 import { useState } from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Image } from "react-native";
+
 export default function TabLayout() {
   const theme = useTheme();
   const colorScheme = useColorScheme();
@@ -76,13 +77,21 @@ export default function TabLayout() {
         onPress={() => setIsSidebarOpen(true)}
         style={{
           position: "absolute",
-          top: 50,
-          left: 10,
+          top: 42,
+          left: 4,
           zIndex: 1,
           padding: 10,
         }}
       >
-        <MenuIcon size={24} color={theme.color.val} />
+        <Image
+          source={require("@/assets/images/LockedInLogo256x256.webp")}
+          style={{
+            width: 34,
+            height: 34,
+          }}
+          resizeMode="contain"
+        />
+        {/* <MenuIcon size={24} color={theme.color.val} /> */}
       </TouchableOpacity>
       <SettingsSidebar
         isOpen={isSidebarOpen}

@@ -27185,6 +27185,9 @@
         "separatorText": "#757575",
         "iosGray": "#D0D3D9",
         "iosGray2": "#AAB0BB",
+        "toastBackground": "#0A364F",
+        "toastText": "#F7F4F1",
+        "toastButton": "#3B9AFA",
         "id": "light"
       },
       "dark": {
@@ -27201,6 +27204,9 @@
         "separatorText": "#051B27",
         "iosGray": "#283B49",
         "iosGray2": "#425059",
+        "toastBackground": "#3B9AFA",
+        "toastText": "#F7F4F1",
+        "toastButton": "#0A364F",
         "id": "dark"
       }
     },

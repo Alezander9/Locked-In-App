@@ -187,6 +187,17 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
               paddingBottom="$4"
               gap="$2"
             >
+              <Image
+                source={require("@/assets/images/LockedInLogoFull.webp")}
+                style={{
+                  width: 200,
+                  height: 60,
+                  marginBottom: 12,
+                  marginLeft: 24,
+                }}
+                resizeMode="contain"
+              />
+
               <TouchableOpacity onPress={handleImageUpload}>
                 <YStack>
                   {user?.profilePictureStorageId ? (
