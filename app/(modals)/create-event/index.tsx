@@ -10,6 +10,7 @@ import { FormRowToggle } from "@/components/forms/FormRowToggle";
 import { ScrollView } from "react-native";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
+import { useToast } from "@/features/toast";
 
 export default function CreateEventModal() {
   const {
@@ -22,6 +23,7 @@ export default function CreateEventModal() {
     updateField,
     resetForm,
   } = useEventFormStore();
+  const { showToast } = useToast();
 
   const createEvent = useMutation(api.mutations.createEvent);
 
@@ -56,7 +58,9 @@ export default function CreateEventModal() {
     try {
       // Validate required fields
       if (!name.trim()) {
-        console.error("Event name is required");
+        showToast({
+          message: "Event name is required",
+        });
         return;
       }
 
@@ -72,10 +76,16 @@ export default function CreateEventModal() {
         isPublic: isPublic,
       });
 
-      console.log("Event created successfully");
+      showToast({
+        message: "Event created successfully",
+      });
+
       resetForm();
       router.back();
     } catch (error) {
+      showToast({
+        message: "Failed to create event. Please try again.",
+      });
       console.error("Failed to create event:", error);
     }
   };

@@ -23,7 +23,6 @@ export default function TasksScreen() {
         label: "UNDO",
         onPress: () => console.log("Undo pressed"),
       },
-      duration: 5000, // optional, defaults to 3000ms
     });
   };
 
