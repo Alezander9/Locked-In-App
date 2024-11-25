@@ -13,8 +13,10 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as actions from "../actions.js";
 import type * as http from "../http.js";
 import type * as httpActions from "../httpActions.js";
+import type * as llm from "../llm.js";
 import type * as mutations from "../mutations.js";
 import type * as queries from "../queries.js";
 
@@ -27,8 +29,10 @@ import type * as queries from "../queries.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  actions: typeof actions;
   http: typeof http;
   httpActions: typeof httpActions;
+  llm: typeof llm;
   mutations: typeof mutations;
   queries: typeof queries;
 }>;
