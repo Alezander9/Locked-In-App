@@ -969,6 +969,42 @@ export function ArrowRightIcon({
   );
 }
 
+export function PlusIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 243; // 243 is original width
+  const height = Math.round(243 * scale); // 243 is original height (perfect square)
+
+  // Transform coordinates to remove the translation and clip
+  // Original paths were translated by (3439, 759)
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 243 243"
+      fill="none"
+      {...props}
+    >
+      {/* Horizontal rectangle */}
+      <Path
+        d="M0 121C0 109.954 8.95 101 20 101L223 101C234.05 101 243 109.954 243 121L243 121C243 132.046 234.05 141 223 141L20 141C8.95 141 0 132.046 0 121Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+
+      {/* Vertical rectangle */}
+      <Path
+        d="M121 243C109.95 243 101 234.046 101 223L101 20C101 8.954 109.95 0 121 0L121 0C132.05 0 141 8.954 141 20L141 223C141 234.046 132.05 243 121 243Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
+
 const Icons = {
   Classes: ClassesIcon,
   Tasks: TasksIcon,
@@ -988,6 +1024,7 @@ const Icons = {
   Settings: SettingsIcon,
   User: UserIcon,
   Write: WriteIcon,
+  Plus: PlusIcon,
   ArrowRight: ArrowRightIcon,
 };
 

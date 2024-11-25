@@ -60,6 +60,7 @@ export default function TabLayout() {
             tabBarIcon: ({ color, focused }) => (
               <TasksIcon color={color} size={30} />
             ),
+            headerShown: false,
           }}
         />
         <Tabs.Screen
@@ -70,6 +71,7 @@ export default function TabLayout() {
             tabBarIcon: ({ color, focused }) => (
               <GroupsIcon color={color} size={38} />
             ),
+            headerShown: false,
           }}
         />
       </Tabs>

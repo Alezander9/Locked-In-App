@@ -1,12 +1,15 @@
 import * as WebBrowser from "expo-web-browser";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
-import { Text } from "tamagui";
+import { Text, YStack, XStack, useTheme } from "tamagui";
 import {
   CourseSearchBar,
   Course,
 } from "@/components/searchBar/CourseSearchBar";
 import { useToast } from "@/features/toast";
 import { Button } from "@/components/CustomButton";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { WriteIcon } from "@/app/components/icons";
+import { TouchableOpacity } from "react-native";
 WebBrowser.maybeCompleteAuthSession();
 
 export default function TasksScreen() {
@@ -15,22 +18,32 @@ export default function TasksScreen() {
   };
 
   const { showToast } = useToast();
-
-  const handleAction = () => {
-    showToast({
-      message: "Action completed successfully",
-      action: {
-        label: "UNDO",
-        onPress: () => console.log("Undo pressed"),
-      },
-    });
-  };
+  const theme = useTheme();
 
   return (
     <ScreenWrapper>
-      <Text>Tasks</Text>
-      <CourseSearchBar onCourseSelect={handleCourseSelect} />
-      <Button label="Show Toast" onPress={handleAction} size="large" />
+      <SafeAreaView style={{ flex: 1 }}>
+        <YStack flex={1}>
+          <XStack
+            marginLeft={50}
+            marginRight={50}
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <CourseSearchBar onCourseSelect={handleCourseSelect} />
+            <TouchableOpacity
+              onPress={() => {}}
+              style={{
+                paddingLeft: 6,
+                paddingRight: 12,
+                paddingVertical: 6,
+              }}
+            >
+              <WriteIcon size={26} color={theme.color.val} />
+            </TouchableOpacity>
+          </XStack>
+        </YStack>
+      </SafeAreaView>
     </ScreenWrapper>
   );
 }

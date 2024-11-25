@@ -59,15 +59,19 @@ const KeyboardAccessory = styled(Stack, {
   borderBottomWidth: 1,
   borderTopColor: "$iosGray2",
   borderBottomColor: "$iosGray2",
-  paddingTop: "$2",
-  paddingBottom: "$3",
-  paddingHorizontal: "$2",
 });
 
-const DoneButton = styled(Button, {
+const AccessoryButton = styled(Button, {
   backgroundColor: "transparent",
   color: "$primary",
-  minHeight: 18,
+  minHeight: 32,
+});
+
+const AccessoryButtonText = styled(Text, {
+  color: "$primary",
+  fontSize: "$4",
+  paddingHorizontal: "$4",
+  minHeight: 22,
 });
 
 const DismissOverlay = styled(Stack, {
@@ -159,12 +163,17 @@ export function BaseSearchBar({
       {Platform.OS === "ios" && (
         <InputAccessoryView nativeID={accessoryId}>
           <KeyboardAccessory>
-            <XStack justifyContent="flex-end">
-              <DoneButton onPress={dismissKeyboard}>
-                <Text color="$primary" fontSize="$4">
-                  Done
-                </Text>
-              </DoneButton>
+            <XStack justifyContent="space-between">
+              <AccessoryButton
+                onPress={() => {
+                  onChangeText("");
+                }}
+              >
+                <AccessoryButtonText>Clear</AccessoryButtonText>
+              </AccessoryButton>
+              <AccessoryButton onPress={dismissKeyboard}>
+                <AccessoryButtonText>Done</AccessoryButtonText>
+              </AccessoryButton>
             </XStack>
           </KeyboardAccessory>
         </InputAccessoryView>
