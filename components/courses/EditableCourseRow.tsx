@@ -1,5 +1,5 @@
 import { XStack, Stack, Text, styled, useTheme } from "tamagui";
-import { Pressable, Alert } from "react-native";
+import { TouchableOpacity, Alert } from "react-native";
 import { Id } from "@/convex/_generated/dataModel";
 import { MenuIcon, XIcon } from "@/app/components/icons";
 
@@ -11,11 +11,14 @@ const DragHandle = styled(Stack, {
   opacity: 0.5,
 });
 
-const ColorDot = styled(Pressable, {
+const ColorDot = styled(TouchableOpacity, {
   width: 24,
   height: 24,
   borderRadius: 12,
   marginLeft: 8,
+  pressStyle: {
+    opacity: 0.7,
+  },
 });
 
 const DeleteButton = styled(Stack, {
@@ -74,13 +77,15 @@ export function EditableCourseRow({
         <MenuIcon size={20} color={theme.separatorText.val} />
       </DragHandle>
 
-      <ColorDot
-        style={{ backgroundColor: color }}
-        onPress={onColorPress}
-        android_ripple={{
-          color: "rgba(0,0,0,0.1)",
-          borderless: true,
+      <TouchableOpacity
+        style={{
+          width: 24,
+          height: 24,
+          borderRadius: 12,
+          marginLeft: 8,
+          backgroundColor: color,
         }}
+        onPress={onColorPress}
       />
 
       <Text flex={1} fontSize="$4" marginLeft="$4" color={theme.color.val}>

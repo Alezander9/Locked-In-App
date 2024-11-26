@@ -1,5 +1,5 @@
 import { Stack, YStack, XStack, Text } from "tamagui";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { api } from "@/convex/_generated/api";
@@ -14,6 +14,7 @@ import {
 } from "@/components/searchBar/CourseSearchBar";
 import type { Id } from "@/convex/_generated/dataModel";
 import { EditableCourseRow } from "@/components/courses/EditableCourseRow";
+import { useColorPickerStore } from "@/stores/colorPickerStore";
 
 interface EditableCourse {
   _id: Id<"courses">;
@@ -25,6 +26,7 @@ interface EditableCourse {
 export default function EditClassesModal() {
   const { showToast } = useToast();
   const userCourses = useQuery(api.queries.getUserCoursesOrdered) || [];
+  const navigation = useNavigation();
 
   const addUserCourse = useMutation(api.mutations.addUserCourse);
   const updateUserCourseColor = useMutation(
@@ -40,8 +42,18 @@ export default function EditClassesModal() {
 
   // Update state when query results change
   useEffect(() => {
-    setCourses(userCourses);
+    setCourses(userCourses as EditableCourse[]);
   }, [userCourses]);
+
+  const { courseId, newColor, resetColorChoice } = useColorPickerStore();
+
+  // Add effect to handle color updates
+  useEffect(() => {
+    if (courseId && newColor) {
+      handleColorChange(courseId, newColor);
+      resetColorChoice();
+    }
+  }, [courseId, newColor]);
 
   const handleDragEnd = async ({ data }: { data: EditableCourse[] }) => {
     // Update local state
@@ -160,12 +172,15 @@ export default function EditClassesModal() {
                     code={item.code}
                     color={item.color}
                     onColorPress={() => {
-                      // TODO: Show color picker modal
-                      // For now we can test with a fixed color
-                      handleColorChange(
-                        item._id,
-                        "#" + Math.floor(Math.random() * 16777215).toString(16)
-                      );
+                      console.log("onColorPress", item._id);
+                      router.push({
+                        pathname: "/input/color-picker",
+                        params: {
+                          courseId: item._id,
+                          courseCode: item.code,
+                          currentColor: item.color,
+                        },
+                      });
                     }}
                     onDelete={() => handleDelete(item._id)}
                     drag={drag}

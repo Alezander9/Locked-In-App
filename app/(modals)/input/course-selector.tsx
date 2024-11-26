@@ -8,16 +8,9 @@ import { useQuery } from "convex/react";
 import { useTaskFormStore } from "@/stores/taskFormStore";
 import { Id } from "@/convex/_generated/dataModel";
 
-interface CourseSelectorParams {
+type CourseSelectorParams = {
   taskIndex: string;
-}
-
-interface CourseWithColor {
-  _id: Id<"courses">;
-  code: string;
-  title: string;
-  color?: string;
-}
+} & Record<string, string>;
 
 export default function CourseSelectorModal() {
   const params = useLocalSearchParams<CourseSelectorParams>();

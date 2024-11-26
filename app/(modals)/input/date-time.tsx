@@ -7,10 +7,10 @@ import { useTaskFormStore } from "@/stores/taskFormStore";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-interface DateTimeInputParams {
+type DateTimeInputParams = {
   title: string;
   taskIndex?: string; // Optional - if present, we're editing a task
-}
+} & Record<string, string>;
 
 export default function DateTimeInputModal() {
   const params = useLocalSearchParams<DateTimeInputParams>();
