@@ -68,3 +68,41 @@ export const getImageUrl = query({
     return await ctx.storage.getUrl(args.storageId);
   },
 });
+
+export const getUserCourses = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Get user's courses with their colors
+    const userCourses = await ctx.db
+      .query("userCourses")
+      .withIndex("by_userID_courseID", (q) => q.eq("userId", user._id))
+      .collect();
+
+    // Get the actual course details and combine with colors
+    const courses = await Promise.all(
+      userCourses.map(async (uc) => {
+        const course = await ctx.db.get(uc.courseId);
+        return {
+          ...course,
+          color: uc.color,
+        };
+      })
+    );
+
+    return courses;
+  },
+});

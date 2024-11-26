@@ -3,9 +3,13 @@ import { v } from "convex/values";
 
 export default defineSchema({
   tasks: defineTable({
-    text: v.string(),
+    userId: v.id("users"),
+    courseId: v.id("courses"),
+    title: v.string(),
+    notes: v.string(),
+    dueDate: v.number(),
     isCompleted: v.boolean(),
-  }),
+  }).index("by_userID_courseID_dueDate", ["userId", "courseId", "dueDate"]),
 
   users: defineTable({
     clerkId: v.string(),
@@ -24,6 +28,13 @@ export default defineSchema({
     terms: v.array(v.string()),
     units: v.string(),
   }).index("by_code", ["code"]),
+
+  userCourses: defineTable({
+    userId: v.id("users"),
+    courseId: v.id("courses"),
+    color: v.optional(v.string()),
+    quarter: v.optional(v.string()),
+  }).index("by_userID_courseID", ["userId", "courseId"]),
 
   events: defineTable({
     title: v.string(),

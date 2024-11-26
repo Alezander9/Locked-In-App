@@ -10,6 +10,7 @@ import { Button } from "@/components/CustomButton";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WriteIcon } from "@/app/components/icons";
 import { TouchableOpacity } from "react-native";
+import { router } from "expo-router";
 WebBrowser.maybeCompleteAuthSession();
 
 export default function TasksScreen() {
@@ -19,6 +20,15 @@ export default function TasksScreen() {
 
   const { showToast } = useToast();
   const theme = useTheme();
+
+  const handleMakeTasks = () => {
+    router.push({
+      pathname: "/(modals)/create-tasks",
+      params: {
+        presentation: "modal",
+      },
+    });
+  };
 
   return (
     <ScreenWrapper>
@@ -32,7 +42,7 @@ export default function TasksScreen() {
           >
             <CourseSearchBar onCourseSelect={handleCourseSelect} />
             <TouchableOpacity
-              onPress={() => {}}
+              onPress={handleMakeTasks}
               style={{
                 paddingLeft: 6,
                 paddingRight: 12,
