@@ -32,6 +32,7 @@ export default defineSchema({
   userCourses: defineTable({
     userId: v.id("users"),
     courseId: v.id("courses"),
+    order: v.optional(v.number()),
     color: v.optional(v.string()),
     quarter: v.optional(v.string()),
   }).index("by_userID_courseID", ["userId", "courseId"]),

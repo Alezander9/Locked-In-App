@@ -167,3 +167,165 @@ export const createEvent = mutation({
     return eventId;
   },
 });
+
+export const addUserCourse = mutation({
+  args: {
+    department: v.string(),
+    code: v.string(),
+    title: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Verify the course exists
+    const course = await ctx.db
+      .query("courses")
+      .withIndex("by_code", (q) => q.eq("code", args.code))
+      .first();
+
+    if (!course) {
+      throw new Error("Course not found");
+    }
+
+    // Get the highest current order
+    const userCourses = await ctx.db
+      .query("userCourses")
+      .withIndex("by_userID_courseID", (q) => q.eq("userId", user._id))
+      .collect();
+
+    const maxOrder = Math.max(-1, ...userCourses.map((uc) => uc.order ?? -1));
+
+    // Add the user-course association
+    await ctx.db.insert("userCourses", {
+      userId: user._id,
+      courseId: course._id,
+      order: maxOrder + 1,
+      color: "#94a3b8", // Default color
+    });
+  },
+});
+
+export const updateUserCourseColor = mutation({
+  args: {
+    courseId: v.id("courses"),
+    color: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const userCourse = await ctx.db
+      .query("userCourses")
+      .withIndex("by_userID_courseID", (q) =>
+        q.eq("userId", user._id).eq("courseId", args.courseId)
+      )
+      .first();
+
+    if (!userCourse) {
+      throw new Error("User course not found");
+    }
+
+    await ctx.db.patch(userCourse._id, { color: args.color });
+  },
+});
+
+export const updateUserCoursesOrder = mutation({
+  args: {
+    courseOrders: v.array(
+      v.object({
+        courseId: v.id("courses"),
+        order: v.number(),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Update each course's order
+    await Promise.all(
+      args.courseOrders.map(async ({ courseId, order }) => {
+        const userCourse = await ctx.db
+          .query("userCourses")
+          .withIndex("by_userID_courseID", (q) =>
+            q.eq("userId", user._id).eq("courseId", courseId)
+          )
+          .first();
+
+        if (!userCourse) {
+          throw new Error(`User course not found for courseId: ${courseId}`);
+        }
+
+        await ctx.db.patch(userCourse._id, { order });
+      })
+    );
+  },
+});
+
+export const deleteUserCourse = mutation({
+  args: {
+    courseId: v.id("courses"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const userCourse = await ctx.db
+      .query("userCourses")
+      .withIndex("by_userID_courseID", (q) =>
+        q.eq("userId", user._id).eq("courseId", args.courseId)
+      )
+      .first();
+
+    if (!userCourse) {
+      throw new Error("User course not found");
+    }
+
+    await ctx.db.delete(userCourse._id);
+  },
+});

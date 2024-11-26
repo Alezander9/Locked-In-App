@@ -106,3 +106,43 @@ export const getUserCourses = query({
     return courses;
   },
 });
+
+export const getUserCoursesOrdered = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Get user's courses with their settings
+    const userCourses = await ctx.db
+      .query("userCourses")
+      .withIndex("by_userID_courseID", (q) => q.eq("userId", user._id))
+      .collect();
+
+    // Get the actual course details and combine with user settings
+    const courses = await Promise.all(
+      userCourses.map(async (uc) => {
+        const course = await ctx.db.get(uc.courseId);
+        return {
+          ...course,
+          color: uc.color,
+          order: uc.order ?? 0, // Default to 0 if no order set
+        };
+      })
+    );
+
+    // Sort by order
+    return courses.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  },
+});
