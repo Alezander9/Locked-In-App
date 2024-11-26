@@ -1,4 +1,4 @@
-import { Button } from "@/components/CustomButton";
+import { Button } from "@/components/buttons/CustomButton";
 import { YStack, XStack, H1, H2, Separator, Theme, H3 } from "tamagui";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
 

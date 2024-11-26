@@ -1,3 +1,4 @@
+import { Id } from "./_generated/dataModel";
 import { internalMutation, mutation } from "./_generated/server";
 import { v } from "convex/values";
 
@@ -327,5 +328,80 @@ export const deleteUserCourse = mutation({
     }
 
     await ctx.db.delete(userCourse._id);
+  },
+});
+
+export const createTasks = mutation({
+  args: {
+    tasks: v.array(
+      v.object({
+        courseId: v.id("courses"),
+        title: v.string(),
+        notes: v.string(),
+        dueDate: v.number(),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // Get the user ID from their clerk ID
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Create all tasks
+    const taskIds = await Promise.all(
+      args.tasks.map(async (task) => {
+        // Verify the course exists
+        const course = await ctx.db.get(task.courseId);
+        if (!course) {
+          throw new Error(`Course not found: ${task.courseId}`);
+        }
+
+        return await ctx.db.insert("tasks", {
+          userId: user._id,
+          courseId: task.courseId,
+          title: task.title,
+          notes: task.notes,
+          dueDate: task.dueDate,
+          isCompleted: false,
+        });
+      })
+    );
+
+    return taskIds;
+  },
+});
+
+export const updateTaskCompletion = mutation({
+  args: {
+    taskId: v.id("tasks"),
+    isCompleted: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const task = await ctx.db.get(args.taskId);
+    if (!task) {
+      throw new Error("Task not found");
+    }
+
+    await ctx.db.patch(args.taskId, {
+      isCompleted: args.isCompleted,
+    });
+
+    return args.taskId;
   },
 });

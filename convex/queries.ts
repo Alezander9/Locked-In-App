@@ -146,3 +146,58 @@ export const getUserCoursesOrdered = query({
     return courses.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   },
 });
+
+export const getUpcomingTasks = query({
+  args: {
+    limit: v.optional(v.number()),
+    cursor: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const { limit = 20, cursor } = args;
+    const now = Date.now();
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Get tasks with course color information
+    const tasks = await ctx.db
+      .query("tasks")
+      .withIndex("by_userID_dueDate", (q) =>
+        q.eq("userId", user._id).gte("dueDate", cursor ?? now)
+      )
+      .order("asc")
+      .take(limit);
+
+    // Fetch course information for each task
+    const tasksWithCourseInfo = await Promise.all(
+      tasks.map(async (task) => {
+        const userCourse = await ctx.db
+          .query("userCourses")
+          .withIndex("by_userID_courseID", (q) =>
+            q.eq("userId", user._id).eq("courseId", task.courseId)
+          )
+          .first();
+
+        const course = await ctx.db.get(task.courseId);
+
+        return {
+          ...task,
+          courseCode: course?.code ?? "",
+          courseColor: userCourse?.color ?? "#94a3b8",
+        };
+      })
+    );
+
+    return tasksWithCourseInfo;
+  },
+});

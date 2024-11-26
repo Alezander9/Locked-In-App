@@ -1005,6 +1005,80 @@ export function PlusIcon({
   );
 }
 
+export function UncheckedBoxIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 273; // 273 is original width
+  const height = Math.round(274 * scale); // 274 is original height
+
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 273 274"
+      fill="none"
+      {...props}
+    >
+      {/* Empty square with rounded corners */}
+      <Path
+        d="M11.5 53.17C11.5 30.16 30.16 11.5 53.17 11.5L219.83 11.5C242.84 11.5 261.5 30.16 261.5 53.17L261.5 220.83C261.5 243.84 242.84 262.5 219.83 262.5L53.17 262.5C30.16 262.5 11.5 243.84 11.5 220.83Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
+
+export function CheckedBoxIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  // Calculate scale factor to fit original SVG proportions into desired size
+  const scale = size / 273; // 273 is original width
+  const height = Math.round(273 * scale); // 273 is original height (perfect square)
+
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 273 273"
+      fill="none"
+      {...props}
+    >
+      {/* Square with rounded corners */}
+      <Path
+        d="M11.5 53.17C11.5 30.16 30.16 11.5 53.17 11.5L219.83 11.5C242.84 11.5 261.5 30.16 261.5 53.17L261.5 219.83C261.5 242.84 242.84 261.5 219.83 261.5L53.17 261.5C30.16 261.5 11.5 242.84 11.5 219.83Z"
+        stroke={color}
+        strokeWidth="22.9167"
+        strokeMiterlimit="8"
+        fill="none"
+        fillRule="evenodd"
+      />
+
+      {/* Checkmark - long diagonal */}
+      <Path
+        d="M93.15 212.65C86.25 205.8 86.21 194.65 93.07 187.75L220.92 59.11C227.77 52.21 238.92 52.17 245.82 59.03L245.82 59.03C252.72 65.88 252.75 77.03 245.9 83.93L118.05 212.58C111.2 219.47 100.04 219.51 93.15 212.65Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+
+      {/* Checkmark - short diagonal */}
+      <Path
+        d="M28.17 124.97C34.91 118.18 45.89 118.15 52.68 124.89L116.44 188.27C123.23 195.01 123.27 205.99 116.52 212.78L116.52 212.78C109.77 219.56 98.8 219.6 92.01 212.85L28.24 149.48C21.45 142.73 21.42 131.76 28.17 124.97Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
+
 const Icons = {
   Classes: ClassesIcon,
   Tasks: TasksIcon,
@@ -1026,6 +1100,8 @@ const Icons = {
   Write: WriteIcon,
   Plus: PlusIcon,
   ArrowRight: ArrowRightIcon,
+  UncheckedBox: UncheckedBoxIcon,
+  CheckedBox: CheckedBoxIcon,
 };
 
 export default Icons;

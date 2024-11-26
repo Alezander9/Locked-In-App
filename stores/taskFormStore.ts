@@ -1,7 +1,8 @@
+import { Id } from "@/convex/_generated/dataModel";
 import { create } from "zustand";
 
 interface TaskForm {
-  courseId: string;
+  courseId: Id<"courses">;
   title: string;
   notes: string;
   dueDate: Date;
@@ -21,10 +22,10 @@ interface TaskFormState {
 }
 
 const initialTask: TaskForm = {
-  courseId: "",
+  courseId: "" as Id<"courses">,
   title: "",
   notes: "",
-  dueDate: new Date(),
+  dueDate: new Date(new Date().setHours(23, 59, 0, 0)),
 };
 
 const initialState = {

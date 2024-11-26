@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FlatList, SectionList } from "react-native";
+import { FlatList } from "react-native";
 import {
   CheckIcon,
   XIcon,
@@ -12,7 +12,7 @@ import {
 import { addDays, format, isBefore, isToday, isTomorrow } from "date-fns";
 import { XStack, YStack, Text, useTheme } from "tamagui";
 import { Id } from "@/convex/_generated/dataModel";
-import { CircleIconButton } from "./CircleIconButton";
+import { CircleIconButton } from "../buttons/CircleIconButton";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useAuth } from "@clerk/clerk-expo";
@@ -31,10 +31,6 @@ export interface Event {
 
 interface EventCardProps {
   event: Event;
-}
-
-interface EventListProps {
-  events: Event[];
 }
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
@@ -194,90 +190,4 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   );
 };
 
-interface EventSection {
-  title: string;
-  data: Event[];
-}
-
-const SectionHeader: React.FC<{ title: string }> = ({ title }) => {
-  const theme = useTheme();
-
-  return (
-    <XStack
-      backgroundColor="$lightSeparator"
-      borderBottomWidth={1}
-      borderBottomColor="$darkSeparator"
-      paddingVertical="$1"
-    >
-      <Text
-        color="$primary"
-        fontSize="$4"
-        textAlign="center"
-        width="100%"
-        fontWeight="bold"
-      >
-        {title}
-      </Text>
-    </XStack>
-  );
-};
-
-const getDateTitle = (date: Date): string => {
-  if (isToday(date)) {
-    return "Today";
-  }
-
-  if (isTomorrow(date)) {
-    return "Tomorrow";
-  }
-
-  // Calculate the date exactly one week from now
-  const now = new Date();
-  const oneWeekFromNow = addDays(now, 7);
-
-  // If the date is less than one week away, just show the day name
-  if (isBefore(date, oneWeekFromNow)) {
-    return format(date, "EEEE"); // Returns just the day name (e.g., "Friday")
-  }
-
-  // For dates a week or more away, show the full format
-  return format(date, "EEEE, MM/dd");
-};
-
-const EventList: React.FC<EventListProps> = ({ events }) => {
-  // Sort events by date
-  const sortedEvents = [...events].sort((a, b) => a.date - b.date);
-
-  // Group events by date sections
-  const sections: EventSection[] = sortedEvents.reduce((acc, event) => {
-    const eventDate = new Date(event.date);
-    const title = getDateTitle(eventDate);
-
-    // Find existing section or create new one
-    const existingSection = acc.find((section) => section.title === title);
-    if (existingSection) {
-      existingSection.data.push(event);
-    } else {
-      acc.push({
-        title,
-        data: [event],
-      });
-    }
-
-    return acc;
-  }, [] as EventSection[]);
-
-  return (
-    <SectionList
-      sections={sections}
-      renderItem={({ item }) => <EventCard event={item} />}
-      renderSectionHeader={({ section: { title } }) => (
-        <SectionHeader title={title} />
-      )}
-      keyExtractor={(item) => item._id.toString()}
-      stickySectionHeadersEnabled={true}
-    />
-  );
-};
-
-export default EventList;
+export default EventCard;

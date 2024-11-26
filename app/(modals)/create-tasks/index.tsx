@@ -19,6 +19,8 @@ export default function CreateTasksModal() {
   const { showToast } = useToast();
   const courses = useQuery(api.queries.getUserCourses) || [];
 
+  const createTasks = useMutation(api.mutations.createTasks);
+
   // Check if we need to add a new task section
   useEffect(() => {
     const lastIndex = tasks.length - 1;
@@ -56,13 +58,12 @@ export default function CreateTasksModal() {
         return;
       }
 
-      // TODO: Replace with actual API call
-      // await createTasks({
-      //   tasks: completedTasks.map(task => ({
-      //     ...task,
-      //     dueDate: task.dueDate.getTime(),
-      //   })),
-      // });
+      await createTasks({
+        tasks: completedTasks.map((task) => ({
+          ...task,
+          dueDate: task.dueDate.getTime(),
+        })),
+      });
 
       showToast({
         message: "Tasks created successfully",

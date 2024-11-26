@@ -9,7 +9,7 @@ export default defineSchema({
     notes: v.string(),
     dueDate: v.number(),
     isCompleted: v.boolean(),
-  }).index("by_userID_courseID_dueDate", ["userId", "courseId", "dueDate"]),
+  }).index("by_userID_dueDate", ["userId", "dueDate"]),
 
   users: defineTable({
     clerkId: v.string(),

@@ -7,7 +7,8 @@ import { TouchableOpacity } from "react-native";
 import { WriteIcon } from "@/app/components/icons";
 import { useTheme } from "tamagui";
 import { FilterSearchBar } from "@/components/searchBar/FilterSearchBar";
-import EventList, { Event } from "@/components/EventCard";
+import EventCard, { Event } from "@/components/events/EventCard";
+import EventList from "@/components/events/EventList";
 import { useMemo, useState } from "react";
 import { router } from "expo-router";
 

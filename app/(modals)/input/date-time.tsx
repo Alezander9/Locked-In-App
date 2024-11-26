@@ -59,7 +59,7 @@ export default function DateTimeInputModal() {
           <YStack f={1} p="$4" justifyContent="center" alignItems="center">
             <DateTimePicker
               value={date}
-              mode={isTaskMode ? "date" : "datetime"} // Only date for tasks
+              mode="datetime"
               display="spinner"
               onChange={(_, selectedDate) => {
                 if (selectedDate) setDate(selectedDate);
