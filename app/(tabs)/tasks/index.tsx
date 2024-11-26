@@ -8,11 +8,11 @@ import { WriteIcon } from "@/app/components/icons";
 import { useTheme } from "tamagui";
 import { FilterSearchBar } from "@/components/searchBar/FilterSearchBar";
 import { TaskList } from "@/components/tasks/TaskList";
+import { CourseFilterBar } from "@/components/courses/CourseFilterBar";
 import { useMemo, useState } from "react";
 import { router } from "expo-router";
 import { Id } from "@/convex/_generated/dataModel";
 
-// Define Task type for filtering
 interface Task {
   _id: Id<"tasks">;
   title: string;
@@ -20,6 +20,7 @@ interface Task {
   isCompleted: boolean;
   courseColor: string;
   courseCode: string;
+  courseId: Id<"courses">;
   dueDate: number;
 }
 
@@ -27,30 +28,47 @@ export default function TasksScreen() {
   const tasks = useQuery(api.queries.getUpcomingTasks, { limit: 20 });
   const theme = useTheme();
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeCourseIds, setActiveCourseIds] = useState<Id<"courses">[]>([]);
 
-  // Filter tasks based on search term
+  // Filter tasks based on search term and active courses
   const filteredTasks = useMemo(() => {
-    if (!tasks || !searchTerm.trim()) {
-      return tasks;
+    if (!tasks) return [];
+
+    let filtered = tasks;
+
+    // Apply course filter if there are active courses
+    if (activeCourseIds.length > 0) {
+      filtered = filtered.filter((task) =>
+        activeCourseIds.includes(task.courseId)
+      );
     }
 
-    const normalizedSearchTerm = searchTerm.toLowerCase().trim();
-    return tasks.filter((task: Task) => {
-      const titleMatch = task.title
-        .toLowerCase()
-        .includes(normalizedSearchTerm);
-      const notesMatch = task.notes
-        .toLowerCase()
-        .includes(normalizedSearchTerm);
-      const courseMatch = task.courseCode
-        .toLowerCase()
-        .includes(normalizedSearchTerm);
-      return titleMatch || notesMatch || courseMatch;
-    });
-  }, [tasks, searchTerm]);
+    // Apply search filter
+    if (searchTerm.trim()) {
+      const normalizedSearchTerm = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter((task: Task) => {
+        const titleMatch = task.title
+          .toLowerCase()
+          .includes(normalizedSearchTerm);
+        const notesMatch = task.notes
+          .toLowerCase()
+          .includes(normalizedSearchTerm);
+        const courseMatch = task.courseCode
+          .toLowerCase()
+          .includes(normalizedSearchTerm);
+        return titleMatch || notesMatch || courseMatch;
+      });
+    }
+
+    return filtered;
+  }, [tasks, searchTerm, activeCourseIds]);
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
+  };
+
+  const handleFiltersChange = (courseIds: Id<"courses">[]) => {
+    setActiveCourseIds(courseIds);
   };
 
   const handleMakeTasks = () => {
@@ -62,7 +80,6 @@ export default function TasksScreen() {
     });
   };
 
-  // Handle loading state
   if (tasks === undefined) {
     return (
       <ScreenWrapper>
@@ -84,6 +101,7 @@ export default function TasksScreen() {
     <ScreenWrapper>
       <SafeAreaView style={{ flex: 1 }}>
         <YStack flex={1} backgroundColor="$background">
+          {/* Search and Add Button */}
           <XStack
             marginLeft={50}
             marginRight={50}
@@ -106,6 +124,10 @@ export default function TasksScreen() {
             </TouchableOpacity>
           </XStack>
 
+          {/* Course Filter Bar */}
+          <CourseFilterBar onFiltersChange={handleFiltersChange} />
+
+          {/* Task List */}
           <YStack flex={1} marginTop="$3">
             {filteredTasks && filteredTasks.length > 0 ? (
               <TaskList tasks={filteredTasks} />

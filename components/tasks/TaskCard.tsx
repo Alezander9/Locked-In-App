@@ -4,6 +4,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { CheckedBoxIcon, UncheckedBoxIcon } from "@/app/components/icons";
 import { TouchableOpacity } from "react-native";
+import { format } from "date-fns";
 
 const ColorBar = styled(Stack, {
   width: 4,
@@ -22,6 +23,7 @@ interface TaskCardProps {
   isCompleted: boolean;
   courseColor: string;
   courseCode: string;
+  dueDate: number;
 }
 
 export function TaskCard({
@@ -31,6 +33,7 @@ export function TaskCard({
   isCompleted,
   courseColor,
   courseCode,
+  dueDate,
 }: TaskCardProps) {
   const updateTaskCompletion = useMutation(api.mutations.updateTaskCompletion);
   const theme = useTheme();
@@ -46,7 +49,9 @@ export function TaskCard({
     <Stack
       backgroundColor="$lightSeparator"
       borderRadius="$2"
-      padding="$3"
+      paddingHorizontal="$3"
+      paddingBottom="$3"
+      paddingTop="$2"
       marginHorizontal="$3"
       marginBottom="$2"
       position="relative"
@@ -54,7 +59,7 @@ export function TaskCard({
     >
       <ColorBar backgroundColor={courseColor} />
 
-      <XStack space="$3" alignItems="flex-start">
+      <XStack space="$3" alignItems="center">
         <TouchableOpacity
           onPress={handleToggleComplete}
           style={{
@@ -63,6 +68,8 @@ export function TaskCard({
             justifyContent: "center",
             alignItems: "center",
             opacity: 0.7,
+            alignSelf: "flex-start",
+            marginTop: 0,
           }}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
@@ -74,20 +81,14 @@ export function TaskCard({
         </TouchableOpacity>
 
         <YStack flex={1} space="$1">
-          <XStack justifyContent="space-between" alignItems="center">
-            <Text
-              fontSize="$4"
-              fontWeight="500"
-              opacity={isCompleted ? 0.5 : 1}
-              textDecorationLine={isCompleted ? "line-through" : "none"}
-            >
-              {title}
-            </Text>
-            <Text fontSize="$3" color="$color">
-              {courseCode}
-            </Text>
-          </XStack>
-
+          <Text
+            fontSize="$4"
+            fontWeight="500"
+            opacity={isCompleted ? 0.5 : 1}
+            textDecorationLine={isCompleted ? "line-through" : "none"}
+          >
+            {title}
+          </Text>
           {notes && (
             <Text
               fontSize="$3"
@@ -98,6 +99,10 @@ export function TaskCard({
             </Text>
           )}
         </YStack>
+
+        <Text fontSize="$3" color="$color">
+          {dueDate ? format(new Date(dueDate), "h:mm a") : ""}
+        </Text>
       </XStack>
     </Stack>
   );

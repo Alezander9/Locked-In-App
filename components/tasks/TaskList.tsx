@@ -93,7 +93,7 @@ export function TaskList({ tasks }: TaskListProps) {
   return (
     <SectionList
       sections={sections}
-      renderItem={({ item }) => <TaskCard {...item} />}
+      renderItem={({ item }) => <TaskCard {...item} dueDate={item.dueDate} />}
       renderSectionHeader={({ section: { title } }) => (
         <SectionHeader title={title} />
       )}
