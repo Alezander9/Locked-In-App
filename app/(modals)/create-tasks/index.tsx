@@ -8,18 +8,23 @@ import { ScreenWrapper } from "@/components/ScreenWrapper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native";
 import { api } from "@/convex/_generated/api";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { useToast } from "@/features/toast";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FormRowSelector } from "@/components/forms/FormRowSelector";
+import * as DocumentPicker from "expo-document-picker";
+import { FileProcessingError } from "@/convex/types";
+import * as FileSystem from "expo-file-system";
 
 export default function CreateTasksModal() {
   const { tasks, updateTask, isTaskComplete, resetForm, addTask } =
     useTaskFormStore();
   const { showToast } = useToast();
   const courses = useQuery(api.queries.getUserCourses) || [];
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
   const createTasks = useMutation(api.mutations.createTasks);
+  const processFile = useAction(api.actions.processFileAndExtractTasks);
 
   // Check if we need to add a new task section
   useEffect(() => {
@@ -37,7 +42,6 @@ export default function CreateTasksModal() {
     });
   };
 
-  // Handle field updates with automatic focus management
   const handleFieldUpdate = (
     index: number,
     field: keyof (typeof tasks)[0],
@@ -46,9 +50,97 @@ export default function CreateTasksModal() {
     updateTask(index, field, value);
   };
 
+  const handleFileUpload = async () => {
+    try {
+      // 1. Pick document
+      console.log("Initiating file picker...");
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "application/pdf",
+        copyToCacheDirectory: true,
+        multiple: false,
+      });
+
+      if (result.canceled) {
+        console.log("File picking canceled by user");
+        return;
+      }
+
+      // 2. Get file details
+      const file = result.assets[0];
+      setSelectedFile(file.name);
+      console.log("Selected file:", {
+        name: file.name,
+        size: file.size,
+        uri: file.uri,
+        mimeType: file.mimeType,
+      });
+
+      // 3. Read file as base64
+      console.log("Reading file contents...");
+      const base64Content = await FileSystem.readAsStringAsync(file.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      console.log(
+        "File read successfully, size in base64:",
+        base64Content.length
+      );
+
+      // 4. Process file
+      console.log("Sending file for processing...");
+      const tasks = await processFile({
+        fileData: base64Content,
+        fileName: file.name,
+        fileType: file.mimeType || "",
+      });
+
+      console.log("File processed successfully. Extracted tasks:", tasks);
+      showToast({
+        message: `Successfully extracted ${tasks.length} tasks`,
+      });
+
+      // 5. Handle the extracted tasks (e.g., save to state or database)
+      // setTasks(tasks); // If you have a state for tasks
+    } catch (error) {
+      console.error("Error in file processing:", error);
+
+      // Handle specific error types
+      if (error instanceof FileProcessingError) {
+        switch (error.code) {
+          case "INVALID_FILE_TYPE":
+            showToast({
+              message: "Please select a PDF file",
+            });
+            break;
+          case "FILE_TOO_LARGE":
+            showToast({
+              message: "File is too large (max 10MB)",
+            });
+            break;
+          case "PROCESSING_FAILED":
+            showToast({
+              message: "Failed to process file. Please try again",
+            });
+            break;
+          case "EXTRACTION_FAILED":
+            showToast({
+              message: "Failed to extract tasks. Please try a different file",
+            });
+            break;
+          default:
+            showToast({
+              message: "An unexpected error occurred",
+            });
+        }
+      } else {
+        showToast({
+          message: "Error selecting or processing file",
+        });
+      }
+    }
+  };
+
   const handleSave = async () => {
     try {
-      // Only save completed tasks (exclude the empty last one)
       const completedTasks = tasks.filter((_, index) => isTaskComplete(index));
 
       if (completedTasks.length === 0) {
@@ -122,6 +214,14 @@ export default function CreateTasksModal() {
 
           <ScrollView>
             <YStack>
+              <FormSection title="AI Task Extraction">
+                <FormRow
+                  label="Upload Syllabus"
+                  value={selectedFile || "No file selected"}
+                  onPress={handleFileUpload}
+                />
+              </FormSection>
+
               {tasks.map((task, index) => (
                 <FormSection key={index} title={`New Task ${index + 1}`}>
                   <FormRowSelector
@@ -171,19 +271,6 @@ export default function CreateTasksModal() {
                   />
                 </FormSection>
               ))}
-
-              {/* Placeholder for AI Task Extraction Section */}
-              <FormSection title="AI Task Extraction">
-                <FormRow
-                  label="Upload Document"
-                  value="Coming soon"
-                  onPress={() => {
-                    showToast({
-                      message: "File upload feature coming soon",
-                    });
-                  }}
-                />
-              </FormSection>
             </YStack>
           </ScrollView>
         </Stack>

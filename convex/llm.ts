@@ -1,541 +1,309 @@
-export const CONFIG = {
-  url: "https://api.openai.com",
-  chatModel: "gpt-4o-mini",
-  embeddingModel: "text-embedding-ada-002", // dim 1536
-};
+import OpenAI from "openai";
+import { Task, FileProcessingError } from "./types";
+import { EXTRACT_TASKS_PROMPT } from "./llmPrompts";
 
-export const completions = completionsViaFetch(CONFIG);
-export const { chat, chatStream } = simpleCompletionsAPI(
-  completions,
-  CONFIG.chatModel
-);
+function extractTaskObjects(responseText: string): Task[] {
+  try {
+    // Replace 'description:' with 'title:' before processing
+    responseText = responseText.replace(/description:/g, "title:");
 
-export type SimpleCompletionsAPI = {
-  /**
-   * Simple non-streaming interface to LLM chat completions.
-   * @param messages The messages like you'd pass to OpenAI's .chat.completions.create
-   * @param LLM_KEY The API key for authentication
-   * @returns A string of the chat completion.
-   */
-  chat: (
-    messages: ChatCompletionMessageParam[],
-    LLM_KEY: string
-  ) => Promise<string>;
-  /**
-   * Simple streaming interface to LLM chat completions.
-   * @param messages The messages like you'd pass to OpenAI's .chat.completions.create
-   * @param LLM_KEY The API key for authentication
-   * @returns An async iterable of strings, each a part of the chat completion.
-   */
-  chatStream: (
-    messages: ChatCompletionMessageParam[],
-    LLM_KEY: string
-  ) => Promise<AsyncIterable<string>>;
-};
+    // Find all JSON-like objects in curly braces
+    const matches = responseText.match(/{[^{}]+}/g);
+    if (!matches) {
+      throw new Error("No task objects found in response");
+    }
 
-export const embeddings = embeddingsViaFetch(CONFIG);
-export const { embed, embedBatch } = simpleEmbeddingsAPI(
-  embeddings,
-  CONFIG.embeddingModel
-);
-export type SimpleEmbeddingsAPI = {
-  /**
-   * Simple API to get an embedding for a single text.
-   * @param text The text to create an embedding for
-   * @param LLM_KEY The API key for authentication
-   * @returns An array of numbers representing the embedding
-   */
-  embed: (text: string, LLM_KEY: string) => Promise<Array<number>>;
-  /**
-   * Simple API to get embeddings for multiple texts in batch.
-   * @param texts An array of texts to create embeddings for.
-   * @param LLM_KEY The API key for authentication
-   * @returns An array of embeddings (array of numbers), in the order of the input texts.
-   */
-  embedBatch: (
-    texts: string[],
-    LLM_KEY: string
-  ) => Promise<Array<Array<number>>>;
-};
+    // Parse each match into a Task object
+    const tasks = matches
+      .map((match) => {
+        console.log("Raw match:", match);
+        try {
+          // No need for replacement since the JSON is already properly formatted
+          const parsed = JSON.parse(match);
 
-/**
- * Completions API
- */
+          // Log the parsed object to see what we're working with
+          console.log("Parsed object:", parsed);
 
-/**
- * Makes a completions API using fetch, like OpenAI's .chat.completions.
- * @param config Specifies the URL of the LLM server
- * @returns Object with `create`: equivalent to OpenAI's `.chat.completions`
- */
-export function completionsViaFetch(config: { url: string }) {
-  return {
-    async create(body: Record<string, any>, LLM_KEY: string) {
-      const response = await retryWithBackoff(async () => {
-        const response = await fetch(config.url + "/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + LLM_KEY,
-          },
-          body: JSON.stringify(body),
-        });
-        if (!response.ok) {
-          const error = await response.text();
-          console.error({ error });
-          throw {
-            retry: shouldRetry(response),
-            error: new Error(
-              `Chat completion failed with code ${response.status}: ${error}`
-            ),
+          return {
+            title: parsed.title,
+            dueDate: parsed.dueDate, // Notice this changed from "due date"
+            notes: parsed.notes,
           };
+        } catch (err) {
+          console.error("Failed to parse task object:", match, "Error:", err);
+          return null;
         }
-        return response;
-      });
-      if (!body.stream) {
-        const json = (await response.json()) as ChatCompletion;
-        if (json.choices[0].message?.content === undefined) {
-          throw new Error(
-            "Unexpected result from OpenAI: " + JSON.stringify(json)
-          );
-        }
-        return json;
-      }
-      const stream = response.body;
-      if (!stream) throw new Error("No body in response");
-      return {
-        [Symbol.asyncIterator]: async function* () {
-          for await (const data of splitStream(stream)) {
-            if (data.startsWith("data:")) {
-              const json = data.substring("data:".length).trimStart();
-              if (json.startsWith("[DONE]")) {
-                return;
-              }
-              yield JSON.parse(json);
-            } else {
-              console.debug("Unexpected data:", data);
-            }
-          }
-        },
-      };
-    },
-  } as CompletionsAPI;
+      })
+      .filter((task): task is Task => task !== null);
+
+    if (tasks.length === 0) {
+      throw new Error("No valid tasks could be parsed from response");
+    }
+
+    return tasks;
+  } catch (error) {
+    throw new FileProcessingError(
+      `Failed to parse tasks from response: ${error instanceof Error ? error.message : String(error)}`,
+      "EXTRACTION_FAILED"
+    );
+  }
 }
 
-async function* splitStream(body: ReadableStream<Uint8Array>) {
-  const reader = body.getReader();
-  let lastFragment = "";
+// Initialize OpenAI client with better error handling
+function createOpenAIClient(): OpenAI {
+  const apiKey = process.env.LLM_API_KEY;
+  if (!apiKey) {
+    throw new FileProcessingError(
+      "OpenAI API key not found in environment variables",
+      "API_KEY_MISSING"
+    );
+  }
+  return new OpenAI({
+    apiKey,
+    dangerouslyAllowBrowser: false,
+  });
+}
+
+const client = createOpenAIClient();
+
+export async function processFileForTasks(file: {
+  data: Uint8Array;
+  name: string;
+  type: string;
+}): Promise<Task[]> {
+  console.log(`Starting to process file: ${file.name}`);
+  let fileId: string | undefined,
+    vectorStoreId: string | undefined,
+    assistantId: string | undefined,
+    threadId: string | undefined;
+
   try {
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) {
-        // Flush the last fragment now that we're done
-        if (lastFragment !== "") {
-          yield lastFragment;
-        }
+    // 1. Upload file
+    console.log("Uploading file to OpenAI...");
+    const blob = new Blob([file.data], { type: file.type });
+    const fileObject = new File([blob], file.name, { type: file.type });
+
+    const uploadedFile = await client.files
+      .create({
+        file: fileObject,
+        purpose: "assistants",
+      })
+      .catch((error) => {
+        console.error("File upload failed:", error);
+        throw new FileProcessingError(
+          `Failed to upload file: ${error.message}`,
+          "UPLOAD_FAILED"
+        );
+      });
+    console.log("File object details:", {
+      size: fileObject.size,
+      type: fileObject.type,
+      name: fileObject.name,
+    });
+
+    // 2. Create vector store and check file processing
+    console.log("Creating vector store...");
+    const vectorStore = await client.beta.vectorStores.create({
+      name: `temp-store-${Date.now()}`,
+      file_ids: [uploadedFile.id],
+      expires_after: {
+        anchor: "last_active_at",
+        days: 1,
+      },
+    });
+    vectorStoreId = vectorStore.id;
+    console.log(`Vector store created. ID: ${vectorStoreId}`);
+    console.log(
+      "Vector store details:",
+      await client.beta.vectorStores.retrieve(vectorStoreId)
+    );
+
+    // Check file processing status
+    let attempts = 0;
+    while (attempts < 10) {
+      const vectorStoreStatus =
+        await client.beta.vectorStores.retrieve(vectorStoreId);
+      console.log("Vector store status:", vectorStoreStatus.file_counts);
+
+      if (
+        vectorStoreStatus.file_counts.in_progress === 0 &&
+        vectorStoreStatus.file_counts.completed > 0
+      ) {
+        console.log("File processing completed");
         break;
       }
-      const data = new TextDecoder().decode(value);
-      lastFragment += data;
-      const parts = lastFragment.split("\n\n");
-      // Yield all except for the last part
-      for (let i = 0; i < parts.length - 1; i += 1) {
-        yield parts[i];
-      }
-      // Save the last part as the new last fragment
-      lastFragment = parts[parts.length - 1];
-    }
-  } finally {
-    reader.releaseLock();
-  }
-}
 
-/**
- *
- * @param api Equivalent of OpenAI's .chat.completions or completionsViaFetch(CONFIG)
- * @param model The model name, like "gpt-4" or "llama3"
- * @returns Two functions: `chat` and `chatStream`, with simple interfaces.
- */
-export function simpleCompletionsAPI(
-  api: CompletionsAPI, // completionsViaFetch(CONFIG) or (new OpenA().chat.completions)
-  model: string
-): SimpleCompletionsAPI {
-  return {
-    chat: async (
-      messages: ChatCompletionMessageParam[],
-      LLM_KEY: string
-    ): Promise<string> => {
-      const response = await api.create(
-        {
-          model,
-          messages,
-          stream: false,
-        },
-        LLM_KEY
-      );
-      if (!response.choices[0].message?.content) {
-        throw new Error(
-          "Unexpected result from OpenAI: " + JSON.stringify(response)
+      if (vectorStoreStatus.file_counts.failed > 0) {
+        throw new FileProcessingError(
+          "File processing failed in vector store",
+          "PROCESSING_FAILED"
         );
       }
-      return response.choices[0].message.content;
-    },
-    chatStream: async (
-      messages: ChatCompletionMessageParam[],
-      LLM_KEY: string
-    ): Promise<AsyncIterable<string>> => {
-      const response = await api.create(
-        {
-          model,
-          messages,
-          stream: true,
-        },
-        LLM_KEY
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      attempts++;
+    }
+
+    if (attempts >= 10) {
+      throw new FileProcessingError(
+        "Timeout waiting for file processing",
+        "PROCESSING_FAILED"
       );
-      return {
-        async *[Symbol.asyncIterator]() {
-          for await (const chunk of response) {
-            if (chunk.choices[0].delta?.content) {
-              yield chunk.choices[0].delta.content;
-            }
-          }
-        },
-      };
-    },
-  };
-}
+    }
 
-/**
- * Embeddings
- */
-
-export function embeddingsViaFetch(config: { url: string }): EmbeddingsAPI {
-  return {
-    create: async (body) => {
-      const json = await retryWithBackoff(async () => {
-        const result = await fetch(config.url + "/v1/embeddings", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + "my key",
+    // 3. Create assistant
+    console.log("Creating assistant...");
+    const assistant = await client.beta.assistants
+      .create({
+        name: "Task Extractor",
+        model: "gpt-4o",
+        tools: [{ type: "file_search" }],
+        tool_resources: {
+          file_search: {
+            vector_store_ids: [vectorStore.id],
           },
-          body: JSON.stringify(body),
-        });
-        if (!result.ok) {
-          throw {
-            retry: shouldRetry(result),
-            error: new Error(
-              `Embedding failed with code ${result.status}: ${await result.text()}`
-            ),
-          };
-        }
-        return (await result.json()) as CreateEmbeddingResponse;
+        },
+      })
+      .catch((error) => {
+        console.error("Assistant creation failed:", error);
+        throw new FileProcessingError(
+          `Failed to create assistant: ${error.message}`,
+          "PROCESSING_FAILED"
+        );
       });
-      return json;
-    },
-  };
-}
+    assistantId = assistant.id;
+    console.log(`Assistant created. ID: ${assistantId}`);
+    console.log("Assistant configuration:", {
+      tools: assistant.tools,
+      tool_resources: assistant.tool_resources,
+    });
+    console.log(
+      "Assistant details:",
+      await client.beta.assistants.retrieve(assistant.id)
+    );
 
-export function simpleEmbeddingsAPI(
-  // either embeddingsViaFetch or (new OpenAI().embeddings)
-  api: EmbeddingsAPI,
-  model: string
-): SimpleEmbeddingsAPI {
-  return {
-    embed: async (text: string): Promise<Array<number>> => {
-      const json = await api.create({
-        input: text,
-        model,
-      });
-      return json.data[0].embedding;
-    },
-    embedBatch: async (texts: string[]): Promise<Array<Array<number>>> => {
-      const json = await api.create({
-        input: texts,
-        model,
-      });
-      const allembeddings = json.data;
-      allembeddings.sort((a, b) => a.index - b.index);
-      return allembeddings.map(({ embedding }) => embedding);
-    },
-  };
-}
+    // 4. Create thread and run
+    console.log("Creating thread and starting analysis...");
+    const thread = await client.beta.threads.create();
+    threadId = thread.id;
+    console.log(`Thread created. ID: ${threadId}`);
 
-/**
- * Helpers
- */
+    // Add initial message to thread
+    await client.beta.threads.messages.create(thread.id, {
+      role: "user",
+      content: EXTRACT_TASKS_PROMPT,
+    });
 
-function shouldRetry(response: Response) {
-  return (
-    response.headers.get("x-should-retry") !== "false" &&
-    (response.headers.get("x-should-retry") === "true" ||
-      response.status === 408 || // Timeout
-      response.status === 409 || // Lock timeout
-      response.status === 429 || // Rate limit
-      response.status >= 500) // Internal server error
-  );
-}
+    console.log(
+      "Thread messages:",
+      await client.beta.threads.messages.list(thread.id)
+    );
 
-// Retry after this much time, based on the retry number.
-const RETRY_BACKOFF = [1000, 10000, 20000]; // In ms
-const RETRY_JITTER = 100; // In ms
-type RetryError = { retry: boolean; error: any };
-// Retry a function with exponential backoff.
-export async function retryWithBackoff<T>(fn: () => Promise<T>): Promise<T> {
-  let i = 0;
-  for (; i <= RETRY_BACKOFF.length; i++) {
-    try {
-      const start = Date.now();
-      const result = await fn();
-      const ms = Date.now() - start;
-      if (i > 0) console.log(`Attempt ${i + 1} succeeded in ${ms}ms`);
-      return result;
-    } catch (e) {
-      const retryError = e as RetryError;
-      if (i < RETRY_BACKOFF.length) {
-        if (retryError.retry) {
-          console.log(
-            `Attempt ${i + 1} failed, waiting ${RETRY_BACKOFF[i]}ms to retry...`,
-            Date.now()
-          );
-          await new Promise((resolve) =>
-            setTimeout(resolve, RETRY_BACKOFF[i] + RETRY_JITTER * Math.random())
-          );
-          continue;
-        }
-      }
-      if (retryError.error) throw retryError.error;
-      else throw e;
+    const run = await client.beta.threads.runs.create(thread.id, {
+      assistant_id: assistant.id,
+    });
+    console.log(`Analysis started. Run ID: ${run.id}`);
+
+    // 5. Get results
+    console.log("Waiting for analysis completion...");
+    const tasks = await waitForRunCompletion(thread.id, run.id);
+    console.log(`Analysis complete. Found ${tasks.length} tasks.`);
+    return tasks;
+  } catch (error) {
+    if (error instanceof FileProcessingError) {
+      throw error;
     }
+    throw new FileProcessingError(
+      `Unexpected error: ${error instanceof Error ? error.message : String(error)}`,
+      "PROCESSING_FAILED"
+    );
+  } finally {
+    console.log("Starting cleanup...");
+    await cleanup(fileId, vectorStoreId, assistantId, threadId);
+    console.log("Cleanup complete");
   }
-  throw new Error("Unreachable");
 }
 
-/**
- * Types to use as our API. Simplified from the OpenAI API.
- */
+async function waitForRunCompletion(
+  threadId: string,
+  runId: string
+): Promise<Task[]> {
+  try {
+    let run;
+    let attempts = 0;
+    do {
+      attempts++;
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      run = await client.beta.threads.runs.retrieve(threadId, runId);
+      console.log(`Run status check #${attempts}: ${run.status}`);
+    } while (run.status === "in_progress" || run.status === "queued");
 
-export interface CompletionsAPI {
-  /**
-   * Creates a model response for the given chat conversation.
-   */
-  create(
-    body: ChatCompletionCreateParamsNonStreaming,
-    LLM_KEY: string
-  ): Promise<ChatCompletion>;
-  create(
-    body: ChatCompletionCreateParamsStreaming,
-    LLM_KEY: string
-  ): Promise<AsyncIterable<ChatCompletionChunk>>;
-}
+    const runDetails = await client.beta.threads.runs.retrieve(threadId, runId);
+    console.log("Run details:", runDetails);
+    const steps = await client.beta.threads.runs.steps.list(threadId, runId);
+    console.log("Run steps:", steps.data);
+    console.log("Run steps:", steps);
 
-export interface ChatCompletion {
-  id: string;
-  choices: Array<{
-    finish_reason:
-      | "stop"
-      | "length"
-      | "tool_calls"
-      | "content_filter"
-      | "function_call";
-    index: number;
-    logprobs: {
-      content: Array<ChatCompletionTokenLogprob> | null;
-    } | null;
-    message: {
-      content: string | null;
-      role: "assistant";
-      /** @deprecated Deprecated and replaced by `tool_calls` */
-      function_call?: {
-        arguments: string;
-        name: string;
-      };
-      tool_calls?: Array<ChatCompletionMessageToolCall>;
-    };
-  }>;
-  created: number;
-  model: string;
-  object: "chat.completion";
-  system_fingerprint?: string;
-  usage?: CompletionUsage;
-}
-
-export interface ChatCompletionChunk {
-  id: string;
-  choices: Array<{
-    delta: {
-      content?: string | null;
-      /** @deprecated: Deprecated and replaced by `tool_calls`. The name and arguments of */
-      function_call?: { arguments?: string; name?: string };
-      role?: "system" | "user" | "assistant" | "tool";
-      tool_calls?: Array<{
-        index: number;
-        id?: string;
-        function?: {
-          arguments?: string;
-          name?: string;
-        };
-        type?: "function";
-      }>;
-    };
-    finish_reason:
-      | "stop"
-      | "length"
-      | "tool_calls"
-      | "content_filter"
-      | "function_call"
-      | null;
-    index: number;
-    logprobs?: { content: Array<ChatCompletionTokenLogprob> | null } | null;
-  }>;
-  created: number;
-  model: string;
-  object: "chat.completion.chunk";
-  system_fingerprint?: string;
-  usage?: CompletionUsage;
-}
-
-export interface CompletionUsage {
-  completion_tokens: number;
-  prompt_tokens: number;
-  total_tokens: number;
-}
-
-export interface ChatCompletionMessageToolCall {
-  id: string;
-  function: {
-    arguments: string;
-    name: string;
-  };
-  type: "function";
-}
-
-export interface ChatCompletionTokenLogprob {
-  token: string;
-  bytes: Array<number> | null;
-  logprob: number;
-  top_logprobs: Array<{
-    token: string;
-    bytes: Array<number> | null;
-    logprob: number;
-  }>;
-}
-
-export type ChatCompletionCreateParams =
-  | ChatCompletionCreateParamsNonStreaming
-  | ChatCompletionCreateParamsStreaming;
-
-export interface ChatCompletionCreateParamsBase {
-  messages: Array<ChatCompletionMessageParam>;
-  model: string;
-  frequency_penalty?: number | null;
-  /** @deprecated in favor of `tools`. */
-  functions?: Array<{
-    name: string;
-    description?: string;
-    parameters?: Record<string, unknown>;
-  }>;
-  logit_bias?: Record<string, number> | null;
-  logprobs?: boolean | null;
-  max_tokens?: number | null;
-  n?: number | null;
-  presence_penalty?: number | null;
-  response_format?: { type?: "text" | "json_object" };
-  seed?: number | null;
-  stop?: string | null | Array<string>;
-  stream?: boolean | null;
-  stream_options?: {
-    include_usage?: boolean;
-  } | null;
-  temperature?: number | null;
-  tool_choice?:
-    | "none" // the model will not call any tool and instead generates a message.
-    | "auto" // the model can pick between generating a message or calling one or more tools.
-    | "required" // the model must call one or more tools.
-    | { function: { name: string }; type: "function" }; // forces the tool.
-  tools?: Array<{
-    function: {
-      name: string;
-      description?: string;
-      parameters?: Record<string, unknown>;
-    };
-    type: "function";
-  }>;
-  top_logprobs?: number | null;
-  top_p?: number | null;
-  user?: string;
-}
-
-export type ChatCompletionMessageParam =
-  | {
-      role: "system";
-      content: string;
-      name?: string;
+    if (run.status !== "completed") {
+      throw new FileProcessingError(
+        `Run failed with status: ${run.status}`,
+        "EXTRACTION_FAILED"
+      );
     }
-  | {
-      role: "user";
-      content:
-        | string
-        | Array<
-            | {
-                text: string;
-                type: "text";
-              }
-            | {
-                image_url: { url: string; detail?: "auto" | "low" | "high" };
-                type: "image_url";
-              }
-          >;
-      name?: string;
+
+    const messages = await client.beta.threads.messages.list(threadId);
+    const lastMessage = messages.data[0];
+    if (lastMessage.content[0].type !== "text") {
+      throw new FileProcessingError(
+        "Expected text content in response",
+        "EXTRACTION_FAILED"
+      );
     }
-  | {
-      role: "assistant";
-      content?: string | null;
-      name?: string;
-      tool_calls?: Array<ChatCompletionMessageToolCall>;
+
+    const content = lastMessage.content[0].text.value;
+    console.log("Raw AI response:", content);
+
+    // Extract and parse tasks
+    const tasks = extractTaskObjects(content);
+    console.log("Parsed tasks:", tasks);
+
+    return tasks;
+  } catch (error) {
+    if (error instanceof FileProcessingError) {
+      throw error;
     }
-  | {
-      content: string;
-      role: "tool";
-      tool_call_id: string;
-    };
-
-export interface ChatCompletionCreateParamsNonStreaming
-  extends ChatCompletionCreateParamsBase {
-  stream?: false | null;
-}
-export interface ChatCompletionCreateParamsStreaming
-  extends ChatCompletionCreateParamsBase {
-  stream: true;
+    throw new FileProcessingError(
+      `Error during run completion: ${error instanceof Error ? error.message : String(error)}`,
+      "EXTRACTION_FAILED"
+    );
+  }
 }
 
-/** Embeddings */
-export interface EmbeddingsAPI {
-  /**
-   * Creates an embedding vector representing the input text.
-   */
-  create(body: EmbeddingCreateParams): Promise<CreateEmbeddingResponse>;
-}
+async function cleanup(
+  fileId?: string,
+  vectorStoreId?: string,
+  assistantId?: string,
+  threadId?: string
+): Promise<void> {
+  try {
+    const cleanupPromises: Promise<any>[] = [];
 
-export interface CreateEmbeddingResponse {
-  data: Array<Embedding>;
-  model: string;
-  object: "list";
-  usage: {
-    prompt_tokens: number;
-    total_tokens: number;
-  };
-}
+    if (threadId) {
+      cleanupPromises.push(client.beta.threads.del(threadId));
+    }
+    if (assistantId) {
+      cleanupPromises.push(client.beta.assistants.del(assistantId));
+    }
+    if (vectorStoreId) {
+      cleanupPromises.push(client.beta.vectorStores.del(vectorStoreId));
+    }
+    if (fileId) {
+      cleanupPromises.push(client.files.del(fileId));
+    }
 
-export interface Embedding {
-  embedding: Array<number>;
-  index: number;
-  object: "embedding";
-}
-
-export interface EmbeddingCreateParams {
-  input: string | Array<string> | Array<number> | Array<Array<number>>;
-  model: string;
-  dimensions?: number;
-  encoding_format?: "float" | "base64";
-  user?: string;
+    await Promise.all(cleanupPromises);
+  } catch (error) {
+    console.error("Error during cleanup:", error);
+    // Don't throw here as it might mask the original error
+  }
 }

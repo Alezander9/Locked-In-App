@@ -17,8 +17,10 @@ import type * as actions from "../actions.js";
 import type * as http from "../http.js";
 import type * as httpActions from "../httpActions.js";
 import type * as llm from "../llm.js";
+import type * as llmPrompts from "../llmPrompts.js";
 import type * as mutations from "../mutations.js";
 import type * as queries from "../queries.js";
+import type * as types from "../types.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -33,8 +35,10 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   httpActions: typeof httpActions;
   llm: typeof llm;
+  llmPrompts: typeof llmPrompts;
   mutations: typeof mutations;
   queries: typeof queries;
+  types: typeof types;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
