@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import { FormSection } from "@/components/forms/FormSection";
 import { FormRowTextInput } from "@/components/forms/FormRowTextInput";
 import { FormRow } from "@/components/forms/FormRow";
+import { FormRowButton } from "@/components/forms/FormRowButton";
 import { useTaskFormStore } from "@/stores/taskFormStore";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,8 +18,22 @@ import { FileProcessingError } from "@/convex/types";
 import * as FileSystem from "expo-file-system";
 
 export default function CreateTasksModal() {
-  const { tasks, updateTask, isTaskComplete, resetForm, addTask } =
-    useTaskFormStore();
+  const {
+    tasks,
+    updateTask,
+    isTaskComplete,
+    resetForm,
+    addTask,
+    setExtractedTasks,
+    setIsExtracting,
+    isExtracting,
+    fileUploadCourseId,
+    extractionStatus,
+    setExtractionStatus,
+    setHasApprovedExtraction,
+    checkAndAddExtractedTasks,
+  } = useTaskFormStore();
+
   const { showToast } = useToast();
   const courses = useQuery(api.queries.getUserCourses) || [];
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
@@ -33,6 +48,10 @@ export default function CreateTasksModal() {
       addTask();
     }
   }, [tasks, isTaskComplete, addTask]);
+
+  useEffect(() => {
+    checkAndAddExtractedTasks();
+  }, [checkAndAddExtractedTasks]);
 
   const formatDate = (date: Date): string => {
     return date.toLocaleString("en-US", {
@@ -52,8 +71,9 @@ export default function CreateTasksModal() {
 
   const handleFileUpload = async () => {
     try {
+      setExtractionStatus("Reading file...");
+
       // 1. Pick document
-      console.log("Initiating file picker...");
       const result = await DocumentPicker.getDocumentAsync({
         type: "application/pdf",
         copyToCacheDirectory: true,
@@ -61,65 +81,51 @@ export default function CreateTasksModal() {
       });
 
       if (result.canceled) {
-        console.log("File picking canceled by user");
+        setIsExtracting(false);
+        setExtractionStatus(null);
         return;
       }
 
       // 2. Get file details
       const file = result.assets[0];
       setSelectedFile(file.name);
-      console.log("Selected file:", {
-        name: file.name,
-        size: file.size,
-        uri: file.uri,
-        mimeType: file.mimeType,
-      });
+      setExtractionStatus("Reading file contents...");
 
       // 3. Read file as base64
-      console.log("Reading file contents...");
       const base64Content = await FileSystem.readAsStringAsync(file.uri, {
         encoding: FileSystem.EncodingType.Base64,
       });
-      console.log(
-        "File read successfully, size in base64:",
-        base64Content.length
-      );
 
       // 4. Process file
-      console.log("Sending file for processing...");
-      const tasks = await processFile({
+      setExtractionStatus("Analyzing file with AI...");
+      const extractedTasks = await processFile({
         fileData: base64Content,
         fileName: file.name,
         fileType: file.mimeType || "",
       });
 
-      console.log("File processed successfully. Extracted tasks:", tasks);
-      showToast({
-        message: `Successfully extracted ${tasks.length} tasks`,
-      });
+      setExtractedTasks(extractedTasks);
+      setExtractionStatus(null);
+      setIsExtracting(false);
 
-      // 5. Handle the extracted tasks (e.g., save to state or database)
-      // setTasks(tasks); // If you have a state for tasks
+      checkAndAddExtractedTasks();
+
+      showToast({
+        message: `Successfully extracted ${extractedTasks.length} tasks`,
+      });
     } catch (error) {
       console.error("Error in file processing:", error);
 
-      // Handle specific error types
       if (error instanceof FileProcessingError) {
         switch (error.code) {
           case "INVALID_FILE_TYPE":
-            showToast({
-              message: "Please select a PDF file",
-            });
+            showToast({ message: "Please select a PDF file" });
             break;
           case "FILE_TOO_LARGE":
-            showToast({
-              message: "File is too large (max 10MB)",
-            });
+            showToast({ message: "File is too large (max 10MB)" });
             break;
           case "PROCESSING_FAILED":
-            showToast({
-              message: "Failed to process file. Please try again",
-            });
+            showToast({ message: "Failed to process file. Please try again" });
             break;
           case "EXTRACTION_FAILED":
             showToast({
@@ -127,16 +133,18 @@ export default function CreateTasksModal() {
             });
             break;
           default:
-            showToast({
-              message: "An unexpected error occurred",
-            });
+            showToast({ message: "An unexpected error occurred" });
         }
       } else {
-        showToast({
-          message: "Error selecting or processing file",
-        });
+        showToast({ message: "Error selecting or processing file" });
       }
     }
+  };
+
+  const handleStartExtraction = () => {
+    setHasApprovedExtraction(true);
+    setIsExtracting(true);
+    checkAndAddExtractedTasks();
   };
 
   const handleSave = async () => {
@@ -216,10 +224,36 @@ export default function CreateTasksModal() {
             <YStack>
               <FormSection title="AI Task Extraction">
                 <FormRow
-                  label="Upload Syllabus"
+                  label="Upload Syllabus/Assignments"
                   value={selectedFile || "No file selected"}
                   onPress={handleFileUpload}
                 />
+                {selectedFile && (
+                  <FormRowSelector
+                    label="Course"
+                    value={
+                      courses.find((c) => c._id === fileUploadCourseId)?.code ||
+                      ""
+                    }
+                    onPress={() => {
+                      router.push({
+                        pathname: "/input/course-selector",
+                        params: {
+                          taskIndex: "file",
+                        },
+                      });
+                    }}
+                  />
+                )}
+                {selectedFile && fileUploadCourseId && (
+                  <FormRowButton
+                    label="Extract tasks with AI"
+                    onPress={handleStartExtraction}
+                    loading={isExtracting}
+                    loadingText={extractionStatus || "Processing..."}
+                    disabled={!selectedFile || !fileUploadCourseId}
+                  />
+                )}
               </FormSection>
 
               {tasks.map((task, index) => (

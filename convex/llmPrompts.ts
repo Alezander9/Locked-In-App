@@ -8,8 +8,9 @@ Task format: tasks should be written in valid JSON format with fields for title:
 These assignments will later be broken into more manageable steps so for now just have one task for every assignment. 
 Every assignment must have it own task. 
 If there are weekly recurring assignments, extrapolate their dates out writing a task for each of them and number them by their week. 
+IMPORTANT: Each task must have a "title", "dueDate", and "notes" field. 
+Dates should be in the format HH:MM AM/PM MM/DD/YY, like 11:59 PM 11/22/24.
 Here are example tasks: 
-IMPORTANT: Each task must have a "title", "dueDate", and "notes" field.
 {"title": "Problem set 3", "dueDate": "11:59 PM 11/22/24", "notes": "no extra notes"},
 {"title": "Final Project Proposal", "dueDate": "4:00 PM 11/15/24", "notes": "only one team member submits"},
 `;

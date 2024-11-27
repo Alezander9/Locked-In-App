@@ -14,10 +14,10 @@ type CourseSelectorParams = {
 
 export default function CourseSelectorModal() {
   const params = useLocalSearchParams<CourseSelectorParams>();
-  const taskIndex = parseInt(params.taskIndex || "0");
+  const taskIndex =
+    params.taskIndex === "file" ? "file" : parseInt(params.taskIndex || "0");
   const { updateTask } = useTaskFormStore();
 
-  // Query user's courses
   const userCourses = useQuery(api.queries.getUserCourses) || [];
 
   const handleSelect = (courseId: Id<"courses"> | undefined) => {
