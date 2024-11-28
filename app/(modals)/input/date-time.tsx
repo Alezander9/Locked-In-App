@@ -4,30 +4,41 @@ import { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEventFormStore } from "@/stores/eventFormStore";
 import { useTaskFormStore } from "@/stores/taskFormStore";
+import { useEditTaskStore } from "@/stores/editTaskStore";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type DateTimeInputParams = {
   title: string;
-  taskIndex?: string; // Optional - if present, we're editing a task
+  taskIndex?: string; // Can be a number for create, "edit" for edit mode, or undefined for event
 } & Record<string, string>;
 
 export default function DateTimeInputModal() {
   const params = useLocalSearchParams<DateTimeInputParams>();
-
-  // Get appropriate initial date and update function based on context
-  const isTaskMode = params.taskIndex !== undefined;
   const taskStore = useTaskFormStore();
   const eventStore = useEventFormStore();
+  const editStore = useEditTaskStore();
 
-  const initialDate = isTaskMode
-    ? taskStore.tasks[parseInt(params.taskIndex || "0")].dueDate
-    : eventStore.startDate;
+  // Determine the mode and get initial date
+  const isTaskMode = params.taskIndex !== undefined;
+  const isEditMode = params.taskIndex === "edit";
+
+  const initialDate = (() => {
+    if (isEditMode) {
+      return editStore.task?.dueDate || new Date();
+    } else if (isTaskMode) {
+      return taskStore.tasks[parseInt(params.taskIndex || "0")].dueDate;
+    } else {
+      return eventStore.startDate;
+    }
+  })();
 
   const [date, setDate] = useState(initialDate);
 
   const handleSave = () => {
-    if (isTaskMode && params.taskIndex) {
+    if (isEditMode) {
+      editStore.updateField("dueDate", date);
+    } else if (isTaskMode && params.taskIndex) {
       taskStore.updateTask(parseInt(params.taskIndex), "dueDate", date);
     } else {
       eventStore.updateField("startDate", date);

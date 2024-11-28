@@ -201,3 +201,10 @@ export const getUpcomingTasks = query({
     return tasksWithCourseInfo;
   },
 });
+
+export const getTask = query({
+  args: { taskId: v.id("tasks") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.taskId);
+  },
+});

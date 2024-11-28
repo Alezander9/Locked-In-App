@@ -405,3 +405,129 @@ export const updateTaskCompletion = mutation({
     return args.taskId;
   },
 });
+
+export const updateTask = mutation({
+  args: {
+    taskId: v.id("tasks"),
+    courseId: v.id("courses"),
+    title: v.string(),
+    notes: v.string(),
+    dueDate: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // Get the user ID from their clerk ID
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Verify the task exists and belongs to the user
+    const task = await ctx.db.get(args.taskId);
+    if (!task) {
+      throw new Error("Task not found");
+    }
+    if (task.userId !== user._id) {
+      throw new Error("Not authorized to update this task");
+    }
+
+    // Verify the course exists
+    const course = await ctx.db.get(args.courseId);
+    if (!course) {
+      throw new Error("Course not found");
+    }
+
+    // Update the task
+    await ctx.db.patch(args.taskId, {
+      courseId: args.courseId,
+      title: args.title,
+      notes: args.notes,
+      dueDate: args.dueDate,
+    });
+
+    return args.taskId;
+  },
+});
+
+export const deleteTask = mutation({
+  args: {
+    taskId: v.id("tasks"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // Get the user ID from their clerk ID
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Verify the task exists and belongs to the user
+    const task = await ctx.db.get(args.taskId);
+    if (!task) {
+      throw new Error("Task not found");
+    }
+    if (task.userId !== user._id) {
+      throw new Error("Not authorized to delete this task");
+    }
+
+    // Delete the task
+    await ctx.db.delete(args.taskId);
+
+    return args.taskId;
+  },
+});
+
+export const restoreTask = mutation({
+  args: {
+    taskId: v.id("tasks"),
+    courseId: v.id("courses"),
+    title: v.string(),
+    notes: v.string(),
+    dueDate: v.number(),
+    isCompleted: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // Get the user ID from their clerk ID
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Recreate the task with original data
+    const taskId = await ctx.db.insert("tasks", {
+      userId: user._id,
+      courseId: args.courseId,
+      title: args.title,
+      notes: args.notes,
+      dueDate: args.dueDate,
+      isCompleted: args.isCompleted,
+    });
+
+    return taskId;
+  },
+});

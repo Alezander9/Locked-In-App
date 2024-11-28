@@ -6,7 +6,9 @@ import { ScrollView } from "react-native";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { useTaskFormStore } from "@/stores/taskFormStore";
+import { useEditTaskStore } from "@/stores/editTaskStore";
 import { Id } from "@/convex/_generated/dataModel";
+import { FormActionButton } from "@/components/forms/FormActionButton";
 
 type CourseSelectorParams = {
   taskIndex: string;
@@ -14,15 +16,27 @@ type CourseSelectorParams = {
 
 export default function CourseSelectorModal() {
   const params = useLocalSearchParams<CourseSelectorParams>();
-  const taskIndex =
-    params.taskIndex === "file" ? "file" : parseInt(params.taskIndex || "0");
   const { updateTask } = useTaskFormStore();
-
+  const { updateField } = useEditTaskStore();
   const userCourses = useQuery(api.queries.getUserCourses) || [];
+
+  const isEditMode = params.taskIndex === "edit";
+  const taskIndex =
+    params.taskIndex === "file"
+      ? "file"
+      : isEditMode
+        ? "edit"
+        : parseInt(params.taskIndex || "0");
 
   const handleSelect = (courseId: Id<"courses"> | undefined) => {
     if (!courseId) return;
-    updateTask(taskIndex, "courseId", courseId);
+
+    if (isEditMode) {
+      updateField("courseId", courseId);
+    } else {
+      updateTask(taskIndex, "courseId", courseId);
+    }
+
     router.back();
   };
 
@@ -52,7 +66,6 @@ export default function CourseSelectorModal() {
             </Text>
             <Text width={100} />
           </XStack>
-
           <ScrollView>
             <YStack>
               {userCourses.map((course) => (
@@ -65,7 +78,6 @@ export default function CourseSelectorModal() {
                   borderBottomColor="$borderColor"
                   alignItems="center"
                 >
-                  {/* Color indicator */}
                   <Stack
                     width={12}
                     height={12}
@@ -83,24 +95,10 @@ export default function CourseSelectorModal() {
                   </YStack>
                 </XStack>
               ))}
-
-              {/* Add Classes Button */}
-              <XStack
-                pressStyle={{ opacity: 0.7 }}
-                onPress={() => {
-                  router.push("/edit-classes");
-                }}
-                padding="$4"
-                marginTop="$4"
-                backgroundColor="$lightSeparator"
-                borderRadius="$4"
-                margin="$4"
-                justifyContent="center"
-              >
-                <Text color="$primary" fontSize="$4">
-                  Add or Edit Classes
-                </Text>
-              </XStack>
+              <FormActionButton
+                label="Add or Edit Classes"
+                onPress={() => router.push("/edit-classes")}
+              />
             </YStack>
           </ScrollView>
         </Stack>
