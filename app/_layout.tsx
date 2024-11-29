@@ -23,8 +23,10 @@ import {
 } from "@expo-google-fonts/open-sans";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatedSplash } from "@/components/AnimatedSplash";
-import { Image } from "react-native";
+import { Image, TouchableOpacity, Text } from "react-native";
 import { ToastProvider, useToast } from "@/features/toast";
+import { StudyProfileProvider } from "@/app/context/StudyProfileContext";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -118,6 +120,18 @@ const tokenCache = {
   },
 };
 
+// Add this type declaration at the top of your file
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList {
+      "settings/classPreferences": {
+        onHeaderPress?: () => void;
+        currentClassName?: string;
+      };
+    }
+  }
+}
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const isReady = useAppLoading();
@@ -152,53 +166,138 @@ export default function RootLayout() {
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
           >
             <ToastProvider>
-              <YStack
-                flex={1}
-                backgroundColor="$bg"
-                position="absolute"
-                width="100%"
-                height="100%"
-              >
-                {showAnimatedSplash ? (
-                  <AnimatedSplash onAnimationComplete={onAnimationComplete} />
-                ) : (
-                  <Stack screenOptions={{ headerShown: false }}>
-                    {/* Auth group */}
-                    <Stack.Screen
-                      name="(auth)"
-                      options={{ headerShown: false }}
-                    />
+              <StudyProfileProvider>
+                <YStack
+                  flex={1}
+                  backgroundColor="$bg"
+                  position="absolute"
+                  width="100%"
+                  height="100%"
+                >
+                  {showAnimatedSplash ? (
+                    <AnimatedSplash onAnimationComplete={onAnimationComplete} />
+                  ) : (
+                    <Stack screenOptions={{ headerShown: false }}>
+                      {/* Auth group */}
+                      <Stack.Screen
+                        name="(auth)"
+                        options={{ headerShown: false }}
+                      />
 
-                    {/* Onboarding group */}
-                    <Stack.Screen
-                      name="(onboarding)"
-                      options={{ headerShown: false }}
-                    />
+                      {/* Onboarding group */}
+                      <Stack.Screen
+                        name="(onboarding)"
+                        options={{ headerShown: false }}
+                      />
 
-                    {/* Main tab navigation */}
-                    <Stack.Screen
-                      name="(tabs)"
-                      options={{ headerShown: false }}
-                    />
+                      {/* Main tab navigation */}
+                      <Stack.Screen
+                        name="(tabs)"
+                        options={{ headerShown: false }}
+                      />
 
-                    {/* Modal screens */}
-                    <Stack.Screen
-                      name="settings/index"
-                      options={{
-                        presentation: "modal",
-                        headerShown: true,
-                        title: "Settings",
-                      }}
-                    />
+                      {/* Add Settings Screen */}
+                      <Stack.Screen
+                        name="settings/index"
+                        options={{
+                          presentation: "card",
+                          headerShown: true,
+                          title: "Settings",
+                          headerBackVisible: true,
+                          headerBackTitle: "Back",
+                        }}
+                      />
 
-                    {/* Error handling */}
-                    <Stack.Screen
-                      name="+not-found"
-                      options={{ title: "Oops!" }}
-                    />
-                  </Stack>
-                )}
-              </YStack>
+                      {/* Add Schedule Screen */}
+                      <Stack.Screen
+                        name="settings/schedule"
+                        options={{
+                          presentation: "card",
+                          headerShown: true,
+                          title: "Schedule",
+                          headerBackVisible: true,
+                          headerBackTitle: "Back",
+                        }}
+                      />
+
+                      {/* Add General Preferences Screen */}
+                      <Stack.Screen
+                        name="settings/generalPreferences"
+                        options={{
+                          presentation: "card",
+                          headerShown: true,
+                          title: "General Preferences",
+                          headerBackVisible: true,
+                          headerBackTitle: "Back",
+                        }}
+                      />
+
+                      {/* Add Class Preferences Screen */}
+                      <Stack.Screen
+                        name="settings/classPreferences"
+                        options={({ navigation, route }) => ({
+                          presentation: "card",
+                          headerShown: true,
+                          title: "Class Preferences",
+                          headerBackVisible: true,
+                          headerBackTitle: "Back",
+                          headerRight: () => (
+                            <TouchableOpacity 
+                              onPress={() => {
+                                // @ts-ignore - we know this exists because we set it
+                                route.params?.onHeaderPress?.();
+                              }}
+                              style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}
+                            >
+                              <Text style={{ marginRight: 8, color: '#0F9ED5' }}>
+                                {/* @ts-ignore - we know this exists */}
+                                {route.params?.currentClassName || 'Select Class'}
+                              </Text>
+                              <Ionicons
+                                name="chevron-down"
+                                size={24}
+                                color="#0F9ED5"
+                              />
+                            </TouchableOpacity>
+                          ),
+                        })}
+                      />
+
+                      {/* Modal screens */}
+                      <Stack.Screen
+                        name="(modals)/create-event/index"
+                        options={{
+                          presentation: "modal",
+                          headerShown: true,
+                          title: "Create Event",
+                        }}
+                      />
+
+                      <Stack.Screen
+                        name="(modals)/input/date-time"
+                        options={{
+                          presentation: "modal",
+                          headerShown: true,
+                        }}
+                      />
+
+                      <Stack.Screen
+                        name="(modals)/input/duration"
+                        options={{
+                          presentation: "modal",
+                          headerShown: true,
+                        }}
+                      />
+
+                      {/* Error handling */}
+                      <Stack.Screen
+                        name="+not-found"
+                        options={{ title: "Oops!" }}
+                      />
+                    </Stack>
+                  )}
+                </YStack>
+              </StudyProfileProvider>
             </ToastProvider>
           </ThemeProvider>
         </TamaguiProvider>

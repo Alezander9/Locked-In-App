@@ -167,3 +167,210 @@ export const createEvent = mutation({
     return eventId;
   },
 });
+
+export const updateStudyProfile = mutation({
+  args: {
+    studyProfile: v.object({
+      dorm: v.string(),
+      studyLocations: v.array(v.string()),
+      alertnessPreference: v.number(),
+      punctualityPreference: v.number(),
+      learningPreferences: v.record(v.string(), v.number()),
+      availableTimeSlots: v.array(
+        v.object({
+          day: v.string(),
+          slots: v.array(v.number()),
+        })
+      ),
+      classes: v.array(
+        v.object({
+          name: v.string(),
+          weeklyHours: v.number(),
+          deadlinePreference: v.number(),
+          targetGrade: v.string(),
+          expectedGrade: v.string(),
+          noiseLevel: v.number(),
+        })
+      ),
+      additionalInfo: v.string(),
+      shareLocation: v.boolean(),
+      syncContacts: v.boolean(),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Called updateStudyProfile without authentication");
+    }
+
+    // Get the user ID from their clerk ID
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Update the user's study profile
+    await ctx.db.patch(user._id, {
+      studyProfile: args.studyProfile,
+      completedOnboarding: true, // Also mark onboarding as complete
+    });
+
+    return user._id;
+  },
+});
+
+export const deleteClass = mutation({
+  args: {
+    studyProfile: v.object({
+      dorm: v.string(),
+      studyLocations: v.array(v.string()),
+      alertnessPreference: v.number(),
+      punctualityPreference: v.number(),
+      learningPreferences: v.record(v.string(), v.number()),
+      availableTimeSlots: v.array(
+        v.object({
+          day: v.string(),
+          slots: v.array(v.number()),
+        })
+      ),
+      classes: v.array(
+        v.object({
+          name: v.string(),
+          weeklyHours: v.number(),
+          deadlinePreference: v.number(),
+          targetGrade: v.string(),
+          expectedGrade: v.string(),
+          noiseLevel: v.number(),
+        })
+      ),
+      additionalInfo: v.string(),
+      shareLocation: v.boolean(),
+      syncContacts: v.boolean(),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Called deleteClass without authentication");
+    }
+
+    // Get the user ID from their clerk ID
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Update the user's study profile
+    await ctx.db.patch(user._id, {
+      studyProfile: args.studyProfile,
+    });
+
+    return user._id;
+  },
+});
+
+export const generateMatches = mutation({
+  args: {
+    courseId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // Get the current user
+    const currentUser = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!currentUser) {
+      throw new Error("User not found");
+    }
+
+    // Get all users who have completed onboarding
+    const potentialMatches = await ctx.db
+      .query("users")
+      .filter((q) => 
+        q.and(
+          q.eq(q.field("completedOnboarding"), true),
+          q.neq(q.field("_id"), currentUser._id)
+        )
+      )
+      .collect();
+
+    // Generate fake matches with random scores and reasons
+    const matchReasons = [
+      "Similar study schedule • Both morning people",
+      "Matching learning styles • Similar work habits",
+      "Compatible study locations • Similar goals",
+      "Both detail-oriented • Complementary strengths",
+      "Similar academic interests • Compatible schedules",
+    ];
+
+    const matches = potentialMatches.map(user => ({
+      userId: currentUser._id,
+      matchedUserId: user._id,
+      matchScore: 85 + Math.floor(Math.random() * 15), // Random score between 85-100
+      matchReason: matchReasons[Math.floor(Math.random() * matchReasons.length)],
+      status: "pending",
+      courseId: args.courseId,
+      createdAt: Date.now() - Math.floor(Math.random() * 86400000), // Random time in last 24h
+    }));
+
+    // Insert all matches
+    await Promise.all(
+      matches.map(match => ctx.db.insert("matches", match))
+    );
+
+    return matches.length;
+  },
+});
+
+export const deleteMatch = mutation({
+  args: {
+    matchId: v.id("matches"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // Get the current user
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Delete the match
+    await ctx.db.delete(args.matchId);
+  },
+});
+
+export const saveBackgroundPicture = mutation({
+  args: {
+    storageId: v.id("_storage"),
+    userID: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userID, {
+      backgroundPictureStorageId: args.storageId,
+    });
+  },
+});
+
+

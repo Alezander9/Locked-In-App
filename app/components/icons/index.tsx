@@ -1,5 +1,6 @@
 import * as React from "react";
-import Svg, { Path, SvgProps } from "react-native-svg";
+import { useTheme } from "tamagui"; 
+import Svg, { Path, SvgProps, Circle} from "react-native-svg";
 
 export function ClassesIcon({
   color = "#0F9ED5",
@@ -969,6 +970,318 @@ export function ArrowRightIcon({
   );
 }
 
+export function ChevronDownIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      {...props}
+    >
+      <Path
+        d="M6.343 7.757L12 13.414l5.657-5.657a1 1 0 011.414 1.414l-6.364 6.364a1 1 0 01-1.414 0L5.93 9.172a1 1 0 011.414-1.415z"
+        fill={color}
+      />
+    </Svg>
+  );
+}
+
+export function ChevronUpIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      {...props}
+    >
+      <Path
+        d="M17.657 16.243L12 10.586l-5.657 5.657a1 1 0 01-1.414-1.414l6.364-6.364a1 1 0 011.414 0l6.364 6.364a1 1 0 01-1.414 1.414z"
+        fill={color}
+      />
+    </Svg>
+  );
+}
+
+export function PlusIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      {...props}
+    >
+      <Path
+        d="M12 4C12.5523 4 13 4.44772 13 5V11H19C19.5523 11 20 11.4477 20 12C20 12.5523 19.5523 13 19 13H13V19C13 19.5523 12.5523 20 12 20C11.4477 20 11 19.5523 11 19V13H5C4.44772 13 4 12.5523 4 12C4 11.4477 4.44772 11 5 11H11V5C11 4.44772 11.4477 4 12 4Z"
+        fill={color}
+      />
+    </Svg>
+  );
+}
+
+export function MailIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      {...props}
+    >
+      <Path
+        d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z"
+        fill={color}
+      />
+    </Svg>
+  );
+}
+
+export function LinkedinIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      {...props}
+    >
+      <Path
+        d="M19 3H5C3.895 3 3 3.895 3 5V19C3 20.105 3.895 21 5 21H19C20.105 21 21 20.105 21 19V5C21 3.895 20.105 3 19 3ZM9 17H6.477V10H9V17ZM7.694 8.717C6.923 8.717 6.408 8.203 6.408 7.517C6.408 6.831 6.922 6.317 7.779 6.317C8.55 6.317 9.065 6.831 9.065 7.517C9.065 8.203 8.551 8.717 7.694 8.717ZM18 17H15.558V13.174C15.558 12.116 14.907 11.872 14.663 11.872C14.419 11.872 13.605 12.035 13.605 13.174C13.605 13.337 13.605 17 13.605 17H11.082V10H13.605V10.977C13.93 10.407 14.581 10 15.802 10C17.023 10 18 10.977 18 13.174V17Z"
+        fill={color}
+      />
+    </Svg>
+  );
+}
+
+export function MessageIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      {...props}
+    >
+      <Path
+        d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H6L4 18V4H20V16Z"
+        fill={color}
+      />
+    </Svg>
+  );
+}
+
+export function InstagramIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      {...props}
+    >
+      <Path
+        d="M12 2C14.717 2 15.056 2.01 16.122 2.06C17.187 2.11 17.912 2.277 18.55 2.525C19.21 2.779 19.766 3.123 20.322 3.678C20.8305 4.1779 21.224 4.78259 21.475 5.45C21.722 6.087 21.89 6.813 21.94 7.878C21.987 8.944 22 9.283 22 12C22 14.717 21.99 15.056 21.94 16.122C21.89 17.187 21.722 17.912 21.475 18.55C21.2247 19.2178 20.8311 19.8226 20.322 20.322C19.822 20.8303 19.2173 21.2238 18.55 21.475C17.913 21.722 17.187 21.89 16.122 21.94C15.056 21.987 14.717 22 12 22C9.283 22 8.944 21.99 7.878 21.94C6.813 21.89 6.088 21.722 5.45 21.475C4.78233 21.2245 4.17753 20.8309 3.678 20.322C3.16941 19.8222 2.77593 19.2175 2.525 18.55C2.277 17.913 2.11 17.187 2.06 16.122C2.013 15.056 2 14.717 2 12C2 9.283 2.01 8.944 2.06 7.878C2.11 6.812 2.277 6.088 2.525 5.45C2.77524 4.78218 3.1688 4.17732 3.678 3.678C4.17767 3.16923 4.78243 2.77573 5.45 2.525C6.088 2.277 6.812 2.11 7.878 2.06C8.944 2.013 9.283 2 12 2ZM12 7C10.6739 7 9.40215 7.52678 8.46447 8.46447C7.52678 9.40215 7 10.6739 7 12C7 13.3261 7.52678 14.5979 8.46447 15.5355C9.40215 16.4732 10.6739 17 12 17C13.3261 17 14.5979 16.4732 15.5355 15.5355C16.4732 14.5979 17 13.3261 17 12C17 10.6739 16.4732 9.40215 15.5355 8.46447C14.5979 7.52678 13.3261 7 12 7ZM18.5 6.75C18.5 6.41848 18.3683 6.10054 18.1339 5.86612C17.8995 5.6317 17.5815 5.5 17.25 5.5C16.9185 5.5 16.6005 5.6317 16.3661 5.86612C16.1317 6.10054 16 6.41848 16 6.75C16 7.08152 16.1317 7.39946 16.3661 7.63388C16.6005 7.8683 16.9185 8 17.25 8C17.5815 8 17.8995 7.8683 18.1339 7.63388C18.3683 7.39946 18.5 7.08152 18.5 6.75ZM12 9C12.7956 9 13.5587 9.31607 14.1213 9.87868C14.6839 10.4413 15 11.2044 15 12C15 12.7956 14.6839 13.5587 14.1213 14.1213C13.5587 14.6839 12.7956 15 12 15C11.2044 15 10.4413 14.6839 9.87868 14.1213C9.31607 13.5587 9 12.7956 9 12C9 11.2044 9.31607 10.4413 9.87868 9.87868C10.4413 9.31607 11.2044 9 12 9Z"
+        fill={color}
+      />
+    </Svg>
+  );
+}
+
+export function ArrowLeftIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  const scale = size / 185;
+  const height = Math.round(332 * scale);
+
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 185 332"
+      fill="none"
+      {...props}
+    >
+      {/* Same paths as ArrowRight but with transformed coordinates to point left */}
+      <Path
+        d="M178.51 325.49C186.25 317.8 186.29 305.28 178.59 297.54L35.11 153.16C27.41 145.42 14.9 145.38 7.15 153.07L7.15 153.07C-0.59 160.77 -0.63 173.28 7.07 181.03L150.56 325.41C158.25 333.15 170.77 333.19 178.51 325.49Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+      <Path
+        d="M6.17 177.81C13.87 185.55 26.38 185.59 34.13 177.9L178.51 34.41C186.25 26.72 186.29 14.2 178.59 6.46L178.59 6.46C170.9 -1.29 158.38 -1.32 150.64 6.37L6.26 149.86C-1.48 157.55 -1.52 170.07 6.17 177.81Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
+
+export function ProgressDotEmpty({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  const theme = useTheme();
+  // Convert color to string before checking
+  const colorStr = String(color);
+  const strokeColor = colorStr.startsWith('$') ? theme[colorStr.substring(1)]?.val ?? color : color;
+
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      {...props}
+    >
+      <Circle
+        cx={12}
+        cy={12}
+        r={8}
+        stroke={strokeColor}
+        strokeWidth={2}
+        fill="none"
+      />
+    </Svg>
+  );
+}
+
+export function ProgressDotFilled({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  const theme = useTheme();
+  // Convert color to string before checking
+  const colorStr = String(color);
+  const fillColor = colorStr.startsWith('$') ? theme[colorStr.substring(1)]?.val ?? color : color;
+
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      {...props}
+    >
+      <Circle
+        cx={12}
+        cy={12}
+        r={8}
+        fill={fillColor}
+      />
+    </Svg>
+  );
+}
+
+export const ImportIcon = ({ size = 24, color = "black" }) => {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M12 16L12 8M12 8L9 11M12 8L15 11"
+        stroke={color}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M3 15V16C3 18.2091 4.79086 20 7 20H17C19.2091 20 21 18.2091 21 16V15"
+        stroke={color}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+};
+
+export function LinkIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      {...props}
+    >
+      <Path
+        d="M10 13.2C10.5 13.8 11.2 14.1 12 14.1C12.8 14.1 13.5 13.8 14 13.2L17.3 9.9C18.5 8.7 18.5 6.8 17.3 5.6C16.1 4.4 14.2 4.4 13 5.6L12.5 6.1"
+        stroke={color}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M14 10.8C13.5 10.2 12.8 9.9 12 9.9C11.2 9.9 10.5 10.2 10 10.8L6.7 14.1C5.5 15.3 5.5 17.2 6.7 18.4C7.9 19.6 9.8 19.6 11 18.4L11.5 17.9"
+        stroke={color}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
+export function PencilIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      {...props}
+    >
+      <Path
+        d="M15.4 5.4L18.6 8.6M3 21H6.2L19.8 7.4C20.5333 6.66667 20.5333 5.46667 19.8 4.73333L19.2667 4.2C18.5333 3.46667 17.3333 3.46667 16.6 4.2L3 17.8V21Z"
+        stroke={color}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
 const Icons = {
   Classes: ClassesIcon,
   Tasks: TasksIcon,
@@ -989,6 +1302,20 @@ const Icons = {
   User: UserIcon,
   Write: WriteIcon,
   ArrowRight: ArrowRightIcon,
+  ArrowLeft: ArrowLeftIcon,
+  Plus: PlusIcon,
+  ChevronDown: ChevronDownIcon, 
+  ChevronUp: ChevronUpIcon, 
+  Mail: MailIcon,
+  Linkedin: LinkedinIcon,
+  Message: MessageIcon,
+  Instagram: InstagramIcon,
+  ProgressDotEmpty: ProgressDotEmpty,
+  ProgressDotFilled: ProgressDotFilled,
+  Import: ImportIcon,
+  Link: LinkIcon,
+  Pencil: PencilIcon,
 };
 
 export default Icons;
+

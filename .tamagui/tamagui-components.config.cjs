@@ -991,12 +991,12 @@ var require_shouldRenderNativePlatform = __commonJS({
       shouldRenderNativePlatform: /* @__PURE__ */ __name(() => shouldRenderNativePlatform4, "shouldRenderNativePlatform")
     });
     module2.exports = __toCommonJS2(shouldRenderNativePlatform_exports);
-    var import_constants43 = require_cjs6();
+    var import_constants44 = require_cjs6();
     var ALL_PLATFORMS2 = ["web", "android", "ios"];
     function shouldRenderNativePlatform4(nativeProp) {
       if (!nativeProp) return null;
       const userRequestedPlatforms = resolvePlatformNames2(nativeProp);
-      for (const platform2 of ALL_PLATFORMS2) if (platform2 === import_constants43.currentPlatform && userRequestedPlatforms.has(platform2)) return platform2;
+      for (const platform2 of ALL_PLATFORMS2) if (platform2 === import_constants44.currentPlatform && userRequestedPlatforms.has(platform2)) return platform2;
       return null;
     }
     __name(shouldRenderNativePlatform4, "shouldRenderNativePlatform");
@@ -1045,7 +1045,7 @@ var require_validStyleProps = __commonJS({
       validStyles: /* @__PURE__ */ __name(() => validStyles2, "validStyles")
     });
     module2.exports = __toCommonJS2(validStyleProps_exports);
-    var import_constants43 = require_cjs6();
+    var import_constants44 = require_cjs6();
     var textColors2 = {
       color: true,
       textDecorationColor: true,
@@ -1310,7 +1310,7 @@ var require_validStyleProps = __commonJS({
       touchAction: true,
       transformStyle: true,
       userSelect: true,
-      ...import_constants43.isAndroid ? {
+      ...import_constants44.isAndroid ? {
         elevationAndroid: true
       } : {}
     };
@@ -1499,11 +1499,11 @@ var require_useGet = __commonJS({
       useGet: /* @__PURE__ */ __name(() => useGet5, "useGet")
     });
     module2.exports = __toCommonJS2(useGet_exports);
-    var import_constants43 = require_cjs6();
+    var import_constants44 = require_cjs6();
     var React78 = __toESM2(require("react"));
     function useGet5(currentValue, initialValue2, forwardToFunction) {
       const curRef = React78.useRef(initialValue2 ?? currentValue);
-      return (0, import_constants43.useIsomorphicLayoutEffect)(() => {
+      return (0, import_constants44.useIsomorphicLayoutEffect)(() => {
         curRef.current = currentValue;
       }), React78.useCallback(forwardToFunction ? (...args) => {
         var _a;
@@ -2008,7 +2008,7 @@ var require_Collection = __commonJS({
     });
     module2.exports = __toCommonJS2(Collection_exports);
     var import_compose_refs25 = require_cjs12();
-    var import_constants43 = require_cjs6();
+    var import_constants44 = require_cjs6();
     var import_core57 = require("@tamagui/core");
     var import_react51 = __toESM2(require("react"));
     var import_jsx_runtime63 = require("react/jsx-runtime");
@@ -2064,7 +2064,7 @@ var require_Collection = __commonJS({
       function useCollection2(__scopeCollection) {
         const context = useCollectionContext(__scopeCollection);
         return import_react51.default.useCallback(() => {
-          if (!import_constants43.isWeb) return [];
+          if (!import_constants44.isWeb) return [];
           const collectionNode = context.collectionRef.current;
           if (!collectionNode) return [];
           const orderedNodes = Array.from(collectionNode.querySelectorAll(`[${ITEM_DATA_ATTR}]`));
@@ -2730,7 +2730,7 @@ var require_cjs17 = __commonJS({
       getFontSized: /* @__PURE__ */ __name(() => getFontSized2, "getFontSized")
     });
     module2.exports = __toCommonJS2(src_exports);
-    var import_constants43 = require_cjs6();
+    var import_constants44 = require_cjs6();
     var import_core57 = require("@tamagui/core");
     var getFontSized2 = /* @__PURE__ */ __name((sizeTokenIn = "$true", {
       font,
@@ -2742,7 +2742,7 @@ var require_cjs17 = __commonJS({
         fontSize: sizeTokenIn
       };
       const sizeToken = sizeTokenIn === "$true" ? getDefaultSizeToken2(font) : sizeTokenIn, style = {}, fontSize = font.size[sizeToken], lineHeight = (_a = font.lineHeight) == null ? void 0 : _a[sizeToken], fontWeight = (_b = font.weight) == null ? void 0 : _b[sizeToken], letterSpacing = (_c = font.letterSpacing) == null ? void 0 : _c[sizeToken], textTransform = (_d = font.transform) == null ? void 0 : _d[sizeToken], fontStyle = props.fontStyle ?? ((_e = font.style) == null ? void 0 : _e[sizeToken]), color = props.color ?? ((_f = font.color) == null ? void 0 : _f[sizeToken]);
-      return fontStyle && (style.fontStyle = fontStyle), textTransform && (style.textTransform = textTransform), fontFamily && (style.fontFamily = fontFamily), fontWeight && (style.fontWeight = fontWeight), letterSpacing && (style.letterSpacing = letterSpacing), fontSize && (style.fontSize = fontSize), lineHeight && (style.lineHeight = lineHeight), color && (style.color = color), process.env.NODE_ENV === "development" && props.debug && props.debug === "verbose" && (console.groupCollapsed("  \u{1F539} getFontSized", sizeTokenIn, sizeToken), import_constants43.isClient && console.info({
+      return fontStyle && (style.fontStyle = fontStyle), textTransform && (style.textTransform = textTransform), fontFamily && (style.fontFamily = fontFamily), fontWeight && (style.fontWeight = fontWeight), letterSpacing && (style.letterSpacing = letterSpacing), fontSize && (style.fontSize = fontSize), lineHeight && (style.lineHeight = lineHeight), color && (style.color = color), process.env.NODE_ENV === "development" && props.debug && props.debug === "verbose" && (console.groupCollapsed("  \u{1F539} getFontSized", sizeTokenIn, sizeToken), import_constants44.isClient && console.info({
         style,
         props,
         font
@@ -3184,7 +3184,7 @@ var require_Accordion = __commonJS({
     var import_collapsible = require_cjs11();
     var import_collection2 = require_cjs13();
     var import_compose_refs25 = require_cjs12();
-    var import_constants43 = require_cjs6();
+    var import_constants44 = require_cjs6();
     var import_helpers27 = require_cjs7();
     var import_stacks27 = require_cjs16();
     var import_text9 = require_cjs18();
@@ -3349,7 +3349,7 @@ var require_Accordion = __commonJS({
                 "data-orientation": orientation,
                 ref: composedRef,
                 ...accordionProps,
-                ...import_constants43.isWeb && {
+                ...import_constants44.isWeb && {
                   onKeyDown: handleKeyDown
                 }
               }
@@ -3675,10 +3675,9 @@ var require_es5 = __commonJS({
   }
 });
 
-// node_modules/tslib/tslib.es6.mjs
+// node_modules/tslib/tslib.es6.js
 var tslib_es6_exports = {};
 __export(tslib_es6_exports, {
-  __addDisposableResource: () => __addDisposableResource,
   __assign: () => __assign,
   __asyncDelegator: () => __asyncDelegator,
   __asyncGenerator: () => __asyncGenerator,
@@ -3690,8 +3689,6 @@ __export(tslib_es6_exports, {
   __classPrivateFieldSet: () => __classPrivateFieldSet,
   __createBinding: () => __createBinding,
   __decorate: () => __decorate,
-  __disposeResources: () => __disposeResources,
-  __esDecorate: () => __esDecorate,
   __exportStar: () => __exportStar,
   __extends: () => __extends,
   __generator: () => __generator,
@@ -3700,17 +3697,12 @@ __export(tslib_es6_exports, {
   __makeTemplateObject: () => __makeTemplateObject,
   __metadata: () => __metadata,
   __param: () => __param,
-  __propKey: () => __propKey,
   __read: () => __read,
   __rest: () => __rest,
-  __rewriteRelativeImportExtension: () => __rewriteRelativeImportExtension,
-  __runInitializers: () => __runInitializers,
-  __setFunctionName: () => __setFunctionName,
   __spread: () => __spread,
   __spreadArray: () => __spreadArray,
   __spreadArrays: () => __spreadArrays,
-  __values: () => __values,
-  default: () => tslib_es6_default
+  __values: () => __values
 });
 function __extends(d, b) {
   if (typeof b !== "function" && b !== null)
@@ -3743,53 +3735,6 @@ function __param(paramIndex, decorator) {
   return function(target, key) {
     decorator(target, key, paramIndex);
   };
-}
-function __esDecorate(ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
-  function accept(f) {
-    if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
-    return f;
-  }
-  __name(accept, "accept");
-  var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
-  var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
-  var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
-  var _, done = false;
-  for (var i = decorators.length - 1; i >= 0; i--) {
-    var context = {};
-    for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
-    for (var p in contextIn.access) context.access[p] = contextIn.access[p];
-    context.addInitializer = function(f) {
-      if (done) throw new TypeError("Cannot add initializers after decoration has completed");
-      extraInitializers.push(accept(f || null));
-    };
-    var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
-    if (kind === "accessor") {
-      if (result === void 0) continue;
-      if (result === null || typeof result !== "object") throw new TypeError("Object expected");
-      if (_ = accept(result.get)) descriptor.get = _;
-      if (_ = accept(result.set)) descriptor.set = _;
-      if (_ = accept(result.init)) initializers.unshift(_);
-    } else if (_ = accept(result)) {
-      if (kind === "field") initializers.unshift(_);
-      else descriptor[key] = _;
-    }
-  }
-  if (target) Object.defineProperty(target, contextIn.name, descriptor);
-  done = true;
-}
-function __runInitializers(thisArg, initializers, value) {
-  var useValue = arguments.length > 2;
-  for (var i = 0; i < initializers.length; i++) {
-    value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
-  }
-  return useValue ? value : void 0;
-}
-function __propKey(x) {
-  return typeof x === "symbol" ? x : "".concat(x);
-}
-function __setFunctionName(f, name, prefix) {
-  if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
-  return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 }
 function __metadata(metadataKey, metadataValue) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
@@ -3829,8 +3774,8 @@ function __generator(thisArg, body) {
   var _ = { label: 0, sent: /* @__PURE__ */ __name(function() {
     if (t[0] & 1) throw t[1];
     return t[1];
-  }, "sent"), trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
-  return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() {
+  }, "sent"), trys: [], ops: [] }, f, y, t, g;
+  return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() {
     return this;
   }), g;
   function verb(n) {
@@ -3954,24 +3899,15 @@ function __await(v) {
 function __asyncGenerator(thisArg, _arguments, generator) {
   if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
   var g = generator.apply(thisArg, _arguments || []), i, q = [];
-  return i = Object.create((typeof AsyncIterator === "function" ? AsyncIterator : Object).prototype), verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function() {
+  return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function() {
     return this;
   }, i;
-  function awaitReturn(f) {
-    return function(v) {
-      return Promise.resolve(v).then(f, reject);
+  function verb(n) {
+    if (g[n]) i[n] = function(v) {
+      return new Promise(function(a, b) {
+        q.push([n, v, a, b]) > 1 || resume(n, v);
+      });
     };
-  }
-  __name(awaitReturn, "awaitReturn");
-  function verb(n, f) {
-    if (g[n]) {
-      i[n] = function(v) {
-        return new Promise(function(a, b) {
-          q.push([n, v, a, b]) > 1 || resume(n, v);
-        });
-      };
-      if (f) i[n] = f(i[n]);
-    }
   }
   __name(verb, "verb");
   function resume(n, v) {
@@ -4008,7 +3944,7 @@ function __asyncDelegator(o) {
   }, i;
   function verb(n, f) {
     i[n] = o[n] ? function(v) {
-      return (p = !p) ? { value: __await(o[n](v)), done: false } : f ? f(v) : v;
+      return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v;
     } : f;
   }
   __name(verb, "verb");
@@ -4046,7 +3982,7 @@ function __importStar(mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
   if (mod != null) {
-    for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+    for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
   }
   __setModuleDefault(result, mod);
   return result;
@@ -4069,72 +4005,9 @@ function __classPrivateFieldIn(state, receiver) {
   if (receiver === null || typeof receiver !== "object" && typeof receiver !== "function") throw new TypeError("Cannot use 'in' operator on non-object");
   return typeof state === "function" ? receiver === state : state.has(receiver);
 }
-function __addDisposableResource(env, value, async) {
-  if (value !== null && value !== void 0) {
-    if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-    var dispose, inner2;
-    if (async) {
-      if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
-      dispose = value[Symbol.asyncDispose];
-    }
-    if (dispose === void 0) {
-      if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
-      dispose = value[Symbol.dispose];
-      if (async) inner2 = dispose;
-    }
-    if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
-    if (inner2) dispose = /* @__PURE__ */ __name(function() {
-      try {
-        inner2.call(this);
-      } catch (e) {
-        return Promise.reject(e);
-      }
-    }, "dispose");
-    env.stack.push({ value, dispose, async });
-  } else if (async) {
-    env.stack.push({ async: true });
-  }
-  return value;
-}
-function __disposeResources(env) {
-  function fail(e) {
-    env.error = env.hasError ? new _SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
-    env.hasError = true;
-  }
-  __name(fail, "fail");
-  var r, s = 0;
-  function next() {
-    while (r = env.stack.pop()) {
-      try {
-        if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
-        if (r.dispose) {
-          var result = r.dispose.call(r.value);
-          if (r.async) return s |= 2, Promise.resolve(result).then(next, function(e) {
-            fail(e);
-            return next();
-          });
-        } else s |= 1;
-      } catch (e) {
-        fail(e);
-      }
-    }
-    if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
-    if (env.hasError) throw env.error;
-  }
-  __name(next, "next");
-  return next();
-}
-function __rewriteRelativeImportExtension(path, preserveJsx) {
-  if (typeof path === "string" && /^\.\.?\//.test(path)) {
-    return path.replace(/\.(tsx)$|((?:\.d)?)((?:\.[^./]+?)?)\.([cm]?)ts$/i, function(m, tsx, d, ext, cm) {
-      return tsx ? preserveJsx ? ".jsx" : ".js" : d && (!ext || !cm) ? m : d + ext + "." + cm.toLowerCase() + "js";
-    });
-  }
-  return path;
-}
-var extendStatics, __assign, __createBinding, __setModuleDefault, ownKeys, _SuppressedError, tslib_es6_default;
+var extendStatics, __assign, __createBinding, __setModuleDefault;
 var init_tslib_es6 = __esm({
-  "node_modules/tslib/tslib.es6.mjs"() {
+  "node_modules/tslib/tslib.es6.js"() {
     extendStatics = /* @__PURE__ */ __name(function(d, b) {
       extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
         d2.__proto__ = b2;
@@ -4157,10 +4030,6 @@ var init_tslib_es6 = __esm({
     __name(__rest, "__rest");
     __name(__decorate, "__decorate");
     __name(__param, "__param");
-    __name(__esDecorate, "__esDecorate");
-    __name(__runInitializers, "__runInitializers");
-    __name(__propKey, "__propKey");
-    __name(__setFunctionName, "__setFunctionName");
     __name(__metadata, "__metadata");
     __name(__awaiter, "__awaiter");
     __name(__generator, "__generator");
@@ -4193,60 +4062,11 @@ var init_tslib_es6 = __esm({
     } : function(o, v) {
       o["default"] = v;
     };
-    ownKeys = /* @__PURE__ */ __name(function(o) {
-      ownKeys = Object.getOwnPropertyNames || function(o2) {
-        var ar = [];
-        for (var k in o2) if (Object.prototype.hasOwnProperty.call(o2, k)) ar[ar.length] = k;
-        return ar;
-      };
-      return ownKeys(o);
-    }, "ownKeys");
     __name(__importStar, "__importStar");
     __name(__importDefault, "__importDefault");
     __name(__classPrivateFieldGet, "__classPrivateFieldGet");
     __name(__classPrivateFieldSet, "__classPrivateFieldSet");
     __name(__classPrivateFieldIn, "__classPrivateFieldIn");
-    __name(__addDisposableResource, "__addDisposableResource");
-    _SuppressedError = typeof SuppressedError === "function" ? SuppressedError : function(error4, suppressed, message) {
-      var e = new Error(message);
-      return e.name = "SuppressedError", e.error = error4, e.suppressed = suppressed, e;
-    };
-    __name(__disposeResources, "__disposeResources");
-    __name(__rewriteRelativeImportExtension, "__rewriteRelativeImportExtension");
-    tslib_es6_default = {
-      __extends,
-      __assign,
-      __rest,
-      __decorate,
-      __param,
-      __esDecorate,
-      __runInitializers,
-      __propKey,
-      __setFunctionName,
-      __metadata,
-      __awaiter,
-      __generator,
-      __createBinding,
-      __exportStar,
-      __values,
-      __read,
-      __spread,
-      __spreadArrays,
-      __spreadArray,
-      __await,
-      __asyncGenerator,
-      __asyncDelegator,
-      __asyncValues,
-      __makeTemplateObject,
-      __importStar,
-      __importDefault,
-      __classPrivateFieldGet,
-      __classPrivateFieldSet,
-      __classPrivateFieldIn,
-      __addDisposableResource,
-      __disposeResources,
-      __rewriteRelativeImportExtension
-    };
   }
 });
 
@@ -5769,7 +5589,7 @@ var require_defineProperty = __commonJS({
 var require_objectSpread2 = __commonJS({
   "node_modules/@babel/runtime/helpers/objectSpread2.js"(exports2, module2) {
     var defineProperty = require_defineProperty();
-    function ownKeys2(e, r) {
+    function ownKeys(e, r) {
       var t = Object.keys(e);
       if (Object.getOwnPropertySymbols) {
         var o = Object.getOwnPropertySymbols(e);
@@ -5779,13 +5599,13 @@ var require_objectSpread2 = __commonJS({
       }
       return t;
     }
-    __name(ownKeys2, "ownKeys");
+    __name(ownKeys, "ownKeys");
     function _objectSpread2(e) {
       for (var r = 1; r < arguments.length; r++) {
         var t = null != arguments[r] ? arguments[r] : {};
-        r % 2 ? ownKeys2(Object(t), true).forEach(function(r2) {
+        r % 2 ? ownKeys(Object(t), true).forEach(function(r2) {
           defineProperty(e, r2, t[r2]);
-        }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys2(Object(t)).forEach(function(r2) {
+        }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function(r2) {
           Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
         });
       }
@@ -5895,9 +5715,9 @@ var require_isWebColor = __commonJS({
   }
 });
 
-// node_modules/@react-native/normalize-colors/index.js
+// node_modules/react-native-web/node_modules/@react-native/normalize-colors/index.js
 var require_normalize_colors = __commonJS({
-  "node_modules/@react-native/normalize-colors/index.js"(exports2, module2) {
+  "node_modules/react-native-web/node_modules/@react-native/normalize-colors/index.js"(exports2, module2) {
     "use strict";
     function normalizeColor(color) {
       if (typeof color === "number") {
@@ -26828,6 +26648,7 @@ __export(esm_exports, {
   Header: () => Header,
   Heading: () => Heading,
   INITIAL_STATE: () => INITIAL_STATE,
+  IS_FABRIC: () => IS_FABRIC,
   Image: () => Image,
   Input: () => Input,
   InputFrame: () => InputFrame,
@@ -26928,6 +26749,7 @@ __export(esm_exports, {
   TooltipGroup: () => TooltipGroup,
   TooltipSimple: () => TooltipSimple,
   Track: () => Track,
+  USE_NATIVE_PORTAL: () => USE_NATIVE_PORTAL,
   Unspaced: () => import_core56.Unspaced,
   View: () => import_core56.View,
   VisuallyHidden: () => VisuallyHidden,
@@ -28130,6 +27952,10 @@ var NonNativePortalComponent = /* @__PURE__ */ __name((props) => {
   }, [children]), passthrough ? children : null;
 }, "NonNativePortalComponent");
 
+// node_modules/@tamagui/portal/dist/esm/constants.mjs
+var IS_FABRIC = typeof global < "u" && !!(global._IS_FABRIC ?? global.nativeFabricUIManager);
+var USE_NATIVE_PORTAL = !isAndroid && process.env.TAMAGUI_USE_NATIVE_PORTAL !== "false" && !IS_FABRIC;
+
 // node_modules/@tamagui/adapt/dist/esm/Adapt.mjs
 var import_react7 = __toESM(require("react"), 1);
 var import_jsx_runtime3 = require("react/jsx-runtime");
@@ -29216,7 +29042,7 @@ var SheetImplementationCustom = import_react17.default.forwardRef(function(props
       ...animationPropConfig
     } : null);
   })(), [isShowingInnerSheet, setIsShowingInnerSheet] = import_react17.default.useState(false), shouldHideParentSheet = !isWeb && modal && isShowingInnerSheet && // if not using weird portal limitation we dont need to hide parent sheet
-  process.env.TAMAGUI_USE_NATIVE_PORTAL !== "false", sheetInsideSheet = import_react17.default.useContext(SheetInsideSheetContext), onInnerSheet = import_react17.default.useCallback((hasChild) => {
+  USE_NATIVE_PORTAL, sheetInsideSheet = import_react17.default.useContext(SheetInsideSheetContext), onInnerSheet = import_react17.default.useCallback((hasChild) => {
     setIsShowingInnerSheet(hasChild);
   }, []), positions = import_react17.default.useMemo(() => snapPoints.map((point) => getYPositions(snapPointsMode, point, screenSize, frameSize)), [screenSize, frameSize, snapPoints, snapPointsMode]), {
     animationDriver
@@ -29421,7 +29247,7 @@ var SheetImplementationCustom = import_react17.default.forwardRef(function(props
       })]
     })
   });
-  if (isAndroid) {
+  if (!USE_NATIVE_PORTAL) {
     const adaptContext = useAdaptContext();
     contents = /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(ProvideAdaptContext, {
       ...adaptContext,
@@ -34121,13 +33947,7 @@ var PopperContent = React45.forwardRef(function(props, forwardedRef) {
     update,
     floatingStyles,
     hasFloating
-  } = usePopperContext(__scopePopper), contentRefs = useComposedRefs(refs.setFloating, forwardedRef);
-  let finalHasFloatingValue = false;
-  if (isAndroid) {
-    const initialRender = React45.useRef(true), finalHasFloating = React45.useRef(false);
-    hasFloating === false && (initialRender.current = false), initialRender.current || (finalHasFloating.current = hasFloating), finalHasFloatingValue = finalHasFloating.current;
-  }
-  const contents = React45.useMemo(() => /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(PopperContentFrame, {
+  } = usePopperContext(__scopePopper), contentRefs = useComposedRefs(refs.setFloating, forwardedRef), contents = React45.useMemo(() => /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(PopperContentFrame, {
     "data-placement": placement,
     "data-strategy": strategy,
     contain: "layout",
@@ -34137,13 +33957,6 @@ var PopperContent = React45.forwardRef(function(props, forwardedRef) {
   React45.useEffect(() => {
     enableAnimationForPositionChange && (x || y) && setNeedsMeasure(false);
   }, [enableAnimationForPositionChange, x, y]);
-  let show = true;
-  if (isAndroid) {
-    const [show_, setShow] = React45.useState(false);
-    show = show_, React45.useEffect(() => {
-      finalHasFloatingValue && setShow(true);
-    }, [finalHasFloatingValue, x, y]);
-  }
   const frameProps = {
     ref: contentRefs,
     x: x || 0,
@@ -34151,7 +33964,7 @@ var PopperContent = React45.forwardRef(function(props, forwardedRef) {
     top: 0,
     left: 0,
     position: strategy,
-    opacity: show ? 1 : 0,
+    opacity: true ? 1 : 0,
     ...enableAnimationForPositionChange && {
       // apply animation but disable it on initial render to avoid animating from 0 to the first position
       animation: rest.animation,
@@ -34688,12 +34501,11 @@ function useHover(context, props) {
       performedPointerEventsMutationRef.current = false;
     }
   });
+  const isClickLikeOpenEvent = useEffectEvent(() => {
+    return dataRef.current.openEvent ? ["click", "mousedown"].includes(dataRef.current.openEvent.type) : false;
+  });
   React46.useEffect(() => {
     if (!enabled) return;
-    function isClickLikeOpenEvent() {
-      return dataRef.current.openEvent ? ["click", "mousedown"].includes(dataRef.current.openEvent.type) : false;
-    }
-    __name(isClickLikeOpenEvent, "isClickLikeOpenEvent");
     function onMouseEnter(event) {
       clearTimeout(timeoutRef.current);
       blockMouseMoveRef.current = false;
@@ -34707,7 +34519,7 @@ function useHover(context, props) {
             onOpenChange(true, event, "hover");
           }
         }, openDelay);
-      } else {
+      } else if (!open) {
         onOpenChange(true, event, "hover");
       }
     }
@@ -34730,7 +34542,9 @@ function useHover(context, props) {
           onClose() {
             clearPointerEvents();
             cleanupMouseMoveHandler();
-            closeWithDelay(event, true, "safe-polygon");
+            if (!isClickLikeOpenEvent()) {
+              closeWithDelay(event, true, "safe-polygon");
+            }
           }
         });
         const handler = handlerRef.current;
@@ -34757,7 +34571,9 @@ function useHover(context, props) {
         onClose() {
           clearPointerEvents();
           cleanupMouseMoveHandler();
-          closeWithDelay(event);
+          if (!isClickLikeOpenEvent()) {
+            closeWithDelay(event);
+          }
         }
       })(event);
     }
@@ -34781,7 +34597,7 @@ function useHover(context, props) {
         ref.removeEventListener("mouseleave", onMouseLeave);
       };
     }
-  }, [elements, enabled, context, mouseOnly, restMs, move, closeWithDelay, cleanupMouseMoveHandler, clearPointerEvents, onOpenChange, open, openRef, tree, delayRef, handleCloseRef, dataRef]);
+  }, [elements, enabled, context, mouseOnly, restMs, move, closeWithDelay, cleanupMouseMoveHandler, clearPointerEvents, onOpenChange, open, openRef, tree, delayRef, handleCloseRef, dataRef, isClickLikeOpenEvent]);
   index2(() => {
     var _handleCloseRef$curre;
     if (!enabled) return;
@@ -34866,9 +34682,11 @@ function useHover(context, props) {
       clearTimeout(timeoutRef.current);
     },
     onMouseLeave(event) {
-      closeWithDelay(event.nativeEvent, false);
+      if (!isClickLikeOpenEvent()) {
+        closeWithDelay(event.nativeEvent, false);
+      }
     }
-  }), [closeWithDelay]);
+  }), [closeWithDelay, isClickLikeOpenEvent]);
   return React46.useMemo(() => enabled ? {
     reference,
     floating
@@ -37395,6 +37213,7 @@ function getGridNavigatedIndex(elementsRef, _ref) {
     event,
     orientation,
     loop,
+    rtl,
     cols,
     disabledIndices,
     minIndex,
@@ -37453,7 +37272,7 @@ function getGridNavigatedIndex(elementsRef, _ref) {
   }
   if (orientation === "both") {
     const prevRow = floor2(prevIndex / cols);
-    if (event.key === ARROW_RIGHT2) {
+    if (event.key === (rtl ? ARROW_LEFT2 : ARROW_RIGHT2)) {
       stop && stopEvent2(event);
       if (prevIndex % cols !== cols - 1) {
         nextIndex = findNonDisabledIndex(elementsRef, {
@@ -37476,7 +37295,7 @@ function getGridNavigatedIndex(elementsRef, _ref) {
         nextIndex = prevIndex;
       }
     }
-    if (event.key === ARROW_LEFT2) {
+    if (event.key === (rtl ? ARROW_RIGHT2 : ARROW_LEFT2)) {
       stop && stopEvent2(event);
       if (prevIndex % cols !== 0) {
         nextIndex = findNonDisabledIndex(elementsRef, {
@@ -37505,7 +37324,7 @@ function getGridNavigatedIndex(elementsRef, _ref) {
     const lastRow = floor2(maxIndex / cols) === prevRow;
     if (isIndexOutOfBounds(elementsRef, nextIndex)) {
       if (loop && lastRow) {
-        nextIndex = event.key === ARROW_LEFT2 ? maxIndex : findNonDisabledIndex(elementsRef, {
+        nextIndex = event.key === (rtl ? ARROW_RIGHT2 : ARROW_LEFT2) ? maxIndex : findNonDisabledIndex(elementsRef, {
           startingIndex: prevIndex - prevIndex % cols - 1,
           disabledIndices
         });
@@ -37588,27 +37407,6 @@ function isDisabled(list, index5, disabledIndices) {
   return element == null || element.hasAttribute("disabled") || element.getAttribute("aria-disabled") === "true";
 }
 __name(isDisabled, "isDisabled");
-var rafId = 0;
-function enqueueFocus(el, options) {
-  if (options === void 0) {
-    options = {};
-  }
-  const {
-    preventScroll = false,
-    cancelPrevious = true,
-    sync = false
-  } = options;
-  cancelPrevious && cancelAnimationFrame(rafId);
-  const exec = /* @__PURE__ */ __name(() => el == null ? void 0 : el.focus({
-    preventScroll
-  }), "exec");
-  if (sync) {
-    exec();
-  } else {
-    rafId = requestAnimationFrame(exec);
-  }
-}
-__name(enqueueFocus, "enqueueFocus");
 var index3 = typeof document !== "undefined" ? import_react39.useLayoutEffect : import_react39.useEffect;
 var horizontalKeys2 = [ARROW_LEFT2, ARROW_RIGHT2];
 var verticalKeys2 = [ARROW_UP2, ARROW_DOWN2];
@@ -37716,6 +37514,27 @@ function useLatestRef3(value) {
   return ref;
 }
 __name(useLatestRef3, "useLatestRef");
+var rafId = 0;
+function enqueueFocus(el, options) {
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    preventScroll = false,
+    cancelPrevious = true,
+    sync = false
+  } = options;
+  cancelPrevious && cancelAnimationFrame(rafId);
+  const exec = /* @__PURE__ */ __name(() => el == null ? void 0 : el.focus({
+    preventScroll
+  }), "exec");
+  if (sync) {
+    exec();
+  } else {
+    rafId = requestAnimationFrame(exec);
+  }
+}
+__name(enqueueFocus, "enqueueFocus");
 function getAncestors(nodes, id) {
   var _nodes$find;
   let allAncestors = [];
@@ -38217,9 +38036,6 @@ function FloatingFocusManager(props) {
     }).filter(Boolean).flat();
   });
   React56.useEffect(() => {
-    preventReturnFocusRef.current = false;
-  }, [disabled]);
-  React56.useEffect(() => {
     if (disabled) return;
     if (!modal) return;
     function onKeyDown(event) {
@@ -38421,6 +38237,11 @@ function FloatingFocusManager(props) {
       });
     };
   }, [disabled, floating, floatingFocusElement, returnFocusRef, dataRef, refs, events, tree, nodeId, isInsidePortal, domReference]);
+  React56.useEffect(() => {
+    queueMicrotask(() => {
+      preventReturnFocusRef.current = false;
+    });
+  }, [disabled]);
   index3(() => {
     if (disabled) return;
     if (!portalContext) return;
@@ -38618,7 +38439,8 @@ function useClick(context, props) {
     event: eventOption = "click",
     toggle = true,
     ignoreMouse = false,
-    keyboardHandlers = true
+    keyboardHandlers = true,
+    stickIfOpen = true
   } = props;
   const pointerTypeRef = React56.useRef();
   const didKeyDownRef = React56.useRef(false);
@@ -38631,7 +38453,7 @@ function useClick(context, props) {
       if (event.button !== 0) return;
       if (eventOption === "click") return;
       if (isMouseLikePointerType2(pointerType, true) && ignoreMouse) return;
-      if (open && toggle && (dataRef.current.openEvent ? dataRef.current.openEvent.type === "mousedown" : true)) {
+      if (open && toggle && (dataRef.current.openEvent && stickIfOpen ? dataRef.current.openEvent.type === "mousedown" : true)) {
         onOpenChange(false, event.nativeEvent, "click");
       } else {
         event.preventDefault();
@@ -38645,7 +38467,7 @@ function useClick(context, props) {
         return;
       }
       if (isMouseLikePointerType2(pointerType, true) && ignoreMouse) return;
-      if (open && toggle && (dataRef.current.openEvent ? dataRef.current.openEvent.type === "click" : true)) {
+      if (open && toggle && (dataRef.current.openEvent && stickIfOpen ? dataRef.current.openEvent.type === "click" : true)) {
         onOpenChange(false, event.nativeEvent, "click");
       } else {
         onOpenChange(true, event.nativeEvent, "click");
@@ -38681,7 +38503,7 @@ function useClick(context, props) {
         }
       }
     }
-  }), [dataRef, domReference, eventOption, ignoreMouse, keyboardHandlers, onOpenChange, open, toggle]);
+  }), [dataRef, domReference, eventOption, ignoreMouse, keyboardHandlers, onOpenChange, open, stickIfOpen, toggle]);
   return React56.useMemo(() => enabled ? {
     reference
   } : {}, [enabled, reference]);
@@ -39527,6 +39349,7 @@ function useListNavigation(context, props) {
         event,
         orientation,
         loop,
+        rtl,
         cols,
         // treat undefined (empty grid spaces) as disabled indices so we
         // don't end up in them
@@ -39541,7 +39364,7 @@ function useListNavigation(context, props) {
           // use a corner matching the edge closest to the direction
           // we're moving in so we don't end up in the same item. Prefer
           // top/left over bottom/right.
-          event.key === ARROW_DOWN2 ? "bl" : event.key === ARROW_RIGHT2 ? "tr" : "tl"
+          event.key === ARROW_DOWN2 ? "bl" : event.key === (rtl ? ARROW_LEFT2 : ARROW_RIGHT2) ? "tr" : "tl"
         ),
         stopEvent: true
       })];
@@ -43056,12 +42879,11 @@ function useHover2(context, props) {
       performedPointerEventsMutationRef.current = false;
     }
   });
+  const isClickLikeOpenEvent = useEffectEvent3(() => {
+    return dataRef.current.openEvent ? ["click", "mousedown"].includes(dataRef.current.openEvent.type) : false;
+  });
   React71.useEffect(() => {
     if (!enabled) return;
-    function isClickLikeOpenEvent() {
-      return dataRef.current.openEvent ? ["click", "mousedown"].includes(dataRef.current.openEvent.type) : false;
-    }
-    __name(isClickLikeOpenEvent, "isClickLikeOpenEvent");
     function onMouseEnter(event) {
       clearTimeout(timeoutRef.current);
       blockMouseMoveRef.current = false;
@@ -43075,7 +42897,7 @@ function useHover2(context, props) {
             onOpenChange(true, event, "hover");
           }
         }, openDelay);
-      } else {
+      } else if (!open) {
         onOpenChange(true, event, "hover");
       }
     }
@@ -43098,7 +42920,9 @@ function useHover2(context, props) {
           onClose() {
             clearPointerEvents();
             cleanupMouseMoveHandler();
-            closeWithDelay(event, true, "safe-polygon");
+            if (!isClickLikeOpenEvent()) {
+              closeWithDelay(event, true, "safe-polygon");
+            }
           }
         });
         const handler = handlerRef.current;
@@ -43125,7 +42949,9 @@ function useHover2(context, props) {
         onClose() {
           clearPointerEvents();
           cleanupMouseMoveHandler();
-          closeWithDelay(event);
+          if (!isClickLikeOpenEvent()) {
+            closeWithDelay(event);
+          }
         }
       })(event);
     }
@@ -43149,7 +42975,7 @@ function useHover2(context, props) {
         ref.removeEventListener("mouseleave", onMouseLeave);
       };
     }
-  }, [elements, enabled, context, mouseOnly, restMs, move, closeWithDelay, cleanupMouseMoveHandler, clearPointerEvents, onOpenChange, open, openRef, tree, delayRef, handleCloseRef, dataRef]);
+  }, [elements, enabled, context, mouseOnly, restMs, move, closeWithDelay, cleanupMouseMoveHandler, clearPointerEvents, onOpenChange, open, openRef, tree, delayRef, handleCloseRef, dataRef, isClickLikeOpenEvent]);
   index4(() => {
     var _handleCloseRef$curre;
     if (!enabled) return;
@@ -43234,9 +43060,11 @@ function useHover2(context, props) {
       clearTimeout(timeoutRef.current);
     },
     onMouseLeave(event) {
-      closeWithDelay(event.nativeEvent, false);
+      if (!isClickLikeOpenEvent()) {
+        closeWithDelay(event.nativeEvent, false);
+      }
     }
-  }), [closeWithDelay]);
+  }), [closeWithDelay, isClickLikeOpenEvent]);
   return React71.useMemo(() => enabled ? {
     reference,
     floating
@@ -44754,6 +44582,7 @@ var import_core56 = require("@tamagui/core");
   Header,
   Heading,
   INITIAL_STATE,
+  IS_FABRIC,
   Image,
   Input,
   InputFrame,
@@ -44854,6 +44683,7 @@ var import_core56 = require("@tamagui/core");
   TooltipGroup,
   TooltipSimple,
   Track,
+  USE_NATIVE_PORTAL,
   Unspaced,
   View,
   VisuallyHidden,
