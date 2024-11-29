@@ -25,11 +25,18 @@ export const Toast: React.FC<ToastProps> = ({ message, action, onClose }) => {
       </Text>
       {action && (
         <Button
-          onPress={action.onPress}
+          onPress={() => {
+            action.onPress();
+            onClose();
+          }}
           backgroundColor="transparent"
-          paddingHorizontal="$2"
+          height="auto"
+          alignItems="center"
+          justifyContent="center"
+          paddingHorizontal={0}
+          pressStyle={{ opacity: 0.7 }}
         >
-          <Text color="$toastButton" fontSize="$4">
+          <Text color="$toastButton" fontSize="$4" padding="$2">
             {action.label}
           </Text>
         </Button>
@@ -37,7 +44,8 @@ export const Toast: React.FC<ToastProps> = ({ message, action, onClose }) => {
       <Button
         onPress={onClose}
         backgroundColor="transparent"
-        paddingHorizontal="$2"
+        padding="$2"
+        hitSlop={10}
       >
         <XIcon color={theme.toastText.val} size={16} />
       </Button>

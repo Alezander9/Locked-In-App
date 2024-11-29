@@ -39,7 +39,13 @@ export const FormRow = ({
 }: FormRowProps) => {
   const theme = useTheme();
   return (
-    <FormRowContainer pressStyle={{ opacity: 0.7 }} onPress={onPress}>
+    <FormRowContainer
+      pressStyle={{
+        opacity: 0.7,
+        backgroundColor: "$bg",
+      }}
+      onPress={onPress}
+    >
       <Label>{label}</Label>
       <Stack flexDirection="row" alignItems="center">
         <Value>{value}</Value>

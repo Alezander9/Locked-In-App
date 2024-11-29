@@ -7,11 +7,11 @@ interface FormActionButtonProps {
   marginTop?: string | number;
 }
 
-export const FormActionButton = ({ 
-  onPress, 
+export const FormActionButton = ({
+  onPress,
   label,
   color = "$primary",
-  marginTop = "$4"
+  marginTop = "$4",
 }: FormActionButtonProps) => {
   return (
     <XStack

@@ -16,6 +16,7 @@ import { FormRowSelector } from "@/components/forms/FormRowSelector";
 import * as DocumentPicker from "expo-document-picker";
 import { FileProcessingError } from "@/convex/types";
 import * as FileSystem from "expo-file-system";
+import { Keyboard } from "react-native";
 
 export default function CreateTasksModal() {
   const {
@@ -37,6 +38,9 @@ export default function CreateTasksModal() {
   const { showToast } = useToast();
   const courses = useQuery(api.queries.getUserCourses) || [];
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const [invalidFields, setInvalidFields] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   const createTasks = useMutation(api.mutations.createTasks);
   const processFile = useAction(api.actions.processFileAndExtractTasks);
@@ -147,19 +151,66 @@ export default function CreateTasksModal() {
     checkAndAddExtractedTasks();
   };
 
+  const validateTask = (task: (typeof tasks)[0]) => {
+    const errors: { [key: string]: boolean } = {};
+
+    if (!task.courseId) {
+      errors.courseId = true;
+    }
+    if (!task.title?.trim()) {
+      errors.title = true;
+    }
+    if (!task.dueDate) {
+      errors.dueDate = true;
+    }
+
+    return errors;
+  };
+
+  const hasContent = (task: (typeof tasks)[0]) => {
+    return task.courseId || task.title || task.notes || task.dueDate;
+  };
+
   const handleSave = async () => {
     try {
-      const completedTasks = tasks.filter((_, index) => isTaskComplete(index));
+      Keyboard.dismiss();
 
-      if (completedTasks.length === 0) {
+      // Get tasks that have any content
+      const tasksToValidate = tasks.filter(hasContent);
+
+      if (tasksToValidate.length === 0) {
         showToast({
-          message: "Please complete at least one task",
+          message: "Please create at least one task",
+        });
+        return;
+      }
+
+      const allErrors = tasksToValidate.map(validateTask);
+      const hasErrors = allErrors.some(
+        (errors) => Object.keys(errors).length > 0
+      );
+
+      if (hasErrors) {
+        // Set invalid fields for the first incomplete task
+        const firstErrorIndex = allErrors.findIndex(
+          (errors) => Object.keys(errors).length > 0
+        );
+        console.log(
+          "Setting invalid fields for task",
+          firstErrorIndex,
+          ":",
+          allErrors[firstErrorIndex]
+        );
+        setInvalidFields(allErrors[firstErrorIndex]);
+
+        showToast({
+          message: "Please fill out all required fields",
         });
         return;
       }
 
       await createTasks({
-        tasks: completedTasks.map((task) => ({
+        tasks: tasksToValidate.map((task) => ({
           ...task,
           dueDate: task.dueDate.getTime(),
         })),
@@ -271,6 +322,7 @@ export default function CreateTasksModal() {
                         },
                       });
                     }}
+                    isInvalid={!!invalidFields.courseId}
                   />
                   <FormRowTextInput
                     label="Title"
@@ -279,6 +331,7 @@ export default function CreateTasksModal() {
                       handleFieldUpdate(index, "title", text)
                     }
                     placeholder="Enter task title..."
+                    isInvalid={!!invalidFields.title}
                   />
                   <FormRowTextInput
                     label="Notes"
@@ -305,6 +358,7 @@ export default function CreateTasksModal() {
                   />
                 </FormSection>
               ))}
+              <YStack height={300} />
             </YStack>
           </ScrollView>
         </Stack>

@@ -1,4 +1,4 @@
-import { Stack, Text, styled } from "tamagui";
+import { Stack, Text, Theme, styled, useTheme } from "tamagui";
 import { ArrowRightIcon } from "@/app/components/icons";
 import { GestureResponderEvent } from "react-native";
 
@@ -9,8 +9,22 @@ const FormRowContainer = styled(Stack, {
   paddingVertical: 12,
   paddingHorizontal: 16,
   backgroundColor: "$lightSeparator",
-  borderBottomWidth: 1,
-  borderBottomColor: "$darkSeparator",
+  variants: {
+    isInvalid: {
+      true: {
+        borderBottomColor: "$danger",
+        borderColor: "$danger",
+        borderWidth: 1,
+      },
+      false: {
+        borderBottomColor: "$darkSeparator",
+        borderBottomWidth: 1,
+        borderTopWidth: 0,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+      },
+    },
+  } as const,
 });
 
 const Label = styled(Text, {
@@ -29,6 +43,7 @@ interface FormRowSelectorProps {
   value: string;
   placeholder?: string;
   onPress: (event: GestureResponderEvent) => void;
+  isInvalid?: boolean;
 }
 
 export const FormRowSelector = ({
@@ -36,15 +51,21 @@ export const FormRowSelector = ({
   value,
   placeholder = "Select...",
   onPress,
+  isInvalid = false,
 }: FormRowSelectorProps) => {
   const displayText = value || placeholder;
+  const theme = useTheme();
 
   return (
-    <FormRowContainer pressStyle={{ opacity: 0.7 }} onPress={onPress}>
+    <FormRowContainer
+      isInvalid={value ? false : isInvalid}
+      pressStyle={{ opacity: 0.7 }}
+      onPress={onPress}
+    >
       <Label>{label}</Label>
       <Stack flexDirection="row" alignItems="center">
         <Value>{displayText}</Value>
-        <ArrowRightIcon size={8} color="$primary" />
+        <ArrowRightIcon size={8} color={theme.primary.val} />
       </Stack>
     </FormRowContainer>
   );

@@ -7,8 +7,22 @@ const FormRowContainer = styled(Stack, {
   paddingVertical: 12,
   paddingHorizontal: 16,
   backgroundColor: "$lightSeparator",
-  borderBottomWidth: 1,
-  borderBottomColor: "$darkSeparator",
+  variants: {
+    isInvalid: {
+      true: {
+        borderBottomColor: "$danger",
+        borderColor: "$danger",
+        borderWidth: 1,
+      },
+      false: {
+        borderBottomColor: "$darkSeparator",
+        borderBottomWidth: 1,
+        borderTopWidth: 0,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+      },
+    },
+  } as const,
 });
 
 const Label = styled(Text, {
@@ -21,11 +35,12 @@ const StyledInput = styled(Input, {
   fontSize: 16,
   textAlign: "right",
   backgroundColor: "transparent",
-  borderWidth: 0,
   padding: 0,
   marginRight: 8,
   flex: 1,
   maxWidth: "60%",
+  borderWidth: 0,
+  height: "100%",
 });
 
 interface FormRowTextInputProps {
@@ -35,6 +50,7 @@ interface FormRowTextInputProps {
   placeholder?: string;
   multiline?: boolean;
   numberOfLines?: number;
+  isInvalid?: boolean;
 }
 
 export const FormRowTextInput = ({
@@ -44,11 +60,24 @@ export const FormRowTextInput = ({
   placeholder,
   multiline = false,
   numberOfLines = 1,
+  isInvalid = false,
 }: FormRowTextInputProps) => {
+  const inputRef = React.useRef<any>(null);
+
+  const handlePress = () => {
+    inputRef.current?.focus();
+  };
+
   return (
-    <FormRowContainer height={numberOfLines * 20 + 25}>
+    <FormRowContainer
+      height={numberOfLines * 20 + 25}
+      onPress={handlePress}
+      pressStyle={{ opacity: 0.7 }}
+      isInvalid={value ? false : isInvalid}
+    >
       <Label>{label}</Label>
       <StyledInput
+        ref={inputRef}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder || label}

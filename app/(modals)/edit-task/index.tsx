@@ -24,16 +24,8 @@ export default function EditTaskModal() {
   const params = useLocalSearchParams<EditTaskParams>();
   const taskId = params.taskId as Id<"tasks">;
   const { showToast } = useToast();
-  const {
-    task,
-    updateField,
-    setTask,
-    resetForm,
-    isTaskValid,
-    setDeletedTask,
-    clearDeletedTask,
-    deletedTask,
-  } = useEditTaskStore();
+  const { task, updateField, setTask, resetForm, isTaskValid } =
+    useEditTaskStore();
 
   const courses = useQuery(api.queries.getUserCourses) || [];
 
@@ -55,13 +47,6 @@ export default function EditTaskModal() {
       });
     }
   }, [taskDetails, setTask]);
-
-  // Cleanup deleted task data on unmount
-  useEffect(() => {
-    return () => {
-      clearDeletedTask();
-    };
-  }, [clearDeletedTask]);
 
   const handleSave = async () => {
     if (!task || !isTaskValid()) {
@@ -95,16 +80,20 @@ export default function EditTaskModal() {
   };
 
   const handleDelete = async () => {
+    if (!task) {
+      return;
+    }
+
     try {
       // Store the task data before deletion
-      setDeletedTask({
+      const taskToRestore = {
         _id: taskId,
         courseId: task.courseId,
         title: task.title,
         notes: task.notes,
         dueDate: task.dueDate,
-        isCompleted: taskDetails.isCompleted,
-      });
+        isCompleted: taskDetails?.isCompleted || false,
+      };
 
       await deleteTask({
         taskId,
@@ -116,23 +105,18 @@ export default function EditTaskModal() {
           label: "Undo",
           onPress: async () => {
             try {
-              if (!deletedTask) return;
-
-              // Restore the task
               await restoreTask({
                 taskId,
-                courseId: deletedTask.courseId,
-                title: deletedTask.title,
-                notes: deletedTask.notes,
-                dueDate: deletedTask.dueDate.getTime(),
-                isCompleted: deletedTask.isCompleted,
+                courseId: taskToRestore.courseId,
+                title: taskToRestore.title,
+                notes: taskToRestore.notes,
+                dueDate: taskToRestore.dueDate.getTime(),
+                isCompleted: taskToRestore.isCompleted,
               });
 
               showToast({
                 message: "Task restored",
               });
-
-              clearDeletedTask();
             } catch (error) {
               showToast({
                 message: "Failed to restore task. Please try again.",
@@ -141,13 +125,8 @@ export default function EditTaskModal() {
             }
           },
         },
-        duration: 5000, // 5 second window for undo
+        duration: 5000,
       });
-
-      // Clear deleted task after undo window
-      setTimeout(() => {
-        clearDeletedTask();
-      }, 5000);
 
       resetForm();
       router.back();
