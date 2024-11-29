@@ -25,10 +25,11 @@ export type Match = {
   image: string;
 };
 
-// Update MOCK_MATCHES to include hasCreatedStudyProfile
+// Update MOCK_MATCHES with more entries
 export const MOCK_MATCHES: Match[] = [
+  // CS103 Matches
   {
-    id: "mock_1",
+    id: "cs103_1",
     name: "Alex Chen",
     dorm: "Wilbur",
     studyPreferences: {
@@ -43,7 +44,39 @@ export const MOCK_MATCHES: Match[] = [
     image: "https://api.dicebear.com/7.x/micah/png?seed=Alex",
   },
   {
-    id: "mock_2",
+    id: "cs103_2",
+    name: "Sarah Johnson",
+    dorm: "Roble",
+    studyPreferences: {
+      preferredLocations: ["green", "meyer"],
+      weeklyHours: 5,
+      noiseLevel: 1,
+    },
+    timeAgo: "1h ago",
+    courseId: "CS103",
+    status: 'none' as const,
+    hasCreatedStudyProfile: true,
+    image: "https://api.dicebear.com/7.x/micah/png?seed=Sarah",
+  },
+  {
+    id: "cs103_3",
+    name: "Michael Lee",
+    dorm: "Stern",
+    studyPreferences: {
+      preferredLocations: ["meyer"],
+      weeklyHours: 8,
+      noiseLevel: 3,
+    },
+    timeAgo: "3h ago",
+    courseId: "CS103",
+    status: 'none' as const,
+    hasCreatedStudyProfile: true,
+    image: "https://api.dicebear.com/7.x/micah/png?seed=Michael",
+  },
+
+  // CS107 Matches
+  {
+    id: "cs107_1",
     name: "Maria Rodriguez",
     dorm: "Stern",
     studyPreferences: {
@@ -58,7 +91,39 @@ export const MOCK_MATCHES: Match[] = [
     image: "https://api.dicebear.com/7.x/micah/png?seed=Maria",
   },
   {
-    id: "mock_3",
+    id: "cs107_2",
+    name: "David Kim",
+    dorm: "FroSoCo",
+    studyPreferences: {
+      preferredLocations: ["lathrop"],
+      weeklyHours: 7,
+      noiseLevel: 2,
+    },
+    timeAgo: "5h ago",
+    courseId: "CS107",
+    status: 'none' as const,
+    hasCreatedStudyProfile: true,
+    image: "https://api.dicebear.com/7.x/micah/png?seed=David",
+  },
+  {
+    id: "cs107_3",
+    name: "Emma Wilson",
+    dorm: "Lagunita",
+    studyPreferences: {
+      preferredLocations: ["green", "lathrop"],
+      weeklyHours: 6,
+      noiseLevel: 2,
+    },
+    timeAgo: "2h ago",
+    courseId: "CS107",
+    status: 'none' as const,
+    hasCreatedStudyProfile: true,
+    image: "https://api.dicebear.com/7.x/micah/png?seed=Emma",
+  },
+
+  // MATH51 Matches
+  {
+    id: "math51_1",
     name: "James Wilson",
     dorm: "EVGR-A",
     studyPreferences: {
@@ -73,7 +138,39 @@ export const MOCK_MATCHES: Match[] = [
     image: "https://api.dicebear.com/7.x/micah/png?seed=James",
   },
   {
-    id: "mock_4",
+    id: "math51_2",
+    name: "Olivia Brown",
+    dorm: "Branner",
+    studyPreferences: {
+      preferredLocations: ["green"],
+      weeklyHours: 5,
+      noiseLevel: 1,
+    },
+    timeAgo: "6h ago",
+    courseId: "MATH51",
+    status: 'none' as const,
+    hasCreatedStudyProfile: true,
+    image: "https://api.dicebear.com/7.x/micah/png?seed=Olivia",
+  },
+  {
+    id: "math51_3",
+    name: "Lucas Garcia",
+    dorm: "Toyon",
+    studyPreferences: {
+      preferredLocations: ["meyer", "lathrop"],
+      weeklyHours: 7,
+      noiseLevel: 2,
+    },
+    timeAgo: "3h ago",
+    courseId: "MATH51",
+    status: 'none' as const,
+    hasCreatedStudyProfile: true,
+    image: "https://api.dicebear.com/7.x/micah/png?seed=Lucas",
+  },
+
+  // CS161 Matches
+  {
+    id: "cs161_1",
     name: "Sophia Park",
     dorm: "Roble",
     studyPreferences: {
@@ -86,8 +183,98 @@ export const MOCK_MATCHES: Match[] = [
     status: 'none' as const,
     hasCreatedStudyProfile: true,
     image: "https://api.dicebear.com/7.x/micah/png?seed=Sophia",
-  }
+  },
+  {
+    id: "cs161_2",
+    name: "Ethan Martinez",
+    dorm: "Mirrielees",
+    studyPreferences: {
+      preferredLocations: ["meyer", "green"],
+      weeklyHours: 6,
+      noiseLevel: 3,
+    },
+    timeAgo: "4h ago",
+    courseId: "CS161",
+    status: 'none' as const,
+    hasCreatedStudyProfile: true,
+    image: "https://api.dicebear.com/7.x/micah/png?seed=Ethan",
+  },
+  {
+    id: "cs161_3",
+    name: "Ava Thompson",
+    dorm: "Crothers",
+    studyPreferences: {
+      preferredLocations: ["lathrop"],
+      weeklyHours: 7,
+      noiseLevel: 1,
+    },
+    timeAgo: "2h ago",
+    courseId: "CS161",
+    status: 'none' as const,
+    hasCreatedStudyProfile: true,
+    image: "https://api.dicebear.com/7.x/micah/png?seed=Ava",
+  },
 ];
+
+// Add this export function near the top of the file, after MOCK_MATCHES
+export function getRandomMatchesForClass(className: string): Match[] {
+  // Filter MOCK_MATCHES to get only matches for this class
+  const classMatches = MOCK_MATCHES.filter(match => match.courseId === className);
+  
+  // If no matches found for this class, create some default matches
+  if (classMatches.length === 0) {
+    // Create 3 default matches for this class
+    return [
+      {
+        id: `${className.toLowerCase()}_1`,
+        name: "Alex Smith",
+        dorm: "Wilbur",
+        studyPreferences: {
+          preferredLocations: ["green", "meyer"],
+          weeklyHours: 6,
+          noiseLevel: 2,
+        },
+        timeAgo: "2h ago",
+        courseId: className,
+        status: 'none' as const,
+        hasCreatedStudyProfile: true,
+        image: `https://api.dicebear.com/7.x/micah/png?seed=${className}_1`,
+      },
+      {
+        id: `${className.toLowerCase()}_2`,
+        name: "Emma Davis",
+        dorm: "Stern",
+        studyPreferences: {
+          preferredLocations: ["lathrop"],
+          weeklyHours: 5,
+          noiseLevel: 1,
+        },
+        timeAgo: "3h ago",
+        courseId: className,
+        status: 'none' as const,
+        hasCreatedStudyProfile: true,
+        image: `https://api.dicebear.com/7.x/micah/png?seed=${className}_2`,
+      },
+      {
+        id: `${className.toLowerCase()}_3`,
+        name: "James Wilson",
+        dorm: "FroSoCo",
+        studyPreferences: {
+          preferredLocations: ["green", "meyer"],
+          weeklyHours: 7,
+          noiseLevel: 3,
+        },
+        timeAgo: "1h ago",
+        courseId: className,
+        status: 'none' as const,
+        hasCreatedStudyProfile: true,
+        image: `https://api.dicebear.com/7.x/micah/png?seed=${className}_3`,
+      },
+    ];
+  }
+  
+  return classMatches;
+}
 
 // Update MatchCardProps to extend from Match
 type MatchCardProps = Partial<Match> & {
@@ -97,10 +284,10 @@ type MatchCardProps = Partial<Match> & {
 
 // Mock data for testing social links
 const MOCK_SOCIAL_DATA = {
-  email: "diegoval@stanford.edu",
-  phoneNumber: "9703554191",  // Format: "6505555555" for "+1 (650) 555-5555"
-  linkedinUsername: "diegovaldezduran",  // From linkedin.com/in/john-smith-stanford
-  instagramUsername: "thediegovaldez",  // From instagram.com/johnsmith_23
+  email: "president@stanford.edu",
+  phoneNumber: "6507232300",  // Format: "6505555555" for "+1 (650) 555-5555"
+  linkedinUsername: "stanford-university",  // From linkedin.com/in/john-smith-stanford
+  instagramUsername: "stanford",  // From instagram.com/johnsmith_23
 };
 
 // Helper functions for opening links
@@ -126,6 +313,29 @@ const openInstagram = (instagramUsername: string) => {
     // Fallback to web URL if app isn't installed
     Linking.openURL(`https://www.instagram.com/${instagramUsername}`);
   });
+};
+
+// Add this helper function at the top of the file
+const generateEmail = (name: string): string => {
+  // Convert "John Smith" to "john.smith@stanford.edu"
+  return name
+    .toLowerCase()
+    .replace(/\s+/g, '.') // Replace spaces with dots
+    .concat('@stanford.edu');
+};
+
+// Add this helper function to generate a random phone number
+const generatePhone = (id: string): string => {
+  // Use the id to generate a consistent phone number
+  const areaCode = '650';
+  const lastDigits = id
+    .split('')
+    .filter(char => /\d/.test(char))
+    .slice(0, 7)
+    .join('')
+    .padEnd(7, '0');
+  
+  return `(${areaCode}) ${lastDigits.slice(0,3)}-${lastDigits.slice(3,7)}`;
 };
 
 export function MatchCard({ 
@@ -180,9 +390,14 @@ export function MatchCard({
     );
   };
   
-  const handleAccept = (e: any) => {
+  const handleStatusChange = (e: any) => {
     e.stopPropagation();
-    onStatusChange && onStatusChange(id, status === 'accepted' ? 'none' : 'accepted');
+    // Only allow changing from 'none' to 'accepted'
+    if (status === 'none') {
+      console.log('Changing status from none to accepted');
+      onStatusChange?.(id, 'accepted');
+    }
+    // If already accepted, do nothing
   };
   
   if (!hasCreatedStudyProfile) {
@@ -275,10 +490,11 @@ export function MatchCard({
 
             <YStack alignItems="center" space={4}>
               <CircleIconButton
+                key={`${id}-${status}`}
                 icon={CheckIcon}
                 size="medium"
                 variant={status === 'accepted' ? 'primaryOn' : 'primaryOff'}
-                onPress={handleAccept}
+                onPress={status === 'none' ? handleStatusChange : undefined}  // Disable onPress if already accepted
               />
             </YStack>
           </XStack>
@@ -296,11 +512,11 @@ export function MatchCard({
         >
           <XStack space="$2">
             <Text fontWeight="bold" color="$gray11">Email:</Text>
-            <Text color="$gray11">student@stanford.edu</Text>
+            <Text color="$gray11">{generateEmail(name)}</Text>
           </XStack>
           <XStack space="$2" paddingTop="$1">
             <Text fontWeight="bold" color="$gray11">Phone:</Text>
-            <Text color="$gray11">(123) 456-7890</Text>
+            <Text color="$gray11">{generatePhone(id)}</Text>
           </XStack>
           
           {/* Social Media Icons */}

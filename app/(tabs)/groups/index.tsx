@@ -9,11 +9,11 @@ import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { TouchableOpacity } from "react-native";
 import { MatchesContainer } from "./MatchesContainer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FilterSearchBar } from "@/components/searchBar/FilterSearchBar";
 import { useRouter } from "expo-router";
 import { Button } from "@/components/CustomButton";
-import { MOCK_MATCHES, Match } from './MatchCard';
+import { MOCK_MATCHES, Match, getRandomMatchesForClass } from './MatchCard';
 import { TextInput } from "react-native";
 
 type ProfileStatsProps = {
@@ -447,10 +447,26 @@ function ProfileHeader({ matches }: { matches: Match[] }) {
 
 export default function GroupsScreen() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [matches, setMatches] = useState<Match[]>(MOCK_MATCHES);
   const studyProfile = useQuery(api.queries.getStudyProfile, {});
   const router = useRouter();
   
+  // Move matches state initialization to useEffect to handle studyProfile changes
+  const [matches, setMatches] = useState<Match[]>([]);
+
+  // Use useEffect to update matches when studyProfile changes
+  useEffect(() => {
+    if (studyProfile?.classes?.length) {
+      const newMatches = studyProfile.classes.flatMap(classInfo => 
+        getRandomMatchesForClass(classInfo.name.toUpperCase())
+      );
+      setMatches(newMatches);
+    }
+  }, [studyProfile?.classes]); // Only re-run when classes change
+
+  const handleMatchesUpdate = (newMatches: Match[] | ((prev: Match[]) => Match[])) => {
+    setMatches(newMatches);
+  };
+
   // Loading state
   if (studyProfile === undefined) {
     return <YStack flex={1} justifyContent="center" alignItems="center">
@@ -521,7 +537,7 @@ export default function GroupsScreen() {
           <MatchesContainer 
             searchTerm={searchTerm}
             matches={matches} 
-            setMatches={setMatches}  
+            setMatches={handleMatchesUpdate}
           />
         </YStack>
       </YStack>
