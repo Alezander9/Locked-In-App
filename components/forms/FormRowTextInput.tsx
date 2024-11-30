@@ -1,5 +1,6 @@
 import { Stack, Text, Input, styled } from "tamagui";
 import { ArrowRightIcon } from "@/app/components/icons";
+import { useRef } from "react";
 
 const FormRowContainer = styled(Stack, {
   flexDirection: "row",
@@ -62,7 +63,7 @@ export const FormRowTextInput = ({
   numberOfLines = 1,
   isInvalid = false,
 }: FormRowTextInputProps) => {
-  const inputRef = React.useRef<any>(null);
+  const inputRef = useRef<any>(null);
 
   const handlePress = () => {
     inputRef.current?.focus();

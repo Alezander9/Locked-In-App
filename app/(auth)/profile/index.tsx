@@ -1,7 +1,7 @@
 import { Stack, Text, YStack, Circle } from "tamagui";
-import { ScreenWrapper } from "@/components/ScreenWrapper";
-import { CustomInput } from "@/components/CustomInput";
-import { ProfileCreationHeader } from "@/components/ProfileCreationHeader";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
+import { CustomTextInput } from "@/components/profile/CustomTextInput";
+import { ProfileCreationHeader } from "./ProfileCreationHeader";
 import { useState, useEffect, useRef } from "react";
 import Icons from "@/app/components/icons";
 import {
@@ -19,17 +19,17 @@ import {
   TextStyle,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { TagInput } from "@/components/TagInput";
-import { WeeklyScheduleSelector } from "@/components/WeeklyScheduleSelector";
-import { PreferenceSlider } from "@/components/PreferenceSlider";
-import { DropdownInput } from "@/components/DropdownInput";
+import { TagInput } from "@/components/profile/TagInput";
+import { WeeklyScheduleSelector } from "@/components/schedule/WeeklyScheduleSelector";
+import { PreferenceSlider } from "@/components/profile/PreferenceSlider";
+import { DropdownInput } from "@/components/profile/DropdownInput";
 import { XStack } from "tamagui";
-import { GeneralStudyHabits } from "@/components/GeneralStudyHabits";
-import { LearningPreferencesGrid } from "@/components/LearningPreferencesGrid";
-import { CustomSwitch } from "@/components/CustomSwitch";
+import { GeneralStudyHabits } from "@/app/(tabs)/groups/GeneralStudyHabits";
+import { LearningPreferencesGrid } from "@/app/(tabs)/groups/LearningPreferencesGrid";
+import { CustomSwitch } from "@/components/profile/CustomSwitch";
 import { Button } from "@/components/buttons/CustomButton";
-import { ProgressAnimation } from "@/components/ProgressAnimation";
-import { LockAnimation } from "@/components/LockAnimation";
+import { ProgressAnimation } from "@/components/animations/ProgressAnimation";
+import { LockAnimation } from "@/components/animations/LockAnimation";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
 
@@ -377,9 +377,9 @@ const isLearningGridInput = (
 };
 
 const isSwitchInput = (input: InputConfig): input is SwitchInput => {
-  console.log("Checking if switch input:", input); // Debug log
+  // console.log("Checking if switch input:", input); // Debug log
   const isSwitch = input.type === "switch";
-  console.log("Is switch?", isSwitch); // Debug log
+  // console.log("Is switch?", isSwitch); // Debug log
   return isSwitch;
 };
 
@@ -414,11 +414,11 @@ type StudyProfileData = {
 
 // Then your packageFormData function can use this type
 const packageFormData = (formData: FormData): StudyProfileData => {
-  console.log("Raw punctualityPreference:", formData.punctualityPreference);
-  console.log(
-    "Type of punctualityPreference:",
-    typeof formData.punctualityPreference
-  );
+  // console.log("Raw punctualityPreference:", formData.punctualityPreference);
+  // console.log(
+  //   "Type of punctualityPreference:",
+  //   typeof formData.punctualityPreference
+  // );
 
   const punctualityValue =
     formData.punctualityPreference !== undefined &&
@@ -426,7 +426,7 @@ const packageFormData = (formData: FormData): StudyProfileData => {
       ? Number(formData.punctualityPreference)
       : 1;
 
-  console.log("Converted punctualityPreference:", punctualityValue);
+  // console.log("Converted punctualityPreference:", punctualityValue);
 
   return {
     dorm: formData.dorm as string,
@@ -890,7 +890,7 @@ export default function CreateStudyProfile() {
                 <Text fontSize="$4" fontWeight="600" marginBottom="$4">
                   Add New Class
                 </Text>
-                <CustomInput
+                <CustomTextInput
                   placeholder="Enter class name"
                   value={newClassName}
                   onChangeText={setNewClassName}
@@ -972,11 +972,11 @@ export default function CreateStudyProfile() {
                   ) : (
                     <YStack space="$2" paddingHorizontal="$4">
                       {currentStepData.inputs.map((input) => {
-                        console.log("Processing input:", input); // Debug log
+                        // console.log("Processing input:", input); // Debug log
 
                         // Handle switch input FIRST, before any other conditions
                         if (input.type === "switch") {
-                          console.log("Rendering switch component"); // Debug log
+                          // console.log("Rendering switch component"); // Debug log
                           return (
                             <CustomSwitch
                               key={input.key}
@@ -991,7 +991,7 @@ export default function CreateStudyProfile() {
                         // Then handle text input
                         if (!input.type || input.type === "text") {
                           return (
-                            <CustomInput
+                            <CustomTextInput
                               key={input.key}
                               placeholder={input.placeholder}
                               value={formData[input.key] as string}
@@ -1083,7 +1083,7 @@ export default function CreateStudyProfile() {
                         }
 
                         return (
-                          <CustomInput
+                          <CustomTextInput
                             key={input.key}
                             placeholder={input.placeholder}
                             value={formData[input.key] as string}
@@ -1111,7 +1111,7 @@ export default function CreateStudyProfile() {
                   {currentStepData.title ===
                   "Anything else you'd like to share?" ? (
                     <YStack paddingHorizontal="$4">
-                      <CustomInput
+                      <CustomTextInput
                         placeholder="Non-negotiables, learning disabilities, anything else to share (optional)"
                         value={formData.additionalInfo as string}
                         onChangeText={(value) =>
@@ -1266,7 +1266,7 @@ export default function CreateStudyProfile() {
                         }
 
                         return (
-                          <CustomInput
+                          <CustomTextInput
                             key={input.key}
                             placeholder={input.placeholder}
                             value={

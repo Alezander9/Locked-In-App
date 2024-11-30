@@ -1,4 +1,4 @@
-import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
 import { Link, router, Stack } from "expo-router";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { H4 } from "tamagui";

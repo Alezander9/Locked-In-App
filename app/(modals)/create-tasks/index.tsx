@@ -5,7 +5,7 @@ import { FormRowTextInput } from "@/components/forms/FormRowTextInput";
 import { FormRow } from "@/components/forms/FormRow";
 import { FormRowButton } from "@/components/forms/FormRowButton";
 import { useTaskFormStore } from "@/stores/taskFormStore";
-import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native";
 import { api } from "@/convex/_generated/api";
@@ -38,9 +38,7 @@ export default function CreateTasksModal() {
   const { showToast } = useToast();
   const courses = useQuery(api.queries.getUserCourses) || [];
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
-  const [invalidFields, setInvalidFields] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const [showValidation, setShowValidation] = useState(false);
 
   const createTasks = useMutation(api.mutations.createTasks);
   const processFile = useAction(api.actions.processFileAndExtractTasks);
@@ -168,14 +166,14 @@ export default function CreateTasksModal() {
   };
 
   const hasContent = (task: (typeof tasks)[0]) => {
-    return task.courseId || task.title || task.notes || task.dueDate;
+    return task.courseId || task.title || task.notes;
   };
 
   const handleSave = async () => {
     try {
       Keyboard.dismiss();
 
-      // Get tasks that have any content
+      // Get ALL tasks that have any content (including last one)
       const tasksToValidate = tasks.filter(hasContent);
 
       if (tasksToValidate.length === 0) {
@@ -185,24 +183,12 @@ export default function CreateTasksModal() {
         return;
       }
 
-      const allErrors = tasksToValidate.map(validateTask);
-      const hasErrors = allErrors.some(
-        (errors) => Object.keys(errors).length > 0
+      const allValid = tasksToValidate.every(
+        (task) => task.courseId && task.title?.trim() && task.dueDate
       );
 
-      if (hasErrors) {
-        // Set invalid fields for the first incomplete task
-        const firstErrorIndex = allErrors.findIndex(
-          (errors) => Object.keys(errors).length > 0
-        );
-        console.log(
-          "Setting invalid fields for task",
-          firstErrorIndex,
-          ":",
-          allErrors[firstErrorIndex]
-        );
-        setInvalidFields(allErrors[firstErrorIndex]);
-
+      if (!allValid) {
+        setShowValidation(true);
         showToast({
           message: "Please fill out all required fields",
         });
@@ -307,57 +293,68 @@ export default function CreateTasksModal() {
                 )}
               </FormSection>
 
-              {tasks.map((task, index) => (
-                <FormSection key={index} title={`New Task ${index + 1}`}>
-                  <FormRowSelector
-                    label="Course"
-                    value={
-                      courses.find((c) => c._id === task.courseId)?.code || ""
-                    }
-                    onPress={() => {
-                      router.push({
-                        pathname: "/input/course-selector",
-                        params: {
-                          taskIndex: index.toString(),
-                        },
-                      });
-                    }}
-                    isInvalid={!!invalidFields.courseId}
-                  />
-                  <FormRowTextInput
-                    label="Title"
-                    value={task.title}
-                    onChangeText={(text) =>
-                      handleFieldUpdate(index, "title", text)
-                    }
-                    placeholder="Enter task title..."
-                    isInvalid={!!invalidFields.title}
-                  />
-                  <FormRowTextInput
-                    label="Notes"
-                    value={task.notes}
-                    onChangeText={(text) =>
-                      handleFieldUpdate(index, "notes", text)
-                    }
-                    placeholder="Enter notes..."
-                    multiline
-                    numberOfLines={3}
-                  />
-                  <FormRow
-                    label="Due Date"
-                    value={formatDate(task.dueDate)}
-                    onPress={() => {
-                      router.push({
-                        pathname: "/input/date-time",
-                        params: {
-                          title: "Due Date",
-                          taskIndex: index.toString(),
-                        },
-                      });
-                    }}
-                  />
-                </FormSection>
-              ))}
+              {tasks.map((task, index) => {
+                const hasAnyContent = Boolean(
+                  task.courseId || task.title?.trim()
+                );
+                const errors = showValidation ? validateTask(task) : {};
+
+                return (
+                  <FormSection key={index} title={`New Task ${index + 1}`}>
+                    <FormRowSelector
+                      label="Course"
+                      value={
+                        courses.find((c) => c._id === task.courseId)?.code || ""
+                      }
+                      onPress={() => {
+                        router.push({
+                          pathname: "/input/course-selector",
+                          params: {
+                            taskIndex: index.toString(),
+                          },
+                        });
+                      }}
+                      isInvalid={
+                        showValidation && hasAnyContent && errors.courseId
+                      }
+                    />
+                    <FormRowTextInput
+                      label="Title"
+                      value={task.title}
+                      onChangeText={(text) =>
+                        handleFieldUpdate(index, "title", text)
+                      }
+                      placeholder="Enter task title..."
+                      isInvalid={
+                        showValidation && hasAnyContent && errors.title
+                      }
+                    />
+                    <FormRowTextInput
+                      label="Notes"
+                      value={task.notes}
+                      onChangeText={(text) =>
+                        handleFieldUpdate(index, "notes", text)
+                      }
+                      placeholder="Enter notes..."
+                      multiline
+                      numberOfLines={3}
+                    />
+                    <FormRow
+                      label="Due Date"
+                      value={formatDate(task.dueDate)}
+                      onPress={() => {
+                        router.push({
+                          pathname: "/input/date-time",
+                          params: {
+                            title: "Due Date",
+                            taskIndex: index.toString(),
+                          },
+                        });
+                      }}
+                    />
+                  </FormSection>
+                );
+              })}
               <YStack height={300} />
             </YStack>
           </ScrollView>

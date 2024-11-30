@@ -1,6 +1,6 @@
 import { Stack, XStack, YStack, Text } from "tamagui";
 import { router, useLocalSearchParams } from "expo-router";
-import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native";
 import { api } from "@/convex/_generated/api";
@@ -15,7 +15,7 @@ import { useEditTaskStore } from "@/stores/editTaskStore";
 import { format } from "date-fns";
 import { FormRowSelector } from "@/components/forms/FormRowSelector";
 import { useEffect } from "react";
-
+import { Keyboard } from "react-native";
 type EditTaskParams = {
   taskId: string;
 } & Record<string, string>;
@@ -49,6 +49,8 @@ export default function EditTaskModal() {
   }, [taskDetails, setTask]);
 
   const handleSave = async () => {
+    Keyboard.dismiss();
+
     if (!task || !isTaskValid()) {
       showToast({
         message: "Please fill in all required fields",

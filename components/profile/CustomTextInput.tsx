@@ -1,9 +1,15 @@
 import { Input, Text, YStack } from "tamagui";
 import { useState } from "react";
-import { TextInput, TextInputProps, StyleProp, TextStyle, StyleSheet } from "react-native";
+import {
+  TextInput,
+  TextInputProps,
+  StyleProp,
+  TextStyle,
+  StyleSheet,
+} from "react-native";
 import { useRef } from "react";
 
-type CustomInputProps = {
+type CustomTextInputProps = {
   label?: string;
   placeholder?: string;
   required?: boolean;
@@ -16,9 +22,9 @@ type CustomInputProps = {
   numberOfLines?: number;
   textAlignVertical?: "auto" | "top" | "bottom" | "center";
   style?: StyleProp<TextStyle>;
-} & Omit<TextInputProps, 'onChangeText' | 'style'>;
+} & Omit<TextInputProps, "onChangeText" | "style">;
 
-export function CustomInput({
+export function CustomTextInput({
   label,
   placeholder,
   required = false,
@@ -32,13 +38,13 @@ export function CustomInput({
   textAlignVertical,
   style,
   ...props
-}: CustomInputProps) {
+}: CustomTextInputProps) {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<TextInput>(null);
 
   // Create a default style object
   const defaultStyle: TextStyle = {
-    color: '#000',
+    color: "#000",
     opacity: 1,
     height: 48,
     lineHeight: 24,
@@ -46,10 +52,7 @@ export function CustomInput({
   };
 
   // Merge default style with provided style
-  const combinedStyle = StyleSheet.flatten([
-    defaultStyle,
-    style as TextStyle
-  ]);
+  const combinedStyle = StyleSheet.flatten([defaultStyle, style as TextStyle]);
 
   return (
     <YStack width="100%">
@@ -77,20 +80,20 @@ export function CustomInput({
           combinedStyle,
           multiline && {
             minHeight: combinedStyle.height || 80,
-            textAlignVertical: 'top',
+            textAlignVertical: "top",
             paddingTop: 12,
             borderWidth: 1,
-            borderColor: '$gray5',
+            borderColor: "$gray5",
             borderRadius: 8,
-          }
+          },
         ]}
-        enterStyle={{ 
+        enterStyle={{
           scale: 1,
-          opacity: 1 
+          opacity: 1,
         }}
-        exitStyle={{ 
+        exitStyle={{
           scale: 0.98,
-          opacity: 0.8 
+          opacity: 0.8,
         }}
         pressStyle={{
           scale: 0.98,
@@ -102,15 +105,11 @@ export function CustomInput({
         {...props}
       />
       {helperText && (
-        <Text 
-          fontSize="$3" 
-          color="#666666" 
-          marginTop="$2"
-        >
+        <Text fontSize="$3" color="#666666" marginTop="$2">
           {helperText}{" "}
           {showWhyLink && (
-            <Text 
-              color="$blue10" 
+            <Text
+              color="$blue10"
               onPress={onWhyPress}
               pressStyle={{
                 opacity: 0.8,

@@ -9,7 +9,7 @@ import {
   UserCheckIcon,
 } from "../components/icons";
 import { useTheme, YStack } from "tamagui";
-import { SettingsSidebar } from "@/components/SettingsSidebar";
+import { SettingsSidebar } from "@/components/settings/SettingsSidebar";
 import { useState } from "react";
 import { TouchableOpacity, Image } from "react-native";
 

@@ -1,7 +1,7 @@
 import { YStack } from "tamagui";
-import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
 import { useState, useEffect } from "react";
-import { WeeklyScheduleSelector } from "@/components/WeeklyScheduleSelector";
+import { WeeklyScheduleSelector } from "@/components/schedule/WeeklyScheduleSelector";
 import { Button } from "@/components/buttons/CustomButton";
 import { useRouter } from "expo-router";
 import { useMutation, useQuery } from "convex/react";
@@ -46,10 +46,10 @@ export default function ScheduleScreen() {
 
   useEffect(() => {
     if (currentProfile?.availableTimeSlots) {
-      console.log(
-        "Loading existing schedule:",
-        currentProfile.availableTimeSlots
-      );
+      // console.log(
+      //   "Loading existing schedule:",
+      //   currentProfile.availableTimeSlots
+      // );
 
       const newSchedule = schedule.map((day) => {
         // Find matching day in availableTimeSlots
@@ -57,16 +57,16 @@ export default function ScheduleScreen() {
           (d) => d.day === day.day
         );
 
-        console.log(
-          `Processing ${day.day}:`,
-          availableDay?.slots || "No slots"
-        );
+        // console.log(
+        //   `Processing ${day.day}:`,
+        //   availableDay?.slots || "No slots"
+        // );
 
         const updatedTimeSlots = day.timeSlots.map((slot) => {
           const isSelected = availableDay?.slots.includes(slot.hour) ?? false;
-          console.log(
-            `Hour ${slot.hour}: ${isSelected ? "selected" : "not selected"}`
-          );
+          // console.log  (
+          //   `Hour ${slot.hour}: ${isSelected ? "selected" : "not selected"}`
+          // );
 
           return {
             hour: slot.hour,
@@ -80,15 +80,15 @@ export default function ScheduleScreen() {
         };
       });
 
-      console.log(
-        "Setting new schedule with selected slots:",
-        newSchedule.map((day) => ({
-          day: day.day,
-          selectedSlots: day.timeSlots
-            .filter((slot) => slot.selected)
-            .map((slot) => slot.hour),
-        }))
-      );
+      // console.log(
+      //   "Setting new schedule with selected slots:",
+      //   newSchedule.map((day) => ({
+      //     day: day.day,
+      //     selectedSlots: day.timeSlots
+      //       .filter((slot) => slot.selected)
+      //       .map((slot) => slot.hour),
+      //   }))
+      // );
 
       setSchedule(newSchedule);
     }

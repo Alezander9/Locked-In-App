@@ -1,6 +1,6 @@
 import { Stack, XStack, YStack, Text } from "tamagui";
 import { router, useLocalSearchParams } from "expo-router";
-import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native";
 import { api } from "@/convex/_generated/api";

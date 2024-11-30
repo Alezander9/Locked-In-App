@@ -5,7 +5,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEventFormStore } from "@/stores/eventFormStore";
 import { useTaskFormStore } from "@/stores/taskFormStore";
 import { useEditTaskStore } from "@/stores/editTaskStore";
-import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type DateTimeInputParams = {

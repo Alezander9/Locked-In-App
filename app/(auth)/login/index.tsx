@@ -1,7 +1,7 @@
 import { useOAuth, useAuth, useUser } from "@clerk/clerk-expo";
 import * as WebBrowser from "expo-web-browser";
 import { Button } from "@/components/buttons/CustomButton";
-import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
 import { useCallback, useEffect, useState, useRef } from "react";
 import {
   Platform,

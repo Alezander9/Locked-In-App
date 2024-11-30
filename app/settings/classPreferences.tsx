@@ -1,5 +1,5 @@
 import { YStack, Text, XStack } from "tamagui";
-import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/buttons/CustomButton";
 import { useRouter, useNavigation } from "expo-router";
@@ -13,7 +13,7 @@ import {
   Pressable,
 } from "react-native";
 import { Slider } from "@miblanchard/react-native-slider";
-import { DropdownInput } from "@/components/DropdownInput";
+import { DropdownInput } from "@/components/profile/DropdownInput";
 import { Ionicons } from "@expo/vector-icons";
 
 // Update type to match exact database structure
@@ -212,15 +212,15 @@ export default function ClassPreferencesScreen() {
   }, [currentProfile, currentClassName]);
 
   // Add detailed console logs to see the data structure
-  useEffect(() => {
-    console.log("Study Profile Data:", {
-      hasProfile: currentProfile !== null && currentProfile !== undefined,
-      classes: currentProfile?.classes,
-      classExample: currentProfile?.classes?.[0],
-      currentClassName,
-      preferences,
-    });
-  }, [currentProfile, currentClassName, preferences]);
+  // useEffect(() => {
+  //   console.log("Study Profile Data:", {
+  //     hasProfile: currentProfile !== null && currentProfile !== undefined,
+  //     classes: currentProfile?.classes,
+  //     classExample: currentProfile?.classes?.[0],
+  //     currentClassName,
+  //     preferences,
+  //   });
+  // }, [currentProfile, currentClassName, preferences]);
 
   // Move ClassNameInputModal component definition here
   const ClassNameInputModal = () => (
@@ -336,9 +336,9 @@ export default function ClassPreferencesScreen() {
       setCurrentClassName(newClassName.trim());
       setPreferences(DEFAULT_CLASS_VALUES);
 
-      console.log("New class added successfully");
+      // console.log("New class added successfully");
     } catch (error) {
-      console.error("Failed to add class:", error);
+      // console.error("Failed to add class:", error);
       alert(
         "Failed to add class: " +
           (error instanceof Error ? error.message : "Unknown error")
@@ -722,7 +722,7 @@ export default function ClassPreferencesScreen() {
   // Update the delete button's onPress handler
   const handleDeleteClass = async (className: string) => {
     try {
-      console.log("Attempting to delete class:", className);
+      // console.log("Attempting to delete class:", className);
 
       const updatedClasses = currentProfile.classes.filter(
         (c) => c.name !== className
@@ -747,7 +747,7 @@ export default function ClassPreferencesScreen() {
         });
       }
 
-      console.log("Class deleted successfully");
+      // console.log("Class deleted successfully");
     } catch (error) {
       console.error("Failed to delete class:", error);
       alert(
@@ -759,10 +759,10 @@ export default function ClassPreferencesScreen() {
 
   // Add console logs to track state changes
   const handleDeleteButtonPress = (className: string, e: any) => {
-    console.log("Delete button pressed for:", className);
+    // console.log("Delete button pressed for:", className);
     e.stopPropagation(); // Make sure we stop event bubbling
     setClassToDelete(className);
-    console.log("classToDelete set to:", className);
+    // console.log("classToDelete set to:", className);
   };
 
   return (

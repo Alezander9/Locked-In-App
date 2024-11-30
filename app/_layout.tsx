@@ -22,7 +22,7 @@ import {
   OpenSans_700Bold,
 } from "@expo-google-fonts/open-sans";
 import { useCallback, useEffect, useState } from "react";
-import { AnimatedSplash } from "@/components/AnimatedSplash";
+import { AnimatedSplash } from "@/components/animations/AnimatedSplash";
 import { Image, TouchableOpacity, Text } from "react-native";
 import { ToastProvider, useToast } from "@/features/toast";
 import { StudyProfileProvider } from "@/app/context/StudyProfileContext";
@@ -242,16 +242,23 @@ export default function RootLayout() {
                           headerBackVisible: true,
                           headerBackTitle: "Back",
                           headerRight: () => (
-                            <TouchableOpacity 
+                            <TouchableOpacity
                               onPress={() => {
                                 // @ts-ignore - we know this exists because we set it
                                 route.params?.onHeaderPress?.();
                               }}
-                              style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                marginRight: 10,
+                              }}
                             >
-                              <Text style={{ marginRight: 8, color: '#0F9ED5' }}>
+                              <Text
+                                style={{ marginRight: 8, color: "#0F9ED5" }}
+                              >
                                 {/* @ts-ignore - we know this exists */}
-                                {route.params?.currentClassName || 'Select Class'}
+                                {route.params?.currentClassName ||
+                                  "Select Class"}
                               </Text>
                               <Ionicons
                                 name="chevron-down"

@@ -397,7 +397,7 @@ export function MatchCard({
               return;
             }
             onDelete(id);
-            console.log(`Removed match with ID: ${id}`);
+            // console.log(`Removed match with ID: ${id}`);
           },
           style: "destructive",
         },
@@ -410,7 +410,7 @@ export function MatchCard({
     e.stopPropagation();
     // Only allow changing from 'none' to 'accepted'
     if (status === "none") {
-      console.log("Changing status from none to accepted");
+      // console.log("Changing status from none to accepted");
       onStatusChange?.(id, "accepted");
     }
     // If already accepted, do nothing

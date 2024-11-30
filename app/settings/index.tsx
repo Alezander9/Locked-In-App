@@ -10,10 +10,10 @@ type DaySchedule = {
 };
 
 import { YStack, Text, XStack, ScrollView } from "tamagui";
-import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
 import { useAuth } from "@clerk/clerk-expo";
 import { Button } from "@/components/buttons/CustomButton";
-import { CustomSwitch } from "@/components/CustomSwitch";
+import { CustomSwitch } from "@/components/profile/CustomSwitch";
 import { useState } from "react";
 import { LinkIcon } from "@/app/components/icons";
 import { TextInput } from "react-native";

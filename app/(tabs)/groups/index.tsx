@@ -1,6 +1,6 @@
 import { Button } from "@/components/buttons/CustomButton";
 import { YStack, XStack, Text, Image } from "tamagui";
-import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
 import {
   UserIcon,
   SettingsIcon,
@@ -13,12 +13,16 @@ import { api } from "@/convex/_generated/api";
 import { useTheme } from "tamagui";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
-import { TouchableOpacity } from "react-native";
-import { MatchesContainer } from "./MatchesContainer";
+import { SafeAreaView, TouchableOpacity } from "react-native";
+import { MatchesContainer } from "../../../components/matches/MatchesContainer";
 import { useState, useEffect } from "react";
 import { FilterSearchBar } from "@/components/searchBar/FilterSearchBar";
 import { useRouter } from "expo-router";
-import { MOCK_MATCHES, Match, getRandomMatchesForClass } from "./MatchCard";
+import {
+  MOCK_MATCHES,
+  Match,
+  getRandomMatchesForClass,
+} from "../../../components/matches/MatchCard";
 import { TextInput } from "react-native";
 
 type ProfileStatsProps = {
@@ -301,7 +305,7 @@ function ProfileHeader({ matches }: { matches: Match[] }) {
   return (
     <YStack>
       <YStack position="relative">
-        {/* Modified Background Image */}
+        {/* Background Image */}
         <TouchableOpacity onPress={handleBackgroundUpload}>
           <YStack height={160} width="100%" borderRadius="$4" overflow="hidden">
             <Image
@@ -316,17 +320,10 @@ function ProfileHeader({ matches }: { matches: Match[] }) {
               }}
               resizeMode="cover"
             />
-            {/* Settings Icon remains the same */}
-            <YStack position="absolute" top={10} right={10}>
-              <CircularIcon
-                Icon={SettingsIcon}
-                onPress={() => router.push("/settings")}
-              />
-            </YStack>
           </YStack>
         </TouchableOpacity>
 
-        {/* Profile Avatar - removed surrounding XStack and Plus icon */}
+        {/* Profile Avatar */}
         <YStack
           position="absolute"
           bottom={10}
@@ -438,7 +435,7 @@ export default function GroupsScreen() {
   const [searchTerm, setSearchTerm] = useState("");
   const studyProfile = useQuery(api.queries.getStudyProfile, {});
   const router = useRouter();
-
+  const theme = useTheme();
   // Move matches state initialization to useEffect to handle studyProfile changes
   const [matches, setMatches] = useState<Match[]>([]);
 
@@ -501,33 +498,52 @@ export default function GroupsScreen() {
   // If we get here, studyProfile exists
   return (
     <ScreenWrapper>
-      <YStack flex={1}>
-        <ProfileHeader matches={matches} />
+      <SafeAreaView style={{ flex: 1 }}>
         <YStack flex={1}>
+          {/* New Search and Settings Bar */}
           <XStack
-            paddingHorizontal="$4"
-            paddingBottom="$2"
-            alignItems="center"
+            marginLeft={50}
+            marginRight={50}
             justifyContent="space-between"
+            alignItems="center"
+            marginBottom="$2"
           >
-            <Text fontSize="$5" fontWeight="bold">
-              My Matches
-            </Text>
-            <XStack flex={1} marginLeft="$4" maxWidth={500}>
-              <FilterSearchBar
-                onSearch={setSearchTerm}
-                placeholder="Search name, class, or field"
-              />
-            </XStack>
+            <FilterSearchBar
+              onSearch={setSearchTerm}
+              placeholder="Search groups..."
+            />
+            <TouchableOpacity
+              onPress={() => router.push("/settings")}
+              style={{
+                paddingLeft: 6,
+                paddingRight: 12,
+                paddingVertical: 6,
+              }}
+            >
+              <SettingsIcon size={26} color={theme.color.val} />
+            </TouchableOpacity>
           </XStack>
 
-          <MatchesContainer
-            searchTerm={searchTerm}
-            matches={matches}
-            setMatches={handleMatchesUpdate}
-          />
+          <ProfileHeader matches={matches} />
+          <YStack flex={1}>
+            <XStack
+              paddingHorizontal="$4"
+              paddingBottom="$2"
+              alignItems="center"
+            >
+              <Text fontSize="$5" fontWeight="bold">
+                My Matches
+              </Text>
+            </XStack>
+
+            <MatchesContainer
+              searchTerm={searchTerm}
+              matches={matches}
+              setMatches={handleMatchesUpdate}
+            />
+          </YStack>
         </YStack>
-      </YStack>
+      </SafeAreaView>
     </ScreenWrapper>
   );
 }

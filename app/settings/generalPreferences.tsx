@@ -1,11 +1,11 @@
 import { YStack, Text } from "tamagui";
-import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/buttons/CustomButton";
 import { useRouter } from "expo-router";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { LearningPreferencesGrid } from "@/components/LearningPreferencesGrid";
+import { LearningPreferencesGrid } from "@/app/(tabs)/groups/LearningPreferencesGrid";
 import { Slider } from "@miblanchard/react-native-slider";
 import { View } from "react-native";
 

@@ -1,7 +1,7 @@
 import { SafeAreaView } from "react-native";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
-import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
 import { Spinner, XStack, YStack, Text } from "tamagui";
 import { TouchableOpacity } from "react-native";
 import { WriteIcon } from "@/app/components/icons";

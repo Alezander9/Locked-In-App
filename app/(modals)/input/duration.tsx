@@ -4,7 +4,7 @@ import { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEventFormStore } from "@/stores/eventFormStore";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
 
 export default function DurationInputModal() {
   const duration = useEventFormStore((state) => state.duration);

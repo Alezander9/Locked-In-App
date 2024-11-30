@@ -1,6 +1,6 @@
 import { Stack, YStack, XStack, Text } from "tamagui";
 import { router, useNavigation } from "expo-router";
-import { ScreenWrapper } from "@/components/ScreenWrapper";
+import { ScreenWrapper } from "@/components/background/ScreenWrapper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { api } from "@/convex/_generated/api";
 import { useQuery, useMutation } from "convex/react";
@@ -172,7 +172,6 @@ export default function EditClassesModal() {
                     code={item.code}
                     color={item.color}
                     onColorPress={() => {
-                      console.log("onColorPress", item._id);
                       router.push({
                         pathname: "/input/color-picker",
                         params: {
