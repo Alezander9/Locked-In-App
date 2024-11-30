@@ -12,10 +12,10 @@ type DaySchedule = {
 import { YStack, Text, XStack, ScrollView } from "tamagui";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
 import { useAuth } from "@clerk/clerk-expo";
-import { Button } from "@/components/CustomButton";
+import { Button } from "@/components/buttons/CustomButton";
 import { CustomSwitch } from "@/components/CustomSwitch";
 import { useState } from "react";
-import { LinkIcon} from "@/app/components/icons";
+import { LinkIcon } from "@/app/components/icons";
 import { TextInput } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -34,11 +34,11 @@ export default function SettingsScreen() {
   // Initialize schedule state similar to profile builder
   const [schedule, setSchedule] = useState<DaySchedule[]>(
     Array.from({ length: 7 }, (_, dayIndex) => ({
-      day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dayIndex],
+      day: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][dayIndex],
       timeSlots: Array.from({ length: 24 }, (_, hour) => ({
         hour,
-        selected: false
-      }))
+        selected: false,
+      })),
     }))
   );
 
@@ -52,13 +52,17 @@ export default function SettingsScreen() {
         <YStack flex={1} padding="$4" space="$6">
           {/* Account Settings Section */}
           <YStack space="$4">
-            <Text fontSize="$5" fontWeight="bold">Account Settings</Text>
-            
-            <YStack 
-              borderRadius="$4"
-              backgroundColor="$background"
-            >
-              <XStack justifyContent="space-between" alignItems="center" paddingVertical="$3" paddingHorizontal="$3">
+            <Text fontSize="$5" fontWeight="bold">
+              Account Settings
+            </Text>
+
+            <YStack borderRadius="$4" backgroundColor="$background">
+              <XStack
+                justifyContent="space-between"
+                alignItems="center"
+                paddingVertical="$3"
+                paddingHorizontal="$3"
+              >
                 <Text fontSize="$4">Show Email</Text>
                 <CustomSwitch
                   value={showEmail}
@@ -66,10 +70,15 @@ export default function SettingsScreen() {
                   helperText="Allow other users to see your email address"
                 />
               </XStack>
-              
+
               <YStack height={0.5} backgroundColor="$iosGray2" />
-              
-              <XStack justifyContent="space-between" alignItems="center" paddingVertical="$3" paddingHorizontal="$3">
+
+              <XStack
+                justifyContent="space-between"
+                alignItems="center"
+                paddingVertical="$3"
+                paddingHorizontal="$3"
+              >
                 <Text fontSize="$4">Show Number</Text>
                 <CustomSwitch
                   value={showNumber}
@@ -77,30 +86,46 @@ export default function SettingsScreen() {
                   helperText="Allow other users to see your phone number"
                 />
               </XStack>
-              
+
               <YStack height={0.5} backgroundColor="$iosGray2" />
-              
-              <XStack justifyContent="space-between" alignItems="center" paddingVertical="$3" paddingHorizontal="$3" pressStyle={{ opacity: 0.8 }} onPress={() => setInstagramLinked(!instagramLinked)}>
+
+              <XStack
+                justifyContent="space-between"
+                alignItems="center"
+                paddingVertical="$3"
+                paddingHorizontal="$3"
+                pressStyle={{ opacity: 0.8 }}
+                onPress={() => setInstagramLinked(!instagramLinked)}
+              >
                 <Text fontSize="$4">Instagram Account</Text>
                 <XStack space="$2" alignItems="center">
-                  {instagramLinked && (
-                    <LinkIcon size={16} color="#0F9ED5" />
-                  )}
-                  <Text fontSize="$4" color={instagramLinked ? undefined : "$iosGray"}>
+                  {instagramLinked && <LinkIcon size={16} color="#0F9ED5" />}
+                  <Text
+                    fontSize="$4"
+                    color={instagramLinked ? undefined : "$iosGray"}
+                  >
                     {instagramLinked ? "Linked" : "Not Linked"}
                   </Text>
                 </XStack>
               </XStack>
-              
+
               <YStack height={0.5} backgroundColor="$iosGray2" />
-              
-              <XStack justifyContent="space-between" alignItems="center" paddingVertical="$3" paddingHorizontal="$3" pressStyle={{ opacity: 0.8 }} onPress={() => setLinkedinLinked(!linkedinLinked)}>
+
+              <XStack
+                justifyContent="space-between"
+                alignItems="center"
+                paddingVertical="$3"
+                paddingHorizontal="$3"
+                pressStyle={{ opacity: 0.8 }}
+                onPress={() => setLinkedinLinked(!linkedinLinked)}
+              >
                 <Text fontSize="$4">LinkedIn Account</Text>
                 <XStack space="$2" alignItems="center">
-                  {linkedinLinked && (
-                    <LinkIcon size={16} color="#0F9ED5" />
-                  )}
-                  <Text fontSize="$4" color={linkedinLinked ? undefined : "$iosGray"}>
+                  {linkedinLinked && <LinkIcon size={16} color="#0F9ED5" />}
+                  <Text
+                    fontSize="$4"
+                    color={linkedinLinked ? undefined : "$iosGray"}
+                  >
                     {linkedinLinked ? "Linked" : "Not Linked"}
                   </Text>
                 </XStack>
@@ -113,13 +138,17 @@ export default function SettingsScreen() {
 
           {/* General Settings Section */}
           <YStack space="$4">
-            <Text fontSize="$5" fontWeight="bold">General Settings</Text>
-            
-            <YStack 
-              borderRadius="$4"
-              backgroundColor="$background"
-            >
-              <XStack justifyContent="space-between" alignItems="center" paddingVertical="$3" paddingHorizontal="$3">
+            <Text fontSize="$5" fontWeight="bold">
+              General Settings
+            </Text>
+
+            <YStack borderRadius="$4" backgroundColor="$background">
+              <XStack
+                justifyContent="space-between"
+                alignItems="center"
+                paddingVertical="$3"
+                paddingHorizontal="$3"
+              >
                 <Text fontSize="$4">Share Location</Text>
                 <CustomSwitch
                   value={notifications}
@@ -127,10 +156,15 @@ export default function SettingsScreen() {
                   helperText="Receive notifications about matches and messages"
                 />
               </XStack>
-              
+
               <YStack height={0.5} backgroundColor="$iosGray2" />
-              
-              <XStack justifyContent="space-between" alignItems="center" paddingVertical="$3" paddingHorizontal="$3">
+
+              <XStack
+                justifyContent="space-between"
+                alignItems="center"
+                paddingVertical="$3"
+                paddingHorizontal="$3"
+              >
                 <Text fontSize="$4">Sync Contacts</Text>
                 <CustomSwitch
                   value={nightMode}
@@ -140,8 +174,13 @@ export default function SettingsScreen() {
               </XStack>
 
               <YStack height={0.5} backgroundColor="$iosGray2" />
-              
-              <XStack justifyContent="space-between" alignItems="center" paddingVertical="$3" paddingHorizontal="$3">
+
+              <XStack
+                justifyContent="space-between"
+                alignItems="center"
+                paddingVertical="$3"
+                paddingHorizontal="$3"
+              >
                 <Text fontSize="$4">Language</Text>
                 <Text fontSize="$4">English</Text>
               </XStack>
@@ -153,16 +192,15 @@ export default function SettingsScreen() {
 
           {/* Study Profile Section */}
           <YStack space="$4">
-            <Text fontSize="$5" fontWeight="bold">Study Profile</Text>
-            
-            <YStack 
-              borderRadius="$4"
-              backgroundColor="$background"
-            >
-              <XStack 
-                justifyContent="space-between" 
-                alignItems="center" 
-                paddingVertical="$3" 
+            <Text fontSize="$5" fontWeight="bold">
+              Study Profile
+            </Text>
+
+            <YStack borderRadius="$4" backgroundColor="$background">
+              <XStack
+                justifyContent="space-between"
+                alignItems="center"
+                paddingVertical="$3"
                 paddingHorizontal="$3"
                 pressStyle={{ opacity: 0.8 }}
                 onPress={() => {
@@ -170,15 +208,17 @@ export default function SettingsScreen() {
                 }}
               >
                 <Text fontSize="$4">Schedule</Text>
-                <Text fontSize="$4" color="#0F9ED5">Edit →</Text>
+                <Text fontSize="$4" color="#0F9ED5">
+                  Edit →
+                </Text>
               </XStack>
-              
+
               <YStack height={0.5} backgroundColor="$iosGray2" />
-              
-              <XStack 
-                justifyContent="space-between" 
-                alignItems="center" 
-                paddingVertical="$3" 
+
+              <XStack
+                justifyContent="space-between"
+                alignItems="center"
+                paddingVertical="$3"
                 paddingHorizontal="$3"
                 pressStyle={{ opacity: 0.8 }}
                 onPress={() => {
@@ -186,15 +226,17 @@ export default function SettingsScreen() {
                 }}
               >
                 <Text fontSize="$4">General Preferences</Text>
-                <Text fontSize="$4" color="#0F9ED5">Edit →</Text>
+                <Text fontSize="$4" color="#0F9ED5">
+                  Edit →
+                </Text>
               </XStack>
-              
+
               <YStack height={0.5} backgroundColor="$iosGray2" />
-              
-              <XStack 
-                justifyContent="space-between" 
-                alignItems="center" 
-                paddingVertical="$3" 
+
+              <XStack
+                justifyContent="space-between"
+                alignItems="center"
+                paddingVertical="$3"
                 paddingHorizontal="$3"
                 pressStyle={{ opacity: 0.8 }}
                 onPress={() => {
@@ -202,7 +244,9 @@ export default function SettingsScreen() {
                 }}
               >
                 <Text fontSize="$4">Class-Specific Preferences</Text>
-                <Text fontSize="$4" color="#0F9ED5">Edit →</Text>
+                <Text fontSize="$4" color="#0F9ED5">
+                  Edit →
+                </Text>
               </XStack>
             </YStack>
           </YStack>

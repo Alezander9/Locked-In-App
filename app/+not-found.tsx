@@ -2,7 +2,7 @@ import { ScreenWrapper } from "@/components/ScreenWrapper";
 import { Link, router, Stack } from "expo-router";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { H4 } from "tamagui";
-import { Button } from "@/components/CustomButton";
+import { Button } from "@/components/buttons/CustomButton";
 
 export default function NotFoundScreen() {
   return (

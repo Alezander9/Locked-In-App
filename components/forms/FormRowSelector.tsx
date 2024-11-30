@@ -1,8 +1,10 @@
-import { Stack, Text, Input, styled } from "tamagui";
+import { Stack, Text, Theme, styled, useTheme } from "tamagui";
 import { ArrowRightIcon } from "@/app/components/icons";
+import { GestureResponderEvent } from "react-native";
 
 const FormRowContainer = styled(Stack, {
   flexDirection: "row",
+  alignItems: "center",
   justifyContent: "space-between",
   paddingVertical: 12,
   paddingHorizontal: 16,
@@ -30,60 +32,41 @@ const Label = styled(Text, {
   fontSize: 16,
 });
 
-const StyledInput = styled(Input, {
+const Value = styled(Text, {
   color: "$separatorText",
   fontSize: 16,
-  textAlign: "right",
-  backgroundColor: "transparent",
-  padding: 0,
   marginRight: 8,
-  flex: 1,
-  maxWidth: "60%",
-  borderWidth: 0,
-  height: "100%",
 });
 
-interface FormRowTextInputProps {
+interface FormRowSelectorProps {
   label: string;
   value: string;
-  onChangeText: (text: string) => void;
   placeholder?: string;
-  multiline?: boolean;
-  numberOfLines?: number;
+  onPress: (event: GestureResponderEvent) => void;
   isInvalid?: boolean;
 }
 
-export const FormRowTextInput = ({
+export const FormRowSelector = ({
   label,
   value,
-  onChangeText,
-  placeholder,
-  multiline = false,
-  numberOfLines = 1,
+  placeholder = "Select...",
+  onPress,
   isInvalid = false,
-}: FormRowTextInputProps) => {
-  const inputRef = React.useRef<any>(null);
-
-  const handlePress = () => {
-    inputRef.current?.focus();
-  };
+}: FormRowSelectorProps) => {
+  const displayText = value || placeholder;
+  const theme = useTheme();
 
   return (
     <FormRowContainer
-      height={numberOfLines * 20 + 25}
-      onPress={handlePress}
-      pressStyle={{ opacity: 0.7 }}
       isInvalid={value ? false : isInvalid}
+      pressStyle={{ opacity: 0.7 }}
+      onPress={onPress}
     >
       <Label>{label}</Label>
-      <StyledInput
-        ref={inputRef}
-        value={value}
-        onChangeText={onChangeText}
-        placeholder={placeholder || label}
-        multiline={multiline}
-        placeholderTextColor="$separatorText"
-      />
+      <Stack flexDirection="row" alignItems="center">
+        <Value>{displayText}</Value>
+        <ArrowRightIcon size={8} color={theme.primary.val} />
+      </Stack>
     </FormRowContainer>
   );
 };

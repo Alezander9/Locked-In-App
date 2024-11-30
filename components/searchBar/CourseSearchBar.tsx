@@ -22,15 +22,24 @@ const ResultsContainer = styled(YStack, {
   zIndex: 1000,
 });
 
-const ResultRow = styled(Pressable, {
-  paddingVertical: "$2",
-  paddingHorizontal: "$3",
-  backgroundColor: "$bg",
-  pressStyle: {
-    backgroundColor: "$gray",
-    opacity: 0.1,
-  },
-});
+const ResultRow = ({
+  children,
+  onPress,
+}: {
+  children: React.ReactNode;
+  onPress: () => void;
+}) => (
+  <Pressable
+    onPress={onPress}
+    style={({ pressed }) => ({
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      backgroundColor: pressed ? "rgba(128, 128, 128, 0.1)" : "transparent",
+    })}
+  >
+    {children}
+  </Pressable>
+);
 
 const ResultCode = styled(Text, {
   color: "$color",
@@ -73,7 +82,7 @@ export function CourseSearchBar({ onCourseSelect }: CourseSearchBarProps) {
       <BaseSearchBar
         value={searchTerm}
         onChangeText={setSearchTerm}
-        placeholder="Search courses..."
+        placeholder="Add a course..."
         showDismissOverlay={true}
         accessoryId="courseSearchAccessoryID"
       />

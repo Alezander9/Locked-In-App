@@ -1,6 +1,12 @@
-import { YStack, XStack, Text, Avatar, Image, Stack, ScrollView } from "tamagui";
+import { Button } from "@/components/buttons/CustomButton";
+import { YStack, XStack, Text, Image } from "tamagui";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
-import { UserIcon, SettingsIcon, PlusIcon, PencilIcon } from "@/app/components/icons";
+import {
+  UserIcon,
+  SettingsIcon,
+  PlusIcon,
+  PencilIcon,
+} from "@/app/components/icons";
 import { useAuth } from "@clerk/clerk-expo";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -12,8 +18,7 @@ import { MatchesContainer } from "./MatchesContainer";
 import { useState, useEffect } from "react";
 import { FilterSearchBar } from "@/components/searchBar/FilterSearchBar";
 import { useRouter } from "expo-router";
-import { Button } from "@/components/CustomButton";
-import { MOCK_MATCHES, Match, getRandomMatchesForClass } from './MatchCard';
+import { MOCK_MATCHES, Match, getRandomMatchesForClass } from "./MatchCard";
 import { TextInput } from "react-native";
 
 type ProfileStatsProps = {
@@ -23,17 +28,19 @@ type ProfileStatsProps = {
 
 function ProfileStats({ matches, studyProfile }: ProfileStatsProps) {
   // Only count accepted matches
-  const acceptedMatches = matches.filter(match => match.status === 'accepted');
-  
+  const acceptedMatches = matches.filter(
+    (match) => match.status === "accepted"
+  );
+
   const stats = {
     matches: String(acceptedMatches.length),
     classes: String(studyProfile?.classes?.length || 0),
-    tasks: "0"
+    tasks: "0",
   };
 
   return (
     <XStack
-      justifyContent="space-around" 
+      justifyContent="space-around"
       alignItems="center"
       width="100%"
       marginTop="$0.5"
@@ -75,19 +82,19 @@ function ProfileStats({ matches, studyProfile }: ProfileStatsProps) {
 }
 
 // Create a reusable circular icon component
-function CircularIcon({ 
-  Icon, 
-  size = 44, 
-  iconSize = 24, 
-  onPress 
-}: { 
-  Icon: any, 
-  size?: number, 
-  iconSize?: number, 
-  onPress?: () => void 
+function CircularIcon({
+  Icon,
+  size = 44,
+  iconSize = 24,
+  onPress,
+}: {
+  Icon: any;
+  size?: number;
+  iconSize?: number;
+  onPress?: () => void;
 }) {
   const theme = useTheme();
-  
+
   return (
     <TouchableOpacity onPress={onPress}>
       <YStack
@@ -103,7 +110,7 @@ function CircularIcon({
         shadowRadius={4}
         elevation={3}
       >
-        <YStack 
+        <YStack
           position="absolute"
           top={0}
           left={0}
@@ -125,7 +132,7 @@ function ProfileHeader({ matches }: { matches: Match[] }) {
   const router = useRouter();
   const [isEditingDorm, setIsEditingDorm] = useState(false);
   const [tempDorm, setTempDorm] = useState("");
-  
+
   const user = useQuery(api.queries.getUserByClerkId, {
     clerkId: userId || "",
   });
@@ -133,7 +140,9 @@ function ProfileHeader({ matches }: { matches: Match[] }) {
 
   const generateUploadUrl = useMutation(api.mutations.generateUploadUrl);
   const saveProfilePicture = useMutation(api.mutations.saveProfilePicture);
-  const saveBackgroundPicture = useMutation(api.mutations.saveBackgroundPicture);
+  const saveBackgroundPicture = useMutation(
+    api.mutations.saveBackgroundPicture
+  );
   const updateStudyProfile = useMutation(api.mutations.updateStudyProfile);
 
   const imageUrl = useQuery(
@@ -152,7 +161,8 @@ function ProfileHeader({ matches }: { matches: Match[] }) {
 
   const handleImageUpload = async () => {
     try {
-      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const permissionResult =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permissionResult.granted) {
         alert("Permission to access camera roll is required!");
         return;
@@ -207,7 +217,8 @@ function ProfileHeader({ matches }: { matches: Match[] }) {
 
   const handleBackgroundUpload = async () => {
     try {
-      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const permissionResult =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permissionResult.granted) {
         alert("Permission to access camera roll is required!");
         return;
@@ -270,7 +281,7 @@ function ProfileHeader({ matches }: { matches: Match[] }) {
         studyProfile: {
           ...studyProfile!,
           dorm: tempDorm.trim(),
-        }
+        },
       });
     } catch (error) {
       // If the update fails, revert to the previous value
@@ -281,7 +292,7 @@ function ProfileHeader({ matches }: { matches: Match[] }) {
           studyProfile: {
             ...studyProfile!,
             dorm: previousDorm,
-          }
+          },
         });
       }
     }
@@ -292,16 +303,12 @@ function ProfileHeader({ matches }: { matches: Match[] }) {
       <YStack position="relative">
         {/* Modified Background Image */}
         <TouchableOpacity onPress={handleBackgroundUpload}>
-          <YStack 
-            height={160}
-            width="100%" 
-            borderRadius="$4"
-            overflow="hidden"
-          >
+          <YStack height={160} width="100%" borderRadius="$4" overflow="hidden">
             <Image
-              source={backgroundImageUrl 
-                ? { uri: backgroundImageUrl }
-                : require("@/assets/images/mountains.jpg")
+              source={
+                backgroundImageUrl
+                  ? { uri: backgroundImageUrl }
+                  : require("@/assets/images/mountains.jpg")
               }
               style={{
                 width: "100%",
@@ -310,21 +317,17 @@ function ProfileHeader({ matches }: { matches: Match[] }) {
               resizeMode="cover"
             />
             {/* Settings Icon remains the same */}
-            <YStack 
-              position="absolute" 
-              top={10} 
-              right={10}
-            >
-              <CircularIcon 
-                Icon={SettingsIcon} 
+            <YStack position="absolute" top={10} right={10}>
+              <CircularIcon
+                Icon={SettingsIcon}
                 onPress={() => router.push("/settings")}
               />
             </YStack>
           </YStack>
         </TouchableOpacity>
-        
+
         {/* Profile Avatar - removed surrounding XStack and Plus icon */}
-        <YStack 
+        <YStack
           position="absolute"
           bottom={10}
           width="100%"
@@ -362,7 +365,7 @@ function ProfileHeader({ matches }: { matches: Match[] }) {
       </YStack>
 
       {/* Combined Name, Location, and Stats Card */}
-      <YStack 
+      <YStack
         backgroundColor="$background"
         marginHorizontal="$4"
         marginTop={8}
@@ -376,26 +379,18 @@ function ProfileHeader({ matches }: { matches: Match[] }) {
         shadowRadius={8}
         elevation={3}
       >
-        <Text 
-          fontSize="$4"
-          fontWeight="bold"
-          marginBottom="$0.5"
-        >
+        <Text fontSize="$4" fontWeight="bold" marginBottom="$0.5">
           {user ? `${user.firstName} ${user.lastName}` : ""}
         </Text>
-        <XStack 
-          alignItems="center" 
-          justifyContent="center" 
+        <XStack
+          alignItems="center"
+          justifyContent="center"
           space="$2"
           marginBottom="$2"
           width="100%"
         >
           {isEditingDorm ? (
-            <XStack 
-              space="$2" 
-              alignItems="center"
-              justifyContent="center"
-            >
+            <XStack space="$2" alignItems="center" justifyContent="center">
               <TextInput
                 value={tempDorm}
                 onChangeText={setTempDorm}
@@ -407,28 +402,22 @@ function ProfileHeader({ matches }: { matches: Match[] }) {
                   borderRadius: 4,
                   padding: 8,
                   minWidth: 120,
-                  textAlign: 'center',
+                  textAlign: "center",
                   color: theme.color.val,
                   fontSize: 14,
                 }}
                 autoFocus
               />
               <TouchableOpacity onPress={handleDormSubmit}>
-                <YStack
-                  backgroundColor="$blue8"
-                  padding="$2"
-                  borderRadius="$2"
-                >
-                  <Text color="white" fontSize="$2">Save</Text>
+                <YStack backgroundColor="$blue8" padding="$2" borderRadius="$2">
+                  <Text color="white" fontSize="$2">
+                    Save
+                  </Text>
                 </YStack>
               </TouchableOpacity>
             </XStack>
           ) : (
-            <XStack 
-              space="$2" 
-              alignItems="center"
-              justifyContent="center"
-            >
+            <XStack space="$2" alignItems="center" justifyContent="center">
               <Text color="$gray11" fontSize="$2">
                 {studyProfile?.dorm || "No dorm set"}
               </Text>
@@ -449,54 +438,52 @@ export default function GroupsScreen() {
   const [searchTerm, setSearchTerm] = useState("");
   const studyProfile = useQuery(api.queries.getStudyProfile, {});
   const router = useRouter();
-  
+
   // Move matches state initialization to useEffect to handle studyProfile changes
   const [matches, setMatches] = useState<Match[]>([]);
 
   // Use useEffect to update matches when studyProfile changes
   useEffect(() => {
     if (studyProfile?.classes?.length) {
-      const newMatches = studyProfile.classes.flatMap(classInfo => 
+      const newMatches = studyProfile.classes.flatMap((classInfo) =>
         getRandomMatchesForClass(classInfo.name.toUpperCase())
       );
       setMatches(newMatches);
     }
   }, [studyProfile?.classes]); // Only re-run when classes change
 
-  const handleMatchesUpdate = (newMatches: Match[] | ((prev: Match[]) => Match[])) => {
+  const handleMatchesUpdate = (
+    newMatches: Match[] | ((prev: Match[]) => Match[])
+  ) => {
     setMatches(newMatches);
   };
 
   // Loading state
   if (studyProfile === undefined) {
-    return <YStack flex={1} justifyContent="center" alignItems="center">
-      <Text>Loading...</Text>
-    </YStack>;
+    return (
+      <YStack flex={1} justifyContent="center" alignItems="center">
+        <Text>Loading...</Text>
+      </YStack>
+    );
   }
 
   // Simply check if studyProfile is null
   if (studyProfile === null) {
     return (
       <ScreenWrapper>
-        <YStack 
-          flex={1} 
-          justifyContent="center" 
-          alignItems="center" 
+        <YStack
+          flex={1}
+          justifyContent="center"
+          alignItems="center"
           padding="$4"
           space="$4"
         >
-          <Text 
-            fontSize="$5" 
-            fontWeight="bold" 
-            textAlign="center"
-          >
+          <Text fontSize="$5" fontWeight="bold" textAlign="center">
             Complete Your Study Profile
           </Text>
-          <Text 
-            color="$gray11" 
-            textAlign="center"
-          >
-            Fill out your study preferences to get matched with compatible study partners
+          <Text color="$gray11" textAlign="center">
+            Fill out your study preferences to get matched with compatible study
+            partners
           </Text>
           <Button
             size="large"
@@ -517,7 +504,7 @@ export default function GroupsScreen() {
       <YStack flex={1}>
         <ProfileHeader matches={matches} />
         <YStack flex={1}>
-          <XStack 
+          <XStack
             paddingHorizontal="$4"
             paddingBottom="$2"
             alignItems="center"
@@ -533,10 +520,10 @@ export default function GroupsScreen() {
               />
             </XStack>
           </XStack>
-          
-          <MatchesContainer 
+
+          <MatchesContainer
             searchTerm={searchTerm}
-            matches={matches} 
+            matches={matches}
             setMatches={handleMatchesUpdate}
           />
         </YStack>

@@ -78,7 +78,7 @@ export const getStudyProfile = query({
       if (!identity) {
         return null;
       }
-      
+
       const user = await ctx.db
         .query("users")
         .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
@@ -87,16 +87,16 @@ export const getStudyProfile = query({
       if (!user) {
         return null;
       }
-      
+
       return user.studyProfile;
     }
-    
+
     // If userId is provided, get that specific user's profile
     const user = await ctx.db.get(args.userId);
     if (!user) {
       return null;
     }
-    
+
     return user.studyProfile;
   },
 });
@@ -108,29 +108,24 @@ export const getUserMatches = query({
     if (!identity) {
       throw new Error("Not authenticated");
     }
-
     // Get the current user
     const user = await ctx.db
       .query("users")
       .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
       .first();
-
     if (!user) {
       throw new Error("User not found");
     }
-
     // Get all matches for this user
     const matches = await ctx.db
       .query("matches")
       .withIndex("by_userId", (q) => q.eq("userId", user._id))
       .collect();
-
     // Fetch the matched user details
     const matchesWithDetails = await Promise.all(
       matches.map(async (match) => {
         const matchedUser = await ctx.db.get(match.matchedUserId);
         if (!matchedUser) return null;
-
         return {
           id: match._id,
           name: `${matchedUser.firstName} ${matchedUser.lastName}`,
@@ -142,17 +137,153 @@ export const getUserMatches = query({
         };
       })
     );
-
-    return matchesWithDetails.filter((match): match is NonNullable<typeof match> => match !== null);
+    return matchesWithDetails.filter(
+      (match): match is NonNullable<typeof match> => match !== null
+    );
   },
 });
 
-// Helper function to format time ago
+// Helper function for getUserMatches
 function formatTimeAgo(timestamp: number): string {
   const seconds = Math.floor((Date.now() - timestamp) / 1000);
-  
-  if (seconds < 60) return 'just now';
+
+  if (seconds < 60) return "just now";
   if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
   if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
   return `${Math.floor(seconds / 86400)}d ago`;
 }
+
+export const getUserCourses = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+    if (!user) {
+      throw new Error("User not found");
+    }
+    // Get user's courses with their colors
+    const userCourses = await ctx.db
+      .query("userCourses")
+      .withIndex("by_userID_courseID", (q) => q.eq("userId", user._id))
+      .collect();
+    // Get the actual course details and combine with colors
+    const courses = await Promise.all(
+      userCourses.map(async (uc) => {
+        const course = await ctx.db.get(uc.courseId);
+        return {
+          ...course,
+          color: uc.color,
+        };
+      })
+    );
+    return courses;
+  },
+});
+
+export const getUserCoursesOrdered = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Get user's courses with their settings
+    const userCourses = await ctx.db
+      .query("userCourses")
+      .withIndex("by_userID_courseID", (q) => q.eq("userId", user._id))
+      .collect();
+
+    // Get the actual course details and combine with user settings
+    const courses = await Promise.all(
+      userCourses.map(async (uc) => {
+        const course = await ctx.db.get(uc.courseId);
+        return {
+          ...course,
+          color: uc.color,
+          order: uc.order ?? 0, // Default to 0 if no order set
+        };
+      })
+    );
+
+    // Sort by order
+    return courses.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  },
+});
+
+export const getUpcomingTasks = query({
+  args: {
+    limit: v.optional(v.number()),
+    cursor: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const { limit = 20, cursor } = args;
+    const now = Date.now();
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Get tasks with course color information
+    const tasks = await ctx.db
+      .query("tasks")
+      .withIndex("by_userID_dueDate", (q) =>
+        q.eq("userId", user._id).gte("dueDate", cursor ?? now)
+      )
+      .order("asc")
+      .take(limit);
+
+    // Fetch course information for each task
+    const tasksWithCourseInfo = await Promise.all(
+      tasks.map(async (task) => {
+        const userCourse = await ctx.db
+          .query("userCourses")
+          .withIndex("by_userID_courseID", (q) =>
+            q.eq("userId", user._id).eq("courseId", task.courseId)
+          )
+          .first();
+
+        const course = await ctx.db.get(task.courseId);
+
+        return {
+          ...task,
+          courseCode: course?.code ?? "",
+          courseColor: userCourse?.color ?? "#94a3b8",
+        };
+      })
+    );
+
+    return tasksWithCourseInfo;
+  },
+});
+
+export const getTask = query({
+  args: { taskId: v.id("tasks") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.taskId);
+  },
+});

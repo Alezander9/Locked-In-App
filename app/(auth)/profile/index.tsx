@@ -4,7 +4,20 @@ import { CustomInput } from "@/components/CustomInput";
 import { ProfileCreationHeader } from "@/components/ProfileCreationHeader";
 import { useState, useEffect, useRef } from "react";
 import Icons from "@/app/components/icons";
-import { TouchableOpacity, KeyboardAvoidingView, Platform, Animated, Keyboard, KeyboardEvent, Dimensions, View, Modal, TextInput, StyleProp, TextStyle } from "react-native";
+import {
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  Animated,
+  Keyboard,
+  KeyboardEvent,
+  Dimensions,
+  View,
+  Modal,
+  TextInput,
+  StyleProp,
+  TextStyle,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { TagInput } from "@/components/TagInput";
 import { WeeklyScheduleSelector } from "@/components/WeeklyScheduleSelector";
@@ -14,12 +27,11 @@ import { XStack } from "tamagui";
 import { GeneralStudyHabits } from "@/components/GeneralStudyHabits";
 import { LearningPreferencesGrid } from "@/components/LearningPreferencesGrid";
 import { CustomSwitch } from "@/components/CustomSwitch";
-import { Button } from "@/components/CustomButton";
-import { ProgressAnimation } from '@/components/ProgressAnimation';
-import { LockAnimation } from '@/components/LockAnimation';
+import { Button } from "@/components/buttons/CustomButton";
+import { ProgressAnimation } from "@/components/ProgressAnimation";
+import { LockAnimation } from "@/components/LockAnimation";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
-
 
 // Add these type definitions at the top of the file
 type BaseInput = {
@@ -31,12 +43,12 @@ type BaseInput = {
 };
 
 type TextInputConfig = BaseInput & {
-  type?: 'text';
+  type?: "text";
   style?: StyleProp<TextStyle>;
 };
 
 type TagInput = BaseInput & {
-  type: 'tag';
+  type: "tag";
 };
 
 // New types for the schedule
@@ -51,11 +63,11 @@ type DaySchedule = {
 };
 
 type ScheduleInput = BaseInput & {
-  type: 'schedule';
+  type: "schedule";
 };
 
 type SliderInput = BaseInput & {
-  type: 'slider';
+  type: "slider";
   min: number;
   max: number;
   step: number;
@@ -63,39 +75,54 @@ type SliderInput = BaseInput & {
 };
 
 type DropdownInput = BaseInput & {
-  type: 'dropdown';
+  type: "dropdown";
   options: { label: string; value: string }[];
   defaultValue: string;
 };
 
 type LearningGridInput = BaseInput & {
-  type: 'learningGrid';
+  type: "learningGrid";
   options: { id: string; label: string }[];
 };
 
 type SwitchInput = BaseInput & {
-  type: 'switch';
+  type: "switch";
   defaultValue?: boolean;
   helperText?: string;
 };
 
-type InputConfig = TextInputConfig | TagInput | ScheduleInput | SliderInput | DropdownInput | LearningGridInput | SwitchInput;
+type InputConfig =
+  | TextInputConfig
+  | TagInput
+  | ScheduleInput
+  | SliderInput
+  | DropdownInput
+  | LearningGridInput
+  | SwitchInput;
 
 // Constants for the schedule
-const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const DAYS = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
 const HOURS = Array.from({ length: 17 }, (_, i) => i + 8); // 8am to 12am
 
 // Move GRADES constant up, before PROFILE_STEPS
 const GRADES = [
-  { label: 'A+', value: 'A+' },
-  { label: 'A', value: 'A' },
-  { label: 'A-', value: 'A-' },
-  { label: 'B+', value: 'B+' },
-  { label: 'B', value: 'B' },
-  { label: 'B-', value: 'B-' },
-  { label: 'C+', value: 'C+' },
-  { label: 'C', value: 'C' },
-  { label: 'C-', value: 'C-' },
+  { label: "A+", value: "A+" },
+  { label: "A", value: "A" },
+  { label: "A-", value: "A-" },
+  { label: "B+", value: "B+" },
+  { label: "B", value: "B" },
+  { label: "B-", value: "B-" },
+  { label: "C+", value: "C+" },
+  { label: "C", value: "C" },
+  { label: "C-", value: "C-" },
 ];
 
 // Update the PROFILE_STEPS type
@@ -114,7 +141,7 @@ const PROFILE_STEPS: Step[] = [
         placeholder: "Branner, Kimball...",
         key: "dorm",
         required: true,
-      }
+      },
     ],
   },
   {
@@ -125,7 +152,7 @@ const PROFILE_STEPS: Step[] = [
         key: "whereStudy",
         required: true,
         type: "tag",
-      }
+      },
     ],
   },
   {
@@ -139,7 +166,7 @@ const PROFILE_STEPS: Step[] = [
         min: 0,
         max: 2,
         step: 1,
-        defaultValue: 1
+        defaultValue: 1,
       },
       {
         type: "slider",
@@ -149,7 +176,7 @@ const PROFILE_STEPS: Step[] = [
         min: 0,
         max: 2,
         step: 1,
-        defaultValue: 1
+        defaultValue: 1,
       },
       {
         type: "learningGrid",
@@ -162,15 +189,21 @@ const PROFILE_STEPS: Step[] = [
           { id: "recordings", label: "Watching recorded lectures" },
           { id: "practice", label: "Doing practice / homework problems" },
           { id: "office_hours", label: "Attending office hours" },
-          { id: "discussing", label: "Discussing with students" }, 
+          { id: "discussing", label: "Discussing with students" },
           { id: "essays", label: "Writing essays" },
           { id: "llm", label: "Talking to a LLM" },
-          { id: "creating_notes", label: "Creating notes/flashcards/study guides" },
-          { id: "reading_notes", label: "Reading others' notes/flashcards/study guides" },
+          {
+            id: "creating_notes",
+            label: "Creating notes/flashcards/study guides",
+          },
+          {
+            id: "reading_notes",
+            label: "Reading others' notes/flashcards/study guides",
+          },
           { id: "teaching", label: "Teaching other students" },
           { id: "projects", label: "Doing independent projects" },
-        ]
-      }
+        ],
+      },
     ],
   },
   {
@@ -178,7 +211,8 @@ const PROFILE_STEPS: Step[] = [
     helperText: "Tell us about your study preferences",
     inputs: [
       {
-        placeholder: "How many hours per week do you plan to work on this class?",
+        placeholder:
+          "How many hours per week do you plan to work on this class?",
         key: "weeklyHours",
         required: true,
         type: "slider",
@@ -188,7 +222,8 @@ const PROFILE_STEPS: Step[] = [
         defaultValue: 5,
       },
       {
-        placeholder: "In general, how many days before a deadline do you start your assignments?",
+        placeholder:
+          "In general, how many days before a deadline do you start your assignments?",
         key: "deadlinePreference",
         required: true,
         type: "slider",
@@ -198,7 +233,8 @@ const PROFILE_STEPS: Step[] = [
         defaultValue: 3,
       },
       {
-        placeholder: "What is your preferred noise level when studying for this class?",
+        placeholder:
+          "What is your preferred noise level when studying for this class?",
         key: "noiseLevel",
         required: true,
         type: "slider",
@@ -216,7 +252,8 @@ const PROFILE_STEPS: Step[] = [
         defaultValue: "",
       },
       {
-        placeholder: "What grade do you currently expect to receive in this class?",
+        placeholder:
+          "What grade do you currently expect to receive in this class?",
         key: "expectedGrade",
         required: true,
         type: "dropdown",
@@ -234,39 +271,40 @@ const PROFILE_STEPS: Step[] = [
         key: "schedule",
         required: true,
         type: "schedule",
-      }
+      },
     ],
   },
   {
     title: "Anything else you'd like to share?",
     inputs: [
       {
-        placeholder: "Non-negotiables, learning disabilities, anything else (optional)",
+        placeholder:
+          "Non-negotiables, learning disabilities, anything else (optional)",
         key: "additionalInfo",
         required: false,
-        type: 'text',
+        type: "text",
         style: {
           height: 100,
-          textAlignVertical: 'top',
+          textAlignVertical: "top",
           paddingTop: 8,
-        }
+        },
       },
       {
-        placeholder: "Share Location",  // This will be used as the subtitle
+        placeholder: "Share Location", // This will be used as the subtitle
         key: "shareLocation",
         required: false,
-        type: 'switch',
+        type: "switch",
         defaultValue: false,
-        helperText: "Allow us to suggest study spots and partners nearby"
+        helperText: "Allow us to suggest study spots and partners nearby",
       },
       {
-        placeholder: "Sync Contacts",  // This will be used as the subtitle
+        placeholder: "Sync Contacts", // This will be used as the subtitle
         key: "syncContacts",
         required: false,
-        type: 'switch',
+        type: "switch",
         defaultValue: false,
-        helperText: "Find your friends who are already on the platform"
-      }
+        helperText: "Find your friends who are already on the platform",
+      },
     ],
   },
   {
@@ -284,7 +322,7 @@ type ClassData = {
   targetGrade: string;
   expectedGrade: string;
   noiseLevel: number;
-  [key: string]: string | number | boolean;  // Add index signature to allow dynamic properties
+  [key: string]: string | number | boolean; // Add index signature to allow dynamic properties
 };
 
 // Update the FormData type to make toggle fields optional
@@ -303,7 +341,16 @@ type FormData = {
   additionalInfo: string;
   shareLocation: boolean;
   syncContacts: boolean;
-  [key: string]: string | string[] | DaySchedule[] | number | ClassData[] | null | Record<string, number> | boolean | undefined;  // Update index signature
+  [key: string]:
+    | string
+    | string[]
+    | DaySchedule[]
+    | number
+    | ClassData[]
+    | null
+    | Record<string, number>
+    | boolean
+    | undefined; // Update index signature
 };
 
 // Add this near your other type definitions
@@ -316,27 +363,29 @@ type ClassChipProps = {
 
 // Type guard functions
 const isScheduleInput = (input: InputConfig): input is ScheduleInput => {
-  return input.type === 'schedule';
+  return input.type === "schedule";
 };
 
 const isTagInput = (input: InputConfig): input is TagInput => {
-  return input.type === 'tag';
+  return input.type === "tag";
 };
 
-const isLearningGridInput = (input: InputConfig): input is LearningGridInput => {
-  return input.type === 'learningGrid';
+const isLearningGridInput = (
+  input: InputConfig
+): input is LearningGridInput => {
+  return input.type === "learningGrid";
 };
 
 const isSwitchInput = (input: InputConfig): input is SwitchInput => {
-  console.log('Checking if switch input:', input); // Debug log
-  const isSwitch = input.type === 'switch';
-  console.log('Is switch?', isSwitch); // Debug log
+  console.log("Checking if switch input:", input); // Debug log
+  const isSwitch = input.type === "switch";
+  console.log("Is switch?", isSwitch); // Debug log
   return isSwitch;
 };
 
 // First, add this type guard near your other type guards
 const isTextInput = (input: InputConfig): input is TextInputConfig => {
-  return !input.type || input.type === 'text';
+  return !input.type || input.type === "text";
 };
 
 // Add this interface with your other type definitions
@@ -365,35 +414,43 @@ type StudyProfileData = {
 
 // Then your packageFormData function can use this type
 const packageFormData = (formData: FormData): StudyProfileData => {
-  console.log('Raw punctualityPreference:', formData.punctualityPreference);
-  console.log('Type of punctualityPreference:', typeof formData.punctualityPreference);
+  console.log("Raw punctualityPreference:", formData.punctualityPreference);
+  console.log(
+    "Type of punctualityPreference:",
+    typeof formData.punctualityPreference
+  );
 
-  const punctualityValue = formData.punctualityPreference !== undefined && formData.punctualityPreference !== null
-    ? Number(formData.punctualityPreference)
-    : 1;
+  const punctualityValue =
+    formData.punctualityPreference !== undefined &&
+    formData.punctualityPreference !== null
+      ? Number(formData.punctualityPreference)
+      : 1;
 
-  console.log('Converted punctualityPreference:', punctualityValue);
+  console.log("Converted punctualityPreference:", punctualityValue);
 
   return {
     dorm: formData.dorm as string,
     studyLocations: formData.whereStudyTags as string[],
-    
-    alertnessPreference: formData.alertnessPreference !== undefined 
-      ? Number(formData.alertnessPreference) 
-      : 1,
-      
+
+    alertnessPreference:
+      formData.alertnessPreference !== undefined
+        ? Number(formData.alertnessPreference)
+        : 1,
+
     punctualityPreference: punctualityValue,
-    
+
     learningPreferences: formData.learningPreferences as Record<string, number>,
-    
-    availableTimeSlots: formData.schedule.map(day => ({
-      day: day.day,
-      slots: day.timeSlots
-        .filter(slot => slot.selected)
-        .map(slot => slot.hour)
-    })).filter(day => day.slots.length > 0),
-    
-    classes: formData.classes.map(classData => ({
+
+    availableTimeSlots: formData.schedule
+      .map((day) => ({
+        day: day.day,
+        slots: day.timeSlots
+          .filter((slot) => slot.selected)
+          .map((slot) => slot.hour),
+      }))
+      .filter((day) => day.slots.length > 0),
+
+    classes: formData.classes.map((classData) => ({
       name: classData.name,
       weeklyHours: Number(classData.weeklyHours),
       deadlinePreference: Number(classData.deadlinePreference),
@@ -401,7 +458,7 @@ const packageFormData = (formData: FormData): StudyProfileData => {
       expectedGrade: classData.expectedGrade,
       noiseLevel: Number(classData.noiseLevel),
     })),
-    
+
     additionalInfo: formData.additionalInfo as string,
     shareLocation: Boolean(formData.shareLocation),
     syncContacts: Boolean(formData.syncContacts),
@@ -420,12 +477,12 @@ export default function CreateStudyProfile() {
     studyTime: "",
     goal: "",
     bio: "",
-    schedule: DAYS.map(day => ({
+    schedule: DAYS.map((day) => ({
       day,
-      timeSlots: HOURS.map(hour => ({
+      timeSlots: HOURS.map((hour) => ({
         hour,
-        selected: false
-      }))
+        selected: false,
+      })),
     })),
     weeklyHours: 5,
     deadlinePreference: 3,
@@ -442,31 +499,31 @@ export default function CreateStudyProfile() {
 
   // Animation setup remains the same
   const buttonAnimation = useRef(new Animated.Value(0)).current;
-  const screenHeight = Dimensions.get('window').height;
+  const screenHeight = Dimensions.get("window").height;
   const router = useRouter();
 
   // Keyboard animation logic remains the same
   useEffect(() => {
     const keyboardWillShow = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
       (event: KeyboardEvent) => {
         const keyboardHeight = event.endCoordinates.height;
         const maxSlide = Math.min(keyboardHeight, screenHeight * 0.05);
-        
+
         Animated.timing(buttonAnimation, {
           toValue: maxSlide,
-          duration: Platform.OS === 'ios' ? event.duration : 250,
+          duration: Platform.OS === "ios" ? event.duration : 250,
           useNativeDriver: true,
         }).start();
       }
     );
 
     const keyboardWillHide = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
       (event: KeyboardEvent) => {
         Animated.timing(buttonAnimation, {
           toValue: 0,
-          duration: Platform.OS === 'ios' ? event.duration : 250,
+          duration: Platform.OS === "ios" ? event.duration : 250,
           useNativeDriver: true,
         }).start();
       }
@@ -487,44 +544,46 @@ export default function CreateStudyProfile() {
     const currentStepData = PROFILE_STEPS[currentStep];
 
     if (currentStepData.title === "Study Habits" && formData.currentClassId) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        classes: prev.classes.map(c => 
+        classes: prev.classes.map((c) =>
           c.id === prev.currentClassId
-            ? { ...c, [key]: value } as ClassData
+            ? ({ ...c, [key]: value } as ClassData)
             : c
-        )
+        ),
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [key]: value
+        [key]: value,
       }));
     }
   };
 
   const handleContinue = () => {
     const currentStepData = PROFILE_STEPS[currentStep];
-    
+
     // Special handling for "Anything else you'd like to share?" page
     if (currentStepData.title === "Anything else you'd like to share?") {
-      setCurrentStep(prev => prev + 1);
+      setCurrentStep((prev) => prev + 1);
       return;
     }
 
     if (currentStepData.title === "Study Habits") {
       if (!isButtonDisabled()) {
-        setCurrentStep(prev => prev + 1);
+        setCurrentStep((prev) => prev + 1);
       }
       return;
     }
 
     // Special handling for General Study Habits page
     if (currentStepData.title === "General Study Habits") {
-      const learningGridInput = currentStepData.inputs.find(input => input.type === 'learningGrid');
+      const learningGridInput = currentStepData.inputs.find(
+        (input) => input.type === "learningGrid"
+      );
       if (learningGridInput && !isButtonDisabled()) {
         if (currentStep < PROFILE_STEPS.length - 1) {
-          setCurrentStep(prev => prev + 1);
+          setCurrentStep((prev) => prev + 1);
         } else {
           router.replace("/(tabs)/groups");
         }
@@ -534,17 +593,18 @@ export default function CreateStudyProfile() {
 
     // For other pages
     const input = currentStepData.inputs[0];
-    const isValid = 
-      isScheduleInput(input) 
-        ? formData.schedule.some(day => day.timeSlots.some(slot => slot.selected))
+    const isValid = isScheduleInput(input)
+      ? formData.schedule.some((day) =>
+          day.timeSlots.some((slot) => slot.selected)
+        )
       : isTagInput(input)
         ? (formData[`${input.key}Tags`] as string[]).length >= 2
-      : typeof formData[input.key] === 'string' && 
-        (formData[input.key] as string).trim() !== '';
+        : typeof formData[input.key] === "string" &&
+          (formData[input.key] as string).trim() !== "";
 
     if (isValid) {
       if (currentStep < PROFILE_STEPS.length - 1) {
-        setCurrentStep(prev => prev + 1);
+        setCurrentStep((prev) => prev + 1);
       } else {
         router.replace("/(tabs)/groups");
       }
@@ -552,17 +612,17 @@ export default function CreateStudyProfile() {
   };
 
   const handleBack = () => {
-    setCurrentStep(prev => Math.max(0, prev - 1));
+    setCurrentStep((prev) => Math.max(0, prev - 1));
   };
 
   const currentStepData = PROFILE_STEPS[currentStep];
 
   // Helper function to check if any slots are selected
   const hasSelectedSlots = () => {
-    if (currentStepData.inputs[0].type === 'schedule') {
+    if (currentStepData.inputs[0].type === "schedule") {
       const schedule = formData.schedule as DaySchedule[];
-      return schedule.some(day => 
-        day.timeSlots.some(slot => slot.selected)
+      return schedule.some((day) =>
+        day.timeSlots.some((slot) => slot.selected)
       );
     }
     return false;
@@ -576,7 +636,7 @@ export default function CreateStudyProfile() {
     }
 
     const currentInput = currentStepData.inputs[0];
-    
+
     if (currentStepData.title === "Study Habits") {
       // First check if there are any classes
       if (formData.classes.length === 0) {
@@ -584,18 +644,18 @@ export default function CreateStudyProfile() {
       }
 
       // Check if all classes have their required fields filled out
-      return formData.classes.some(classData => {
+      return formData.classes.some((classData) => {
         const missingFields = [
-          'weeklyHours',
-          'deadlinePreference',
-          'noiseLevel',
-          'targetGrade',
-          'expectedGrade'
-        ].some(field => {
-          if (typeof classData[field] === 'string') {
+          "weeklyHours",
+          "deadlinePreference",
+          "noiseLevel",
+          "targetGrade",
+          "expectedGrade",
+        ].some((field) => {
+          if (typeof classData[field] === "string") {
             return !classData[field];
-          } else if (typeof classData[field] === 'number') {
-            return classData[field] === undefined || classData[field] === null
+          } else if (typeof classData[field] === "number") {
+            return classData[field] === undefined || classData[field] === null;
           }
           return true;
         });
@@ -604,26 +664,30 @@ export default function CreateStudyProfile() {
       });
     }
 
-    if (currentInput.type === 'schedule') {
-      return !formData.schedule.some(day => 
-        day.timeSlots.some(slot => slot.selected)
+    if (currentInput.type === "schedule") {
+      return !formData.schedule.some((day) =>
+        day.timeSlots.some((slot) => slot.selected)
       );
     }
-    
-    if (currentInput.type === 'tag') {
+
+    if (currentInput.type === "tag") {
       return (formData[`${currentInput.key}Tags`] as string[]).length < 2;
     }
-    
+
     if (currentStepData.title === "General Study Habits") {
       // Only check if all learning preferences have been rated
-      const learningGridInput = currentStepData.inputs.find(input => input.type === 'learningGrid');
-      if (learningGridInput && learningGridInput.type === 'learningGrid') {
-        const requiredOptions = learningGridInput.options.map(opt => opt.id);
-        return requiredOptions.some(optionId => !formData.learningPreferences[optionId]);
+      const learningGridInput = currentStepData.inputs.find(
+        (input) => input.type === "learningGrid"
+      );
+      if (learningGridInput && learningGridInput.type === "learningGrid") {
+        const requiredOptions = learningGridInput.options.map((opt) => opt.id);
+        return requiredOptions.some(
+          (optionId) => !formData.learningPreferences[optionId]
+        );
       }
       return false;
     }
-    
+
     return !formData[currentInput.key];
   };
 
@@ -650,7 +714,7 @@ export default function CreateStudyProfile() {
         expectedGrade: "",
       };
 
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         classes: [...prev.classes, newClass],
         currentClassId: newClass.id,
@@ -661,23 +725,29 @@ export default function CreateStudyProfile() {
     }
   };
 
-  const currentClass = formData.classes.find(c => c.id === formData.currentClassId);
+  const currentClass = formData.classes.find(
+    (c) => c.id === formData.currentClassId
+  );
 
   // Update the ClassSelector component
   const ClassSelector = () => (
-    <XStack 
+    <XStack
       space="$0"
       marginBottom="$2"
       flexWrap="wrap"
       paddingHorizontal="$4"
       gap="$1"
     >
-      {formData.classes.map(classData => (
+      {formData.classes.map((classData) => (
         <XStack
           key={classData.id}
-          backgroundColor={classData.id === formData.currentClassId ? "#0F9ED5" : "white"}
+          backgroundColor={
+            classData.id === formData.currentClassId ? "#0F9ED5" : "white"
+          }
           borderWidth={1}
-          borderColor={classData.id === formData.currentClassId ? "#0F9ED5" : "$gray"}
+          borderColor={
+            classData.id === formData.currentClassId ? "#0F9ED5" : "$gray"
+          }
           borderRadius="$4"
           paddingVertical="$1"
           paddingHorizontal="$2"
@@ -690,39 +760,48 @@ export default function CreateStudyProfile() {
           }}
         >
           <TouchableOpacity
-            onPress={() => setFormData(prev => ({ 
-              ...prev, 
-              currentClassId: classData.id 
-            }))}
-            style={{ 
-              flexDirection: 'row', 
-              alignItems: 'center',
+            onPress={() =>
+              setFormData((prev) => ({
+                ...prev,
+                currentClassId: classData.id,
+              }))
+            }
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
             <Text
-              color={classData.id === formData.currentClassId ? "white" : "$gray12"}
+              color={
+                classData.id === formData.currentClassId ? "white" : "$gray12"
+              }
               fontSize="$3"
               fontWeight="500"
             >
               {classData.name}
             </Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             onPress={() => {
-              setFormData(prev => {
-                const newClasses = prev.classes.filter(c => c.id !== classData.id);
+              setFormData((prev) => {
+                const newClasses = prev.classes.filter(
+                  (c) => c.id !== classData.id
+                );
                 return {
                   ...prev,
                   classes: newClasses,
-                  currentClassId: newClasses.length > 0 ? newClasses[0].id : null
+                  currentClassId:
+                    newClasses.length > 0 ? newClasses[0].id : null,
                 };
               });
             }}
             style={{ marginLeft: 4 }}
           >
             <Text
-              color={classData.id === formData.currentClassId ? "white" : "$gray"}
+              color={
+                classData.id === formData.currentClassId ? "white" : "$gray"
+              }
               fontSize="$3"
               fontWeight="600"
             >
@@ -754,12 +833,12 @@ export default function CreateStudyProfile() {
   // Add these keyboard listeners in a useEffect
   useEffect(() => {
     const keyboardWillShow = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
       () => setKeyboardVisible(true)
     );
-    
+
     const keyboardWillHide = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
       () => setKeyboardVisible(false)
     );
 
@@ -771,15 +850,15 @@ export default function CreateStudyProfile() {
 
   return (
     <ScreenWrapper>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={-100}
         style={{ flex: 1 }}
       >
         <Stack flex={1} paddingHorizontal="$4" paddingTop="$8">
-          <ProfileCreationHeader 
-            currentStep={currentStep} 
-            totalSteps={PROFILE_STEPS.length} 
+          <ProfileCreationHeader
+            currentStep={currentStep}
+            totalSteps={PROFILE_STEPS.length}
             onBack={handleBack}
             showAddClass={currentStepData.title === "Study Habits"}
             showImport={currentStepData.title === "Study Free Time"}
@@ -791,14 +870,23 @@ export default function CreateStudyProfile() {
             }}
           />
 
-          {formData.classes.length > 0 && currentStepData.title === "Study Habits" && (
-            <ClassSelector />
-          )}
+          {formData.classes.length > 0 &&
+            currentStepData.title === "Study Habits" && <ClassSelector />}
 
           {/* Add Modal for new class name */}
           <Modal visible={showClassModal} transparent>
-            <YStack flex={1} justifyContent="center" alignItems="center" backgroundColor="rgba(0,0,0,0.5)">
-              <YStack backgroundColor="white" padding="$4" borderRadius="$4" width="80%">
+            <YStack
+              flex={1}
+              justifyContent="center"
+              alignItems="center"
+              backgroundColor="rgba(0,0,0,0.5)"
+            >
+              <YStack
+                backgroundColor="white"
+                padding="$4"
+                borderRadius="$4"
+                width="80%"
+              >
                 <Text fontSize="$4" fontWeight="600" marginBottom="$4">
                   Add New Class
                 </Text>
@@ -824,8 +912,8 @@ export default function CreateStudyProfile() {
               {currentStepData.title === "Study Habits" ? (
                 <>
                   {formData.classes.length > 0 ? (
-                    <XStack 
-                      space="$2" 
+                    <XStack
+                      space="$2"
                       alignItems="center"
                       marginBottom="$4"
                       paddingHorizontal="$4"
@@ -836,13 +924,13 @@ export default function CreateStudyProfile() {
                       <TextInput
                         value={currentClass?.name}
                         onChangeText={(newName) => {
-                          setFormData(prev => ({
+                          setFormData((prev) => ({
                             ...prev,
-                            classes: prev.classes.map(c => 
+                            classes: prev.classes.map((c) =>
                               c.id === prev.currentClassId
                                 ? { ...c, name: newName }
                                 : c
-                            )
+                            ),
                           }));
                         }}
                         style={{
@@ -859,7 +947,7 @@ export default function CreateStudyProfile() {
                       />
                     </XStack>
                   ) : (
-                    <Text 
+                    <Text
                       fontSize="$5"
                       fontWeight="800"
                       marginBottom="$4"
@@ -870,45 +958,46 @@ export default function CreateStudyProfile() {
                   )}
 
                   {formData.classes.length === 0 ? (
-                    <YStack 
-                      flex={1} 
-                      justifyContent="center" 
+                    <YStack
+                      flex={1}
+                      justifyContent="center"
                       alignItems="center"
                       paddingHorizontal="$4"
                     >
-                      <Text 
-                        color="$gray" 
-                        fontSize="$4" 
-                        textAlign="center"
-                      >
-                        Add a class using the + button above to start setting your class-specific preferences
+                      <Text color="$gray" fontSize="$4" textAlign="center">
+                        Add a class using the + button above to start setting
+                        your class-specific preferences
                       </Text>
                     </YStack>
                   ) : (
                     <YStack space="$2" paddingHorizontal="$4">
                       {currentStepData.inputs.map((input) => {
-                        console.log('Processing input:', input); // Debug log
+                        console.log("Processing input:", input); // Debug log
 
                         // Handle switch input FIRST, before any other conditions
-                        if (input.type === 'switch') {
-                          console.log('Rendering switch component'); // Debug log
+                        if (input.type === "switch") {
+                          console.log("Rendering switch component"); // Debug log
                           return (
                             <CustomSwitch
                               key={input.key}
                               value={formData[input.key] as boolean}
-                              onValueChange={(value) => handleInputChange(input.key, value)}
+                              onValueChange={(value) =>
+                                handleInputChange(input.key, value)
+                              }
                             />
                           );
                         }
 
                         // Then handle text input
-                        if (!input.type || input.type === 'text') {
+                        if (!input.type || input.type === "text") {
                           return (
                             <CustomInput
                               key={input.key}
                               placeholder={input.placeholder}
                               value={formData[input.key] as string}
-                              onChangeText={(value) => handleInputChange(input.key, value)}
+                              onChangeText={(value) =>
+                                handleInputChange(input.key, value)
+                              }
                               required={input.required}
                               style={input.style}
                             />
@@ -920,44 +1009,50 @@ export default function CreateStudyProfile() {
                             <PreferenceSlider
                               key={input.key}
                               label={input.placeholder}
-                              value={(currentClass?.[input.key] as number) ?? input.defaultValue}
+                              value={
+                                (currentClass?.[input.key] as number) ??
+                                input.defaultValue
+                              }
                               minimumValue={input.min}
                               maximumValue={input.max}
                               step={input.step}
                               isNoiseLevel={input.key === "noiseLevel"}
                               onValueChange={(value) => {
-                                setFormData(prev => ({
+                                setFormData((prev) => ({
                                   ...prev,
-                                  classes: prev.classes.map(c => 
+                                  classes: prev.classes.map((c) =>
                                     c.id === prev.currentClassId
                                       ? { ...c, [input.key]: value }
                                       : c
-                                  )
+                                  ),
                                 }));
                               }}
                             />
                           );
                         }
-                        
+
                         if (input.type === "dropdown") {
                           return (
-                            <View 
+                            <View
                               key={input.key}
-                              style={{ 
-                                zIndex: activeDropdown === input.key ? 4000 : 3000,
+                              style={{
+                                zIndex:
+                                  activeDropdown === input.key ? 4000 : 3000,
                               }}
                             >
                               <DropdownInput
                                 label={input.placeholder}
-                                value={(currentClass?.[input.key] as string) ?? ""}
+                                value={
+                                  (currentClass?.[input.key] as string) ?? ""
+                                }
                                 onValueChange={(value) => {
-                                  setFormData(prev => ({
+                                  setFormData((prev) => ({
                                     ...prev,
-                                    classes: prev.classes.map(c => 
+                                    classes: prev.classes.map((c) =>
                                       c.id === prev.currentClassId
                                         ? { ...c, [input.key]: value }
                                         : c
-                                    )
+                                    ),
                                   }));
                                 }}
                                 items={input.options}
@@ -966,7 +1061,7 @@ export default function CreateStudyProfile() {
                             </View>
                           );
                         }
-                        
+
                         if (input.type === "learningGrid") {
                           return (
                             <LearningPreferencesGrid
@@ -975,24 +1070,26 @@ export default function CreateStudyProfile() {
                               options={input.options}
                               values={formData.learningPreferences || {}}
                               onChange={(id, rating) => {
-                                setFormData(prev => ({
+                                setFormData((prev) => ({
                                   ...prev,
                                   learningPreferences: {
                                     ...prev.learningPreferences,
-                                    [id]: rating
-                                  }
+                                    [id]: rating,
+                                  },
                                 }));
                               }}
                             />
                           );
                         }
-                        
+
                         return (
                           <CustomInput
                             key={input.key}
                             placeholder={input.placeholder}
                             value={formData[input.key] as string}
-                            onChangeText={(value) => handleInputChange(input.key, value)}
+                            onChangeText={(value) =>
+                              handleInputChange(input.key, value)
+                            }
                             required={input.required}
                           />
                         );
@@ -1002,7 +1099,7 @@ export default function CreateStudyProfile() {
                 </>
               ) : (
                 <>
-                  <Text 
+                  <Text
                     fontSize="$5"
                     fontWeight="800"
                     marginBottom="$4"
@@ -1011,25 +1108,30 @@ export default function CreateStudyProfile() {
                     {currentStepData.title}
                   </Text>
 
-                  {currentStepData.title === "Anything else you'd like to share?" ? (
+                  {currentStepData.title ===
+                  "Anything else you'd like to share?" ? (
                     <YStack paddingHorizontal="$4">
                       <CustomInput
                         placeholder="Non-negotiables, learning disabilities, anything else to share (optional)"
                         value={formData.additionalInfo as string}
-                        onChangeText={(value) => handleInputChange("additionalInfo", value)}
+                        onChangeText={(value) =>
+                          handleInputChange("additionalInfo", value)
+                        }
                         style={{
                           height: 70,
-                          textAlignVertical: 'top',
+                          textAlignVertical: "top",
                           paddingTop: 8,
                         }}
                         multiline
                       />
 
                       <YStack height="$2" />
-                      
+
                       <CustomSwitch
                         value={formData.shareLocation}
-                        onValueChange={(value) => handleInputChange("shareLocation", value)}
+                        onValueChange={(value) =>
+                          handleInputChange("shareLocation", value)
+                        }
                         subtitle="Share Location"
                         helperText="Allow us to suggest study spots and partners nearby (optional)"
                       />
@@ -1038,7 +1140,9 @@ export default function CreateStudyProfile() {
 
                       <CustomSwitch
                         value={formData.syncContacts}
-                        onValueChange={(value) => handleInputChange("syncContacts", value)}
+                        onValueChange={(value) =>
+                          handleInputChange("syncContacts", value)
+                        }
                         subtitle="Sync Contacts"
                         helperText="Find your friends who are already on the platform (optional)"
                       />
@@ -1046,60 +1150,70 @@ export default function CreateStudyProfile() {
                   ) : (
                     <YStack space="$2" paddingHorizontal="$4">
                       {currentStepData.inputs.map((input) => {
-                        if (currentStepData.title === "General Study Habits" && input.type === "slider") {
+                        if (
+                          currentStepData.title === "General Study Habits" &&
+                          input.type === "slider"
+                        ) {
                           return (
                             <GeneralStudyHabits
                               key={input.key}
                               label={input.placeholder}
-                              value={(formData[input.key] as number) ?? input.defaultValue}
+                              value={
+                                (formData[input.key] as number) ??
+                                input.defaultValue
+                              }
                               minimumValue={input.min}
                               maximumValue={input.max}
                               step={input.step}
-                              sliderType={input.key === "alertnessPreference" ? "alertness" : "punctuality"}
+                              sliderType={
+                                input.key === "alertnessPreference"
+                                  ? "alertness"
+                                  : "punctuality"
+                              }
                               onValueChange={(value) => {
-                                setFormData(prev => ({
+                                setFormData((prev) => ({
                                   ...prev,
-                                  [input.key]: value
+                                  [input.key]: value,
                                 }));
                               }}
                               paddingBottom={16}
                             />
                           );
                         }
-                        
-                        if (currentStepData.title === "General Study Habits" && input.type === "learningGrid") {
+
+                        if (
+                          currentStepData.title === "General Study Habits" &&
+                          input.type === "learningGrid"
+                        ) {
                           return (
-                            <YStack 
-                              key={input.key}
-                              marginTop="-$4"
-                            >
+                            <YStack key={input.key} marginTop="-$4">
                               <LearningPreferencesGrid
                                 label={input.placeholder}
                                 options={input.options}
                                 values={formData.learningPreferences}
                                 onChange={(id, rating) => {
-                                  setFormData(prev => ({
+                                  setFormData((prev) => ({
                                     ...prev,
                                     learningPreferences: {
                                       ...prev.learningPreferences,
-                                      [id]: rating
-                                    }
+                                      [id]: rating,
+                                    },
                                   }));
                                 }}
                               />
                             </YStack>
                           );
                         }
-                        
+
                         if (input.type === "schedule") {
                           return (
                             <YStack key={input.key} paddingTop="$2">
                               <WeeklyScheduleSelector
                                 value={formData.schedule}
                                 onChange={(newSchedule) => {
-                                  setFormData(prev => ({
+                                  setFormData((prev) => ({
                                     ...prev,
-                                    schedule: newSchedule
+                                    schedule: newSchedule,
                                   }));
                                 }}
                                 helperText={currentStepData.helperText}
@@ -1107,37 +1221,62 @@ export default function CreateStudyProfile() {
                             </YStack>
                           );
                         }
-                        
+
                         if (input.type === "tag") {
                           return (
                             <TagInput
                               key={input.key}
                               placeholder={input.placeholder}
-                              value={formData[input.key as keyof typeof formData] as string}
-                              tags={formData[`${input.key}Tags` as keyof typeof formData] as string[]}
-                              onChangeText={(value) => handleInputChange(input.key, value)}
+                              value={
+                                formData[
+                                  input.key as keyof typeof formData
+                                ] as string
+                              }
+                              tags={
+                                formData[
+                                  `${input.key}Tags` as keyof typeof formData
+                                ] as string[]
+                              }
+                              onChangeText={(value) =>
+                                handleInputChange(input.key, value)
+                              }
                               onAddTag={(tag) => {
-                                setFormData(prev => ({
+                                setFormData((prev) => ({
                                   ...prev,
-                                  [`${input.key}Tags`]: [...(prev[`${input.key}Tags` as keyof typeof formData] as string[]), tag]
+                                  [`${input.key}Tags`]: [
+                                    ...(prev[
+                                      `${input.key}Tags` as keyof typeof formData
+                                    ] as string[]),
+                                    tag,
+                                  ],
                                 }));
                               }}
                               onRemoveTag={(index) => {
-                                setFormData(prev => ({
+                                setFormData((prev) => ({
                                   ...prev,
-                                  [`${input.key}Tags`]: (prev[`${input.key}Tags` as keyof typeof formData] as string[]).filter((_, i) => i !== index)
+                                  [`${input.key}Tags`]: (
+                                    prev[
+                                      `${input.key}Tags` as keyof typeof formData
+                                    ] as string[]
+                                  ).filter((_, i) => i !== index),
                                 }));
                               }}
                             />
                           );
                         }
-                        
+
                         return (
                           <CustomInput
                             key={input.key}
                             placeholder={input.placeholder}
-                            value={formData[input.key as keyof typeof formData] as string}
-                            onChangeText={(value) => handleInputChange(input.key, value)}
+                            value={
+                              formData[
+                                input.key as keyof typeof formData
+                              ] as string
+                            }
+                            onChangeText={(value) =>
+                              handleInputChange(input.key, value)
+                            }
                             required={input.required}
                             onWhyPress={() => console.log("Why pressed")}
                           />
@@ -1152,24 +1291,34 @@ export default function CreateStudyProfile() {
             {currentStep !== PROFILE_STEPS.length - 1 ? (
               <Animated.View
                 style={{
-                  transform: [{
-                    translateY: currentStepData.title === "Anything else you'd like to share?" 
-                      ? buttonAnimation.interpolate({
-                          inputRange: [0, 1000],
-                          outputRange: [0, -1700],
-                        })
-                      : translateY
-                  }],
+                  transform: [
+                    {
+                      translateY:
+                        currentStepData.title ===
+                        "Anything else you'd like to share?"
+                          ? buttonAnimation.interpolate({
+                              inputRange: [0, 1000],
+                              outputRange: [0, -1700],
+                            })
+                          : translateY,
+                    },
+                  ],
                   paddingHorizontal: 16,
-                  paddingBottom: Platform.OS === 'ios' ? 8 : 24,
-                  marginBottom: Platform.OS === 'ios' ? 8 : 16,
-                  alignItems: 'flex-end',
-                  position: 'absolute',
-                  bottom: Platform.OS === 'ios' 
-                    ? (currentStepData.title === "Anything else you'd like to share?"
-                        ? (keyboardVisible ? 20 : 20)  
-                        : (keyboardVisible ? 50 : 50))  
-                    : 24,
+                  paddingBottom: Platform.OS === "ios" ? 8 : 24,
+                  marginBottom: Platform.OS === "ios" ? 8 : 16,
+                  alignItems: "flex-end",
+                  position: "absolute",
+                  bottom:
+                    Platform.OS === "ios"
+                      ? currentStepData.title ===
+                        "Anything else you'd like to share?"
+                        ? keyboardVisible
+                          ? 20
+                          : 20
+                        : keyboardVisible
+                          ? 50
+                          : 50
+                      : 24,
                   right: 0,
                 }}
               >
@@ -1180,9 +1329,7 @@ export default function CreateStudyProfile() {
                   <Circle
                     size={50}
                     backgroundColor={
-                      isButtonDisabled()
-                        ? "$iosGray"
-                        : "#0F9ED5"
+                      isButtonDisabled() ? "$iosGray" : "#0F9ED5"
                     }
                     justifyContent="center"
                     alignItems="center"
@@ -1194,29 +1341,27 @@ export default function CreateStudyProfile() {
             ) : (
               <YStack flex={1}>
                 {/* Lock animation and text container */}
-                <YStack 
+                <YStack
                   alignItems="center"
                   position="absolute"
                   width="100%"
                   style={{
-                    transform: [
-                      { translateY: -200 }
-                    ]
+                    transform: [{ translateY: -200 }],
                   }}
                 >
                   {/* Lock container with separate right offset */}
-                  <YStack 
+                  <YStack
                     alignItems="center"
                     width="100%"
                     style={{
                       transform: [
-                        { translateX: 35 }  // Adjust this value to move just the lock right
-                      ]
+                        { translateX: 35 }, // Adjust this value to move just the lock right
+                      ],
                     }}
                   >
                     <LockAnimation isAnimating={isLockAnimating} />
                   </YStack>
-                  
+
                   {/* Subheader text stays centered */}
                   <Text
                     color="$gray11"
@@ -1225,10 +1370,12 @@ export default function CreateStudyProfile() {
                     paddingHorizontal="$4"
                     marginTop="$8"
                     style={{
-                      lineHeight: 24
+                      lineHeight: 24,
                     }}
                   >
-                    We'll analyze your study preferences and match you with compatible study partners. This process usually takes about 2-3 minutes.
+                    We'll analyze your study preferences and match you with
+                    compatible study partners. This process usually takes about
+                    2-3 minutes.
                   </Text>
                 </YStack>
 
@@ -1236,10 +1383,7 @@ export default function CreateStudyProfile() {
                 <YStack flex={1} />
 
                 {/* Progress/button stays at bottom */}
-                <YStack 
-                  paddingHorizontal="$4"
-                  paddingBottom="$6"
-                >
+                <YStack paddingHorizontal="$4" paddingBottom="$6">
                   {showProgress ? (
                     <ProgressAnimation
                       onComplete={() => router.replace("/(tabs)/groups")}
@@ -1254,19 +1398,22 @@ export default function CreateStudyProfile() {
                         try {
                           // Package the data
                           const packagedData = packageFormData(formData);
-                          
+
                           // Send to database and wait for completion
                           await updateStudyProfile({
-                            studyProfile: packagedData
+                            studyProfile: packagedData,
                           });
-                          
+
                           // Start animations
                           setIsLockAnimating(true);
                           setShowProgress(true);
-                          
+
                           // Optional: Add some error handling UI
                         } catch (error) {
-                          console.error('Failed to update study profile:', error);
+                          console.error(
+                            "Failed to update study profile:",
+                            error
+                          );
                           // Optional: Add some error UI here
                         }
                       }}

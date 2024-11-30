@@ -2,7 +2,7 @@ import { YStack } from "tamagui";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
 import { useState, useEffect } from "react";
 import { WeeklyScheduleSelector } from "@/components/WeeklyScheduleSelector";
-import { Button } from "@/components/CustomButton";
+import { Button } from "@/components/buttons/CustomButton";
 import { useRouter } from "expo-router";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -21,56 +21,75 @@ type DaySchedule = {
 export default function ScheduleScreen() {
   const router = useRouter();
   const updateStudyProfile = useMutation(api.mutations.updateStudyProfile);
-  const currentProfile = useQuery(api.queries.getStudyProfile, { userId: undefined });
-  
+  const currentProfile = useQuery(api.queries.getStudyProfile, {
+    userId: undefined,
+  });
+
   // Initialize schedule state with FULL day names to match profile builder
   const [schedule, setSchedule] = useState<DaySchedule[]>(
     Array.from({ length: 7 }, (_, dayIndex) => ({
-      day: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIndex],
+      day: [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ][dayIndex],
       timeSlots: Array.from({ length: 24 }, (_, hour) => ({
         hour,
-        selected: false
-      }))
+        selected: false,
+      })),
     }))
   );
 
   useEffect(() => {
     if (currentProfile?.availableTimeSlots) {
-      console.log("Loading existing schedule:", currentProfile.availableTimeSlots);
-      
-      const newSchedule = schedule.map(day => {
+      console.log(
+        "Loading existing schedule:",
+        currentProfile.availableTimeSlots
+      );
+
+      const newSchedule = schedule.map((day) => {
         // Find matching day in availableTimeSlots
         const availableDay = currentProfile.availableTimeSlots.find(
-          d => d.day === day.day
+          (d) => d.day === day.day
         );
-        
-        console.log(`Processing ${day.day}:`, availableDay?.slots || 'No slots');
-        
-        const updatedTimeSlots = day.timeSlots.map(slot => {
+
+        console.log(
+          `Processing ${day.day}:`,
+          availableDay?.slots || "No slots"
+        );
+
+        const updatedTimeSlots = day.timeSlots.map((slot) => {
           const isSelected = availableDay?.slots.includes(slot.hour) ?? false;
-          console.log(`Hour ${slot.hour}: ${isSelected ? 'selected' : 'not selected'}`);
-          
+          console.log(
+            `Hour ${slot.hour}: ${isSelected ? "selected" : "not selected"}`
+          );
+
           return {
             hour: slot.hour,
-            selected: isSelected
+            selected: isSelected,
           };
         });
 
         return {
           day: day.day,
-          timeSlots: updatedTimeSlots
+          timeSlots: updatedTimeSlots,
         };
       });
-      
-      console.log("Setting new schedule with selected slots:", 
-        newSchedule.map(day => ({
+
+      console.log(
+        "Setting new schedule with selected slots:",
+        newSchedule.map((day) => ({
           day: day.day,
           selectedSlots: day.timeSlots
-            .filter(slot => slot.selected)
-            .map(slot => slot.hour)
+            .filter((slot) => slot.selected)
+            .map((slot) => slot.hour),
         }))
       );
-      
+
       setSchedule(newSchedule);
     }
   }, [currentProfile]);
@@ -78,13 +97,13 @@ export default function ScheduleScreen() {
   // Convert schedule format to availableTimeSlots format
   const convertScheduleToAvailableTimeSlots = (schedule: DaySchedule[]) => {
     return schedule
-      .map(day => ({
+      .map((day) => ({
         day: day.day,
         slots: day.timeSlots
-          .filter(slot => slot.selected)
-          .map(slot => slot.hour)
+          .filter((slot) => slot.selected)
+          .map((slot) => slot.hour),
       }))
-      .filter(day => day.slots.length > 0); // Only include days with selected slots
+      .filter((day) => day.slots.length > 0); // Only include days with selected slots
   };
 
   const handleSave = async () => {
@@ -94,18 +113,18 @@ export default function ScheduleScreen() {
       // Create updated profile with new availableTimeSlots but keeping other fields
       const updatedProfile = {
         ...currentProfile,
-        availableTimeSlots: convertScheduleToAvailableTimeSlots(schedule)
+        availableTimeSlots: convertScheduleToAvailableTimeSlots(schedule),
       };
 
       // Update the study profile
       await updateStudyProfile({
-        studyProfile: updatedProfile
+        studyProfile: updatedProfile,
       });
 
       // Return to settings
       router.back();
     } catch (error) {
-      console.error('Failed to update schedule:', error);
+      console.error("Failed to update schedule:", error);
     }
   };
 
@@ -113,11 +132,7 @@ export default function ScheduleScreen() {
     <ScreenWrapper>
       <YStack flex={1} padding="$4" space="$6">
         {/* Schedule Selector */}
-        <YStack 
-          backgroundColor="$background"
-          borderRadius="$4"
-          padding="$4"
-        >
+        <YStack backgroundColor="$background" borderRadius="$4" padding="$4">
           <WeeklyScheduleSelector
             value={schedule}
             onChange={setSchedule}

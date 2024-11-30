@@ -1,7 +1,7 @@
 import { YStack, Text } from "tamagui";
 import { ScreenWrapper } from "@/components/ScreenWrapper";
 import { useState, useEffect } from "react";
-import { Button } from "@/components/CustomButton";
+import { Button } from "@/components/buttons/CustomButton";
 import { useRouter } from "expo-router";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -37,18 +37,26 @@ function CustomStudyHabitSlider({
 
   const getLabel = (type: string, value: number) => {
     if (type === "alertness") {
-      switch(value) {
-        case 0: return "Morning Person";
-        case 1: return "Flexible";
-        case 2: return "Night Owl";
-        default: return "";
+      switch (value) {
+        case 0:
+          return "Morning Person";
+        case 1:
+          return "Flexible";
+        case 2:
+          return "Night Owl";
+        default:
+          return "";
       }
     } else {
-      switch(value) {
-        case 0: return "Early";
-        case 1: return "On Time";
-        case 2: return "Running Late";
-        default: return "";
+      switch (value) {
+        case 0:
+          return "Early";
+        case 1:
+          return "On Time";
+        case 2:
+          return "Running Late";
+        default:
+          return "";
       }
     }
   };
@@ -63,9 +71,9 @@ function CustomStudyHabitSlider({
         {label}
       </Text>
       <YStack width="100%">
-        <View style={{ width: '100%', height: 40 }}>
+        <View style={{ width: "100%", height: 40 }}>
           <Slider
-            key={`slider-${mounted}`}  // Add a key to force re-render
+            key={`slider-${mounted}`} // Add a key to force re-render
             value={value}
             onValueChange={([value]) => onValueChange(value as number)}
             minimumValue={minimumValue}
@@ -76,13 +84,13 @@ function CustomStudyHabitSlider({
             maximumTrackTintColor="#E5E5E5"
           />
         </View>
-        <Text 
-          fontSize="$3" 
-          color="$gray10" 
-          style={{ 
+        <Text
+          fontSize="$3"
+          color="$gray10"
+          style={{
             width: 120,
-            alignSelf: 'flex-end',
-            textAlign: 'right',
+            alignSelf: "flex-end",
+            textAlign: "right",
             paddingRight: 16,
           }}
         >
@@ -100,11 +108,14 @@ const LEARNING_OPTIONS = [
   { id: "recordings", label: "Watching recorded lectures" },
   { id: "practice", label: "Doing practice / homework problems" },
   { id: "office_hours", label: "Attending office hours" },
-  { id: "discussing", label: "Discussing with students" }, 
+  { id: "discussing", label: "Discussing with students" },
   { id: "essays", label: "Writing essays" },
   { id: "llm", label: "Talking to a LLM" },
   { id: "creating_notes", label: "Creating notes/flashcards/study guides" },
-  { id: "reading_notes", label: "Reading others' notes/flashcards/study guides" },
+  {
+    id: "reading_notes",
+    label: "Reading others' notes/flashcards/study guides",
+  },
   { id: "teaching", label: "Teaching other students" },
   { id: "projects", label: "Doing independent projects" },
 ];
@@ -112,8 +123,10 @@ const LEARNING_OPTIONS = [
 export default function GeneralPreferencesScreen() {
   const router = useRouter();
   const updateStudyProfile = useMutation(api.mutations.updateStudyProfile);
-  const currentProfile = useQuery(api.queries.getStudyProfile, { userId: undefined });
-  
+  const currentProfile = useQuery(api.queries.getStudyProfile, {
+    userId: undefined,
+  });
+
   const [preferences, setPreferences] = useState({
     alertnessPreference: 1,
     punctualityPreference: 1,
@@ -142,12 +155,12 @@ export default function GeneralPreferencesScreen() {
       };
 
       await updateStudyProfile({
-        studyProfile: updatedProfile
+        studyProfile: updatedProfile,
       });
 
       router.back();
     } catch (error) {
-      console.error('Failed to update preferences:', error);
+      console.error("Failed to update preferences:", error);
     }
   };
 
@@ -160,7 +173,7 @@ export default function GeneralPreferencesScreen() {
             <Text fontSize="$4" fontWeight="bold">
               Study Habits
             </Text>
-            
+
             <CustomStudyHabitSlider
               label="Do you feel more alert in the morning or in the evening?"
               value={preferences.alertnessPreference}
@@ -168,10 +181,12 @@ export default function GeneralPreferencesScreen() {
               maximumValue={2}
               step={1}
               sliderType="alertness"
-              onValueChange={(value) => setPreferences(prev => ({
-                ...prev,
-                alertnessPreference: value
-              }))}
+              onValueChange={(value) =>
+                setPreferences((prev) => ({
+                  ...prev,
+                  alertnessPreference: value,
+                }))
+              }
             />
 
             <CustomStudyHabitSlider
@@ -181,10 +196,12 @@ export default function GeneralPreferencesScreen() {
               maximumValue={2}
               step={1}
               sliderType="punctuality"
-              onValueChange={(value) => setPreferences(prev => ({
-                ...prev,
-                punctualityPreference: value
-              }))}
+              onValueChange={(value) =>
+                setPreferences((prev) => ({
+                  ...prev,
+                  punctualityPreference: value,
+                }))
+              }
             />
           </YStack>
         </YStack>
@@ -196,12 +213,12 @@ export default function GeneralPreferencesScreen() {
             options={LEARNING_OPTIONS}
             values={preferences.learningPreferences}
             onChange={(id, rating) => {
-              setPreferences(prev => ({
+              setPreferences((prev) => ({
                 ...prev,
                 learningPreferences: {
                   ...prev.learningPreferences,
-                  [id]: rating
-                }
+                  [id]: rating,
+                },
               }));
             }}
           />

@@ -4,12 +4,11 @@
     "slug": "Locked-In-App",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/LockedInLogo1024x1024.webp",
+    "icon": "./assets/images/LockedInLogoSplash.webp",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/LockedInLogoSplash.webp",
       "backgroundColor": "#F7F4F1",
       "dark": {
         "backgroundColor": "#0A364F"

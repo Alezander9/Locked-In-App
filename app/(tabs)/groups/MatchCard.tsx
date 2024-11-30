@@ -1,12 +1,21 @@
 import { YStack, XStack, Text, Image } from "tamagui";
-import { CheckIcon, XIcon, ChevronDownIcon, ChevronUpIcon, MailIcon, MessageIcon, LinkedinIcon, InstagramIcon } from "@/app/components/icons";
-import { CircleIconButton } from "@/components/CircleIconButton";
-import { Button } from "@/components/CustomButton";
+import {
+  CheckIcon,
+  XIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  MailIcon,
+  MessageIcon,
+  LinkedinIcon,
+  InstagramIcon,
+} from "@/app/components/icons";
+import { Button } from "@/components/buttons/CustomButton";
 import { useState } from "react";
 import { TouchableOpacity, Linking, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { CircleIconButton } from "@/components/buttons/CircleIconButton";
 
 // Define and export the Match type at the top
 export type Match = {
@@ -20,7 +29,7 @@ export type Match = {
   };
   timeAgo: string;
   courseId: string;
-  status: 'none' | 'accepted' | 'rejected';
+  status: "none" | "accepted" | "rejected";
   hasCreatedStudyProfile: boolean;
   image: string;
 };
@@ -39,7 +48,7 @@ export const MOCK_MATCHES: Match[] = [
     },
     timeAgo: "2h ago",
     courseId: "CS103",
-    status: 'none' as const,
+    status: "none" as const,
     hasCreatedStudyProfile: true,
     image: "https://api.dicebear.com/7.x/micah/png?seed=Alex",
   },
@@ -54,7 +63,7 @@ export const MOCK_MATCHES: Match[] = [
     },
     timeAgo: "1h ago",
     courseId: "CS103",
-    status: 'none' as const,
+    status: "none" as const,
     hasCreatedStudyProfile: true,
     image: "https://api.dicebear.com/7.x/micah/png?seed=Sarah",
   },
@@ -69,7 +78,7 @@ export const MOCK_MATCHES: Match[] = [
     },
     timeAgo: "3h ago",
     courseId: "CS103",
-    status: 'none' as const,
+    status: "none" as const,
     hasCreatedStudyProfile: true,
     image: "https://api.dicebear.com/7.x/micah/png?seed=Michael",
   },
@@ -86,7 +95,7 @@ export const MOCK_MATCHES: Match[] = [
     },
     timeAgo: "4h ago",
     courseId: "CS107",
-    status: 'none' as const,
+    status: "none" as const,
     hasCreatedStudyProfile: true,
     image: "https://api.dicebear.com/7.x/micah/png?seed=Maria",
   },
@@ -101,7 +110,7 @@ export const MOCK_MATCHES: Match[] = [
     },
     timeAgo: "5h ago",
     courseId: "CS107",
-    status: 'none' as const,
+    status: "none" as const,
     hasCreatedStudyProfile: true,
     image: "https://api.dicebear.com/7.x/micah/png?seed=David",
   },
@@ -116,7 +125,7 @@ export const MOCK_MATCHES: Match[] = [
     },
     timeAgo: "2h ago",
     courseId: "CS107",
-    status: 'none' as const,
+    status: "none" as const,
     hasCreatedStudyProfile: true,
     image: "https://api.dicebear.com/7.x/micah/png?seed=Emma",
   },
@@ -133,7 +142,7 @@ export const MOCK_MATCHES: Match[] = [
     },
     timeAgo: "1h ago",
     courseId: "MATH51",
-    status: 'none' as const,
+    status: "none" as const,
     hasCreatedStudyProfile: true,
     image: "https://api.dicebear.com/7.x/micah/png?seed=James",
   },
@@ -148,7 +157,7 @@ export const MOCK_MATCHES: Match[] = [
     },
     timeAgo: "6h ago",
     courseId: "MATH51",
-    status: 'none' as const,
+    status: "none" as const,
     hasCreatedStudyProfile: true,
     image: "https://api.dicebear.com/7.x/micah/png?seed=Olivia",
   },
@@ -163,7 +172,7 @@ export const MOCK_MATCHES: Match[] = [
     },
     timeAgo: "3h ago",
     courseId: "MATH51",
-    status: 'none' as const,
+    status: "none" as const,
     hasCreatedStudyProfile: true,
     image: "https://api.dicebear.com/7.x/micah/png?seed=Lucas",
   },
@@ -180,7 +189,7 @@ export const MOCK_MATCHES: Match[] = [
     },
     timeAgo: "3h ago",
     courseId: "CS161",
-    status: 'none' as const,
+    status: "none" as const,
     hasCreatedStudyProfile: true,
     image: "https://api.dicebear.com/7.x/micah/png?seed=Sophia",
   },
@@ -195,7 +204,7 @@ export const MOCK_MATCHES: Match[] = [
     },
     timeAgo: "4h ago",
     courseId: "CS161",
-    status: 'none' as const,
+    status: "none" as const,
     hasCreatedStudyProfile: true,
     image: "https://api.dicebear.com/7.x/micah/png?seed=Ethan",
   },
@@ -210,7 +219,7 @@ export const MOCK_MATCHES: Match[] = [
     },
     timeAgo: "2h ago",
     courseId: "CS161",
-    status: 'none' as const,
+    status: "none" as const,
     hasCreatedStudyProfile: true,
     image: "https://api.dicebear.com/7.x/micah/png?seed=Ava",
   },
@@ -219,8 +228,10 @@ export const MOCK_MATCHES: Match[] = [
 // Add this export function near the top of the file, after MOCK_MATCHES
 export function getRandomMatchesForClass(className: string): Match[] {
   // Filter MOCK_MATCHES to get only matches for this class
-  const classMatches = MOCK_MATCHES.filter(match => match.courseId === className);
-  
+  const classMatches = MOCK_MATCHES.filter(
+    (match) => match.courseId === className
+  );
+
   // If no matches found for this class, create some default matches
   if (classMatches.length === 0) {
     // Create 3 default matches for this class
@@ -236,7 +247,7 @@ export function getRandomMatchesForClass(className: string): Match[] {
         },
         timeAgo: "2h ago",
         courseId: className,
-        status: 'none' as const,
+        status: "none" as const,
         hasCreatedStudyProfile: true,
         image: `https://api.dicebear.com/7.x/micah/png?seed=${className}_1`,
       },
@@ -251,7 +262,7 @@ export function getRandomMatchesForClass(className: string): Match[] {
         },
         timeAgo: "3h ago",
         courseId: className,
-        status: 'none' as const,
+        status: "none" as const,
         hasCreatedStudyProfile: true,
         image: `https://api.dicebear.com/7.x/micah/png?seed=${className}_2`,
       },
@@ -266,28 +277,31 @@ export function getRandomMatchesForClass(className: string): Match[] {
         },
         timeAgo: "1h ago",
         courseId: className,
-        status: 'none' as const,
+        status: "none" as const,
         hasCreatedStudyProfile: true,
         image: `https://api.dicebear.com/7.x/micah/png?seed=${className}_3`,
       },
     ];
   }
-  
+
   return classMatches;
 }
 
 // Update MatchCardProps to extend from Match
 type MatchCardProps = Partial<Match> & {
   onDelete?: (id: string) => void;
-  onStatusChange?: (id: string, status: 'none' | 'accepted' | 'rejected') => void;
+  onStatusChange?: (
+    id: string,
+    status: "none" | "accepted" | "rejected"
+  ) => void;
 };
 
 // Mock data for testing social links
 const MOCK_SOCIAL_DATA = {
   email: "president@stanford.edu",
-  phoneNumber: "6507232300",  // Format: "6505555555" for "+1 (650) 555-5555"
-  linkedinUsername: "stanford-university",  // From linkedin.com/in/john-smith-stanford
-  instagramUsername: "stanford",  // From instagram.com/johnsmith_23
+  phoneNumber: "6507232300", // Format: "6505555555" for "+1 (650) 555-5555"
+  linkedinUsername: "stanford-university", // From linkedin.com/in/john-smith-stanford
+  instagramUsername: "stanford", // From instagram.com/johnsmith_23
 };
 
 // Helper functions for opening links
@@ -297,7 +311,7 @@ const openEmail = (email: string) => {
 
 const openMessage = (phoneNumber: string) => {
   // Format phone number with proper URI scheme
-  const formattedNumber = phoneNumber.replace(/\D/g, ''); // Remove non-digits
+  const formattedNumber = phoneNumber.replace(/\D/g, ""); // Remove non-digits
   Linking.openURL(`sms:${formattedNumber}`);
 };
 
@@ -309,10 +323,12 @@ const openLinkedIn = (linkedinUsername: string) => {
 };
 
 const openInstagram = (instagramUsername: string) => {
-  Linking.openURL(`instagram://user?username=${instagramUsername}`).catch(() => {
-    // Fallback to web URL if app isn't installed
-    Linking.openURL(`https://www.instagram.com/${instagramUsername}`);
-  });
+  Linking.openURL(`instagram://user?username=${instagramUsername}`).catch(
+    () => {
+      // Fallback to web URL if app isn't installed
+      Linking.openURL(`https://www.instagram.com/${instagramUsername}`);
+    }
+  );
 };
 
 // Add this helper function at the top of the file
@@ -320,32 +336,32 @@ const generateEmail = (name: string): string => {
   // Convert "John Smith" to "john.smith@stanford.edu"
   return name
     .toLowerCase()
-    .replace(/\s+/g, '.') // Replace spaces with dots
-    .concat('@stanford.edu');
+    .replace(/\s+/g, ".") // Replace spaces with dots
+    .concat("@stanford.edu");
 };
 
 // Add this helper function to generate a random phone number
 const generatePhone = (id: string): string => {
   // Use the id to generate a consistent phone number
-  const areaCode = '650';
+  const areaCode = "650";
   const lastDigits = id
-    .split('')
-    .filter(char => /\d/.test(char))
+    .split("")
+    .filter((char) => /\d/.test(char))
     .slice(0, 7)
-    .join('')
-    .padEnd(7, '0');
-  
-  return `(${areaCode}) ${lastDigits.slice(0,3)}-${lastDigits.slice(3,7)}`;
+    .join("")
+    .padEnd(7, "0");
+
+  return `(${areaCode}) ${lastDigits.slice(0, 3)}-${lastDigits.slice(3, 7)}`;
 };
 
-export function MatchCard({ 
+export function MatchCard({
   hasCreatedStudyProfile = false,
   name = "",
   timeAgo = "",
   courseId = "",
   id = "",
   onDelete,
-  status = 'none',
+  status = "none",
   onStatusChange,
   image = "https://api.dicebear.com/7.x/micah/png?seed=default",
   dorm = "",
@@ -358,11 +374,11 @@ export function MatchCard({
   const [isExpanded, setIsExpanded] = useState(false);
   const router = useRouter();
   const deleteMatch = useMutation(api.mutations.deleteMatch);
-  
+
   const handleCreateProfile = () => {
     router.replace("/(auth)/profile");
   };
-  
+
   const handleRemoveMatch = (e: any) => {
     e.stopPropagation();
     Alert.alert(
@@ -389,17 +405,17 @@ export function MatchCard({
       { cancelable: true }
     );
   };
-  
+
   const handleStatusChange = (e: any) => {
     e.stopPropagation();
     // Only allow changing from 'none' to 'accepted'
-    if (status === 'none') {
-      console.log('Changing status from none to accepted');
-      onStatusChange?.(id, 'accepted');
+    if (status === "none") {
+      console.log("Changing status from none to accepted");
+      onStatusChange?.(id, "accepted");
     }
     // If already accepted, do nothing
   };
-  
+
   if (!hasCreatedStudyProfile) {
     return (
       <YStack>
@@ -410,15 +426,11 @@ export function MatchCard({
           justifyContent="center"
           alignItems="center"
         >
-          <Text 
-            color="$gray11" 
-            fontSize="$4" 
-            textAlign="center"
-          >
+          <Text color="$gray11" fontSize="$4" textAlign="center">
             Create a study profile to start receiving potential study partners
           </Text>
         </XStack>
-        
+
         <Button
           label="Create Study Profile"
           onPress={handleCreateProfile}
@@ -431,7 +443,7 @@ export function MatchCard({
   return (
     <YStack>
       <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
-        <XStack 
+        <XStack
           backgroundColor="$background"
           borderRadius="$4"
           padding="$3"
@@ -440,12 +452,7 @@ export function MatchCard({
           borderBottomColor="$gray6"
         >
           {/* Profile Picture */}
-          <YStack
-            width={48}
-            height={48}
-            borderRadius={24}
-            overflow="hidden"
-          >
+          <YStack width={48} height={48} borderRadius={24} overflow="hidden">
             <Image
               source={{ uri: image }}
               width={48}
@@ -456,25 +463,36 @@ export function MatchCard({
 
           {/* Content */}
           <YStack flex={1} space="$1">
-            <XStack justifyContent="space-between" alignItems="center" width="100%">
-              <Text fontWeight="bold" fontSize="$4">{name}</Text>
+            <XStack
+              justifyContent="space-between"
+              alignItems="center"
+              width="100%"
+            >
+              <Text fontWeight="bold" fontSize="$4">
+                {name}
+              </Text>
             </XStack>
-            
+
             {/* Location */}
             <Text color="$gray11" fontSize="$3">
               {dorm} • {studyPreferences.preferredLocations.join(", ")}
             </Text>
-            
+
             {/* Study Preferences */}
             <Text color="$gray11" fontSize="$3">
-              {studyPreferences.weeklyHours}h/week • {
-                studyPreferences.noiseLevel === 1 ? "Quiet" :
-                studyPreferences.noiseLevel === 2 ? "Moderate" : "Social"
-              } study
+              {studyPreferences.weeklyHours}h/week •{" "}
+              {studyPreferences.noiseLevel === 1
+                ? "Quiet"
+                : studyPreferences.noiseLevel === 2
+                  ? "Moderate"
+                  : "Social"}{" "}
+              study
             </Text>
-            
+
             {/* Time */}
-            <Text color="$gray10" fontSize="$3">{timeAgo}</Text>
+            <Text color="$gray10" fontSize="$3">
+              {timeAgo}
+            </Text>
           </YStack>
 
           {/* Accept/Reject Buttons */}
@@ -483,7 +501,7 @@ export function MatchCard({
               <CircleIconButton
                 icon={XIcon}
                 size="medium"
-                variant={status === 'rejected' ? 'secondaryOn' : 'secondaryOff'}
+                variant={status === "rejected" ? "secondaryOn" : "secondaryOff"}
                 onPress={handleRemoveMatch}
               />
             </YStack>
@@ -493,8 +511,8 @@ export function MatchCard({
                 key={`${id}-${status}`}
                 icon={CheckIcon}
                 size="medium"
-                variant={status === 'accepted' ? 'primaryOn' : 'primaryOff'}
-                onPress={status === 'none' ? handleStatusChange : undefined}  // Disable onPress if already accepted
+                variant={status === "accepted" ? "primaryOn" : "primaryOff"}
+                onPress={status === "none" ? handleStatusChange : undefined} // Disable onPress if already accepted
               />
             </YStack>
           </XStack>
@@ -511,25 +529,27 @@ export function MatchCard({
           borderBottomColor="$gray6"
         >
           <XStack space="$2">
-            <Text fontWeight="bold" color="$gray11">Email:</Text>
+            <Text fontWeight="bold" color="$gray11">
+              Email:
+            </Text>
             <Text color="$gray11">{generateEmail(name)}</Text>
           </XStack>
           <XStack space="$2" paddingTop="$1">
-            <Text fontWeight="bold" color="$gray11">Phone:</Text>
+            <Text fontWeight="bold" color="$gray11">
+              Phone:
+            </Text>
             <Text color="$gray11">{generatePhone(id)}</Text>
           </XStack>
-          
+
           {/* Social Media Icons */}
-          <XStack 
-            space="$4" 
-            paddingTop="$2" 
+          <XStack
+            space="$4"
+            paddingTop="$2"
             paddingBottom="$1"
             justifyContent="center"
           >
             {/* Mail/Outlook */}
-            <TouchableOpacity 
-              onPress={() => openEmail(MOCK_SOCIAL_DATA.email)}
-            >
+            <TouchableOpacity onPress={() => openEmail(MOCK_SOCIAL_DATA.email)}>
               <YStack
                 width={36}
                 height={36}
@@ -543,7 +563,7 @@ export function MatchCard({
             </TouchableOpacity>
 
             {/* iMessage */}
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => openMessage(MOCK_SOCIAL_DATA.phoneNumber)}
             >
               <YStack
@@ -559,7 +579,7 @@ export function MatchCard({
             </TouchableOpacity>
 
             {/* LinkedIn */}
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => openLinkedIn(MOCK_SOCIAL_DATA.linkedinUsername)}
             >
               <YStack
@@ -575,7 +595,7 @@ export function MatchCard({
             </TouchableOpacity>
 
             {/* Instagram */}
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => openInstagram(MOCK_SOCIAL_DATA.instagramUsername)}
             >
               <YStack

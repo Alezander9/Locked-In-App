@@ -1,3 +1,4 @@
+import { Id } from "./_generated/dataModel";
 import { internalMutation, mutation } from "./_generated/server";
 import { v } from "convex/values";
 
@@ -276,7 +277,6 @@ export const deleteClass = mutation({
     return user._id;
   },
 });
-
 export const generateMatches = mutation({
   args: {
     courseId: v.string(),
@@ -286,28 +286,24 @@ export const generateMatches = mutation({
     if (!identity) {
       throw new Error("Not authenticated");
     }
-
     // Get the current user
     const currentUser = await ctx.db
       .query("users")
       .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
       .first();
-
     if (!currentUser) {
       throw new Error("User not found");
     }
-
     // Get all users who have completed onboarding
     const potentialMatches = await ctx.db
       .query("users")
-      .filter((q) => 
+      .filter((q) =>
         q.and(
           q.eq(q.field("completedOnboarding"), true),
           q.neq(q.field("_id"), currentUser._id)
         )
       )
       .collect();
-
     // Generate fake matches with random scores and reasons
     const matchReasons = [
       "Similar study schedule • Both morning people",
@@ -316,22 +312,18 @@ export const generateMatches = mutation({
       "Both detail-oriented • Complementary strengths",
       "Similar academic interests • Compatible schedules",
     ];
-
-    const matches = potentialMatches.map(user => ({
+    const matches = potentialMatches.map((user) => ({
       userId: currentUser._id,
       matchedUserId: user._id,
       matchScore: 85 + Math.floor(Math.random() * 15), // Random score between 85-100
-      matchReason: matchReasons[Math.floor(Math.random() * matchReasons.length)],
+      matchReason:
+        matchReasons[Math.floor(Math.random() * matchReasons.length)],
       status: "pending",
       courseId: args.courseId,
       createdAt: Date.now() - Math.floor(Math.random() * 86400000), // Random time in last 24h
     }));
-
     // Insert all matches
-    await Promise.all(
-      matches.map(match => ctx.db.insert("matches", match))
-    );
-
+    await Promise.all(matches.map((match) => ctx.db.insert("matches", match)));
     return matches.length;
   },
 });
@@ -345,22 +337,90 @@ export const deleteMatch = mutation({
     if (!identity) {
       throw new Error("Not authenticated");
     }
-
     // Get the current user
     const user = await ctx.db
       .query("users")
       .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
       .first();
-
     if (!user) {
       throw new Error("User not found");
     }
-
     // Delete the match
     await ctx.db.delete(args.matchId);
   },
 });
 
+export const addUserCourse = mutation({
+  args: {
+    department: v.string(),
+    code: v.string(),
+    title: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+    if (!user) {
+      throw new Error("User not found");
+    }
+    // Verify the course exists
+    const course = await ctx.db
+      .query("courses")
+      .withIndex("by_code", (q) => q.eq("code", args.code))
+      .first();
+    if (!course) {
+      throw new Error("Course not found");
+    }
+    // Get the highest current order
+    const userCourses = await ctx.db
+      .query("userCourses")
+      .withIndex("by_userID_courseID", (q) => q.eq("userId", user._id))
+      .collect();
+    const maxOrder = Math.max(-1, ...userCourses.map((uc) => uc.order ?? -1));
+    // Add the user-course association
+    await ctx.db.insert("userCourses", {
+      userId: user._id,
+      courseId: course._id,
+      order: maxOrder + 1,
+      color: "#94a3b8", // Default color
+    });
+  },
+});
+
+export const updateUserCourseColor = mutation({
+  args: {
+    courseId: v.id("courses"),
+    color: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const userCourse = await ctx.db
+      .query("userCourses")
+      .withIndex("by_userID_courseID", (q) =>
+        q.eq("userId", user._id).eq("courseId", args.courseId)
+      )
+      .first();
+    if (!userCourse) {
+      throw new Error("User course not found");
+    }
+    await ctx.db.patch(userCourse._id, { color: args.color });
+  },
+});
 export const saveBackgroundPicture = mutation({
   args: {
     storageId: v.id("_storage"),
@@ -373,4 +433,281 @@ export const saveBackgroundPicture = mutation({
   },
 });
 
+export const updateUserCoursesOrder = mutation({
+  args: {
+    courseOrders: v.array(
+      v.object({
+        courseId: v.id("courses"),
+        order: v.number(),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
 
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Update each course's order
+    await Promise.all(
+      args.courseOrders.map(async ({ courseId, order }) => {
+        const userCourse = await ctx.db
+          .query("userCourses")
+          .withIndex("by_userID_courseID", (q) =>
+            q.eq("userId", user._id).eq("courseId", courseId)
+          )
+          .first();
+
+        if (!userCourse) {
+          throw new Error(`User course not found for courseId: ${courseId}`);
+        }
+
+        await ctx.db.patch(userCourse._id, { order });
+      })
+    );
+  },
+});
+
+export const deleteUserCourse = mutation({
+  args: {
+    courseId: v.id("courses"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const userCourse = await ctx.db
+      .query("userCourses")
+      .withIndex("by_userID_courseID", (q) =>
+        q.eq("userId", user._id).eq("courseId", args.courseId)
+      )
+      .first();
+
+    if (!userCourse) {
+      throw new Error("User course not found");
+    }
+
+    await ctx.db.delete(userCourse._id);
+  },
+});
+
+export const createTasks = mutation({
+  args: {
+    tasks: v.array(
+      v.object({
+        courseId: v.id("courses"),
+        title: v.string(),
+        notes: v.string(),
+        dueDate: v.number(),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // Get the user ID from their clerk ID
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Create all tasks
+    const taskIds = await Promise.all(
+      args.tasks.map(async (task) => {
+        // Verify the course exists
+        const course = await ctx.db.get(task.courseId);
+        if (!course) {
+          throw new Error(`Course not found: ${task.courseId}`);
+        }
+
+        return await ctx.db.insert("tasks", {
+          userId: user._id,
+          courseId: task.courseId,
+          title: task.title,
+          notes: task.notes,
+          dueDate: task.dueDate,
+          isCompleted: false,
+        });
+      })
+    );
+
+    return taskIds;
+  },
+});
+
+export const updateTaskCompletion = mutation({
+  args: {
+    taskId: v.id("tasks"),
+    isCompleted: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const task = await ctx.db.get(args.taskId);
+    if (!task) {
+      throw new Error("Task not found");
+    }
+
+    await ctx.db.patch(args.taskId, {
+      isCompleted: args.isCompleted,
+    });
+
+    return args.taskId;
+  },
+});
+
+export const updateTask = mutation({
+  args: {
+    taskId: v.id("tasks"),
+    courseId: v.id("courses"),
+    title: v.string(),
+    notes: v.string(),
+    dueDate: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // Get the user ID from their clerk ID
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Verify the task exists and belongs to the user
+    const task = await ctx.db.get(args.taskId);
+    if (!task) {
+      throw new Error("Task not found");
+    }
+    if (task.userId !== user._id) {
+      throw new Error("Not authorized to update this task");
+    }
+
+    // Verify the course exists
+    const course = await ctx.db.get(args.courseId);
+    if (!course) {
+      throw new Error("Course not found");
+    }
+
+    // Update the task
+    await ctx.db.patch(args.taskId, {
+      courseId: args.courseId,
+      title: args.title,
+      notes: args.notes,
+      dueDate: args.dueDate,
+    });
+
+    return args.taskId;
+  },
+});
+
+export const deleteTask = mutation({
+  args: {
+    taskId: v.id("tasks"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // Get the user ID from their clerk ID
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Verify the task exists and belongs to the user
+    const task = await ctx.db.get(args.taskId);
+    if (!task) {
+      throw new Error("Task not found");
+    }
+    if (task.userId !== user._id) {
+      throw new Error("Not authorized to delete this task");
+    }
+
+    // Delete the task
+    await ctx.db.delete(args.taskId);
+
+    return args.taskId;
+  },
+});
+
+export const restoreTask = mutation({
+  args: {
+    taskId: v.id("tasks"),
+    courseId: v.id("courses"),
+    title: v.string(),
+    notes: v.string(),
+    dueDate: v.number(),
+    isCompleted: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // Get the user ID from their clerk ID
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Recreate the task with original data
+    const taskId = await ctx.db.insert("tasks", {
+      userId: user._id,
+      courseId: args.courseId,
+      title: args.title,
+      notes: args.notes,
+      dueDate: args.dueDate,
+      isCompleted: args.isCompleted,
+    });
+
+    return taskId;
+  },
+});
