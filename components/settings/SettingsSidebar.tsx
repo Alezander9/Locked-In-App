@@ -242,11 +242,11 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
                   Profile
                 </Text>
               </XStack>
-            </TouchableOpacity>
+            </TouchableOpacity>*/}
 
             <TouchableOpacity
               onPress={() => {
-                console.log("Preferences");
+                router.push("/settings");
               }}
             >
               <XStack
@@ -256,10 +256,10 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
                 alignItems="center"
               >
                 <Text color="$color" fontSize="$4">
-                  Preferences
+                  Settings
                 </Text>
               </XStack>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
 
             <TouchableOpacity onPress={handleSignOut} disabled={isSigningOut}>
               <XStack

@@ -50,6 +50,60 @@ export default function SettingsScreen() {
     <ScreenWrapper>
       <ScrollView>
         <YStack flex={1} padding="$4" space="$6">
+          {/* General Settings Section */}
+          <YStack space="$4">
+            <Text fontSize="$5" fontWeight="bold">
+              General Settings
+            </Text>
+
+            <YStack borderRadius="$4" backgroundColor="$background">
+              <XStack
+                justifyContent="space-between"
+                alignItems="center"
+                paddingVertical="$3"
+                paddingHorizontal="$3"
+              >
+                <Text fontSize="$4">Share Location</Text>
+                <CustomSwitch
+                  value={notifications}
+                  onValueChange={setNotifications}
+                  helperText="Receive notifications about matches and messages"
+                />
+              </XStack>
+
+              <YStack height={0.5} backgroundColor="$iosGray2" />
+
+              <XStack
+                justifyContent="space-between"
+                alignItems="center"
+                paddingVertical="$3"
+                paddingHorizontal="$3"
+              >
+                <Text fontSize="$4">Sync Contacts</Text>
+                <CustomSwitch
+                  value={nightMode}
+                  onValueChange={setNightMode}
+                  helperText="Enable dark theme for the app"
+                />
+              </XStack>
+
+              <YStack height={0.5} backgroundColor="$iosGray2" />
+
+              <XStack
+                justifyContent="space-between"
+                alignItems="center"
+                paddingVertical="$3"
+                paddingHorizontal="$3"
+              >
+                <Text fontSize="$4">Language</Text>
+                <Text fontSize="$4">English</Text>
+              </XStack>
+            </YStack>
+          </YStack>
+
+          {/* Section Separator */}
+          <YStack height={2} backgroundColor="$gray" />
+
           {/* Account Settings Section */}
           <YStack space="$4">
             <Text fontSize="$5" fontWeight="bold">
@@ -136,64 +190,10 @@ export default function SettingsScreen() {
           {/* Section Separator */}
           <YStack height={2} backgroundColor="$gray" />
 
-          {/* General Settings Section */}
+          {/* Study Profile Settings Section */}
           <YStack space="$4">
             <Text fontSize="$5" fontWeight="bold">
-              General Settings
-            </Text>
-
-            <YStack borderRadius="$4" backgroundColor="$background">
-              <XStack
-                justifyContent="space-between"
-                alignItems="center"
-                paddingVertical="$3"
-                paddingHorizontal="$3"
-              >
-                <Text fontSize="$4">Share Location</Text>
-                <CustomSwitch
-                  value={notifications}
-                  onValueChange={setNotifications}
-                  helperText="Receive notifications about matches and messages"
-                />
-              </XStack>
-
-              <YStack height={0.5} backgroundColor="$iosGray2" />
-
-              <XStack
-                justifyContent="space-between"
-                alignItems="center"
-                paddingVertical="$3"
-                paddingHorizontal="$3"
-              >
-                <Text fontSize="$4">Sync Contacts</Text>
-                <CustomSwitch
-                  value={nightMode}
-                  onValueChange={setNightMode}
-                  helperText="Enable dark theme for the app"
-                />
-              </XStack>
-
-              <YStack height={0.5} backgroundColor="$iosGray2" />
-
-              <XStack
-                justifyContent="space-between"
-                alignItems="center"
-                paddingVertical="$3"
-                paddingHorizontal="$3"
-              >
-                <Text fontSize="$4">Language</Text>
-                <Text fontSize="$4">English</Text>
-              </XStack>
-            </YStack>
-          </YStack>
-
-          {/* Section Separator */}
-          <YStack height={2} backgroundColor="$gray" />
-
-          {/* Study Profile Section */}
-          <YStack space="$4">
-            <Text fontSize="$5" fontWeight="bold">
-              Study Profile
+              Study Profile Settings
             </Text>
 
             <YStack borderRadius="$4" backgroundColor="$background">

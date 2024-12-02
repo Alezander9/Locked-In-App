@@ -248,12 +248,19 @@ export const getUpcomingTasks = query({
       throw new Error("User not found");
     }
 
-    // Get tasks with course color information
+    // TEMPORARY: Showing all tasks for demo video purposes, regardless of due date
+    // Original code:
+    // const tasks = await ctx.db
+    //   .query("tasks")
+    //   .withIndex("by_userID_dueDate", (q) =>
+    //     q.eq("userId", user._id).gte("dueDate", cursor ?? now)
+    //   )
+    //   .order("asc")
+    //   .take(limit);
+
     const tasks = await ctx.db
       .query("tasks")
-      .withIndex("by_userID_dueDate", (q) =>
-        q.eq("userId", user._id).gte("dueDate", cursor ?? now)
-      )
+      .withIndex("by_userID_dueDate", (q) => q.eq("userId", user._id))
       .order("asc")
       .take(limit);
 

@@ -100,7 +100,7 @@ export function MatchesContainer({
           );
 
           return {
-            title: classInfo.name.toUpperCase(),
+            title: `Matches for ${classInfo.name}`,
             data: classMatches,
           };
         })
