@@ -188,7 +188,7 @@ export const SettingsSidebar = ({ isOpen, onClose }: SettingsSidebarProps) => {
               gap="$2"
             >
               <Image
-                source={require("@/assets/images/LockedInLogoFull.webp")}
+                source={require("@/assets/images/LockedInLogoFull.png")}
                 style={{
                   width: 200,
                   height: 60,

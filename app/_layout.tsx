@@ -41,9 +41,9 @@ let ASSETS_LOADED: Promise<void> | null = null;
 // Preload all assets once and cache the promise
 const preloadAssets = async () => {
   const images = [
-    require("../assets/images/LockedInLogoSplash.webp"),
-    require("../assets/images/LockedInLogoSplashText.webp"),
-    require("../assets/images/EventsGraphic.webp"),
+    require("../assets/images/LockedInLogoSplash.png"),
+    require("../assets/images/LockedInLogoSplashText.png"),
+    require("../assets/images/EventsGraphic.jpg"),
   ];
 
   const imagePromises = images.map((image) => {

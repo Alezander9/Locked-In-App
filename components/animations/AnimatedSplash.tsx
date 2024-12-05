@@ -141,7 +141,7 @@ export const AnimatedSplash = ({
     >
       {/* Logo Image */}
       <AnimatedImage
-        source={require("@/assets/images/LockedInLogoSplash.webp")}
+        source={require("@/assets/images/LockedInLogoSplash.png")}
         style={[
           {
             width: imageSize,
@@ -154,7 +154,7 @@ export const AnimatedSplash = ({
 
       {/* Text Image */}
       <AnimatedImage
-        source={require("@/assets/images/LockedInLogoSplashText.webp")}
+        source={require("@/assets/images/LockedInLogoSplashText.png")}
         style={[
           {
             width: imageSize * ANIMATION_CONFIG.TEXT.SIZE_MULTIPLIER.WIDTH,

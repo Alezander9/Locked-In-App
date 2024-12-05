@@ -96,7 +96,7 @@ export default function TabLayout() {
         }}
       >
         <Image
-          source={require("@/assets/images/LockedInLogo256x256.webp")}
+          source={require("@/assets/images/LockedInLogo256x256.png")}
           style={{
             width: 34,
             height: 34,

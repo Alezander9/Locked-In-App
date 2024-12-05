@@ -158,7 +158,7 @@ export default function GroupsScreen() {
         >
           <View style={{ height: SCREEN_HEIGHT * 0.67 }}>
             <Image
-              source={require("@/assets/images/GroupsGraphic.webp")}
+              source={require("@/assets/images/GroupsGraphic.jpg")}
               style={{
                 width: SCREEN_WIDTH,
                 height: "100%",
@@ -186,7 +186,7 @@ export default function GroupsScreen() {
               }}
             >
               <Image
-                source={require("@/assets/images/LockedInLogoFull.webp")}
+                source={require("@/assets/images/LockedInLogoFull.png")}
                 style={{
                   width: 200,
                   height: 60,

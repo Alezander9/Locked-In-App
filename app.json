@@ -4,7 +4,7 @@
     "slug": "Locked-In-App",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/LockedInLogoSplash.webp",
+    "icon": "./assets/images/LockedInLogoSplash.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -20,17 +20,15 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/LockedInLogo1024x1024.webp",
+        "foregroundImage": "./assets/images/LockedInLogo1024x1024.png",
         "backgroundColor": "#F7F4F1"
       },
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ]
+      "permissions": ["android.permission.RECORD_AUDIO"]
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/LockedInLogo64x64.webp"
+      "favicon": "./assets/images/LockedInLogo64x64.png"
     },
     "plugins": [
       "expo-router",
