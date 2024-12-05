@@ -20,12 +20,6 @@ export const ProfileStep: React.FC<ProfileStepProps> = ({
         {config.title}
       </Text>
 
-      {config.helperText && (
-        <Text color="$gray" fontSize="$3" marginBottom="$2">
-          {config.helperText}
-        </Text>
-      )}
-
       {children}
 
       {errors.map((error, index) => (

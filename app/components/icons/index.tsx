@@ -1310,6 +1310,66 @@ export function PencilIcon({
   );
 }
 
+export function ArrowDownIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  const scale = size / 332;
+  const height = Math.round(185 * scale);
+
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 332 185"
+      fill="none"
+      {...props}
+    >
+      <Path
+        d="M6.37 6.286C14.06-1.457 26.58-1.496 34.32 6.199L178.7 149.687C186.44 157.382 186.48 169.897 178.79 177.64L178.79 177.64C171.09 185.383 158.58 185.422 150.83 177.727L6.45 34.239C-1.29 26.544-1.33 14.029 6.37 6.286Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+      <Path
+        d="M154.05 178.62C146.31 170.925 146.27 158.411 153.96 150.668L297.45 6.286C305.15-1.456 317.66-1.495 325.4 6.2L325.4 6.2C333.15 13.895 333.18 26.41 325.49 34.153L182 178.533C174.31 186.276 161.79 186.315 154.05 178.62Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
+
+export function ArrowUpIcon({
+  color = "#0F9ED5",
+  size = 24,
+  ...props
+}: SvgProps & { size?: number }) {
+  const scale = size / 331;
+  const height = Math.round(185 * scale);
+
+  return (
+    <Svg
+      width={size}
+      height={height}
+      viewBox="0 0 331 185"
+      fill="none"
+      {...props}
+    >
+      <Path
+        d="M325.15 178.286C317.46 186.029 304.94 186.068 297.2 178.373L152.82 34.885C145.07 27.19 145.03 14.675 152.73 6.932L152.73 6.932C160.42-0.811 172.94-0.849 180.68 6.845L325.06 150.333C332.81 158.028 332.84 170.543 325.15 178.286Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+      <Path
+        d="M177.47 5.952C185.21 13.647 185.25 26.162 177.55 33.904L34.07 178.286C26.37 186.029 13.86 186.067 6.11 178.372L6.11 178.372C-1.63 170.677-1.67 158.162 6.03 150.419L149.52 6.039C157.21-1.704 169.73-1.743 177.47 5.952Z"
+        fill={color}
+        fillRule="evenodd"
+      />
+    </Svg>
+  );
+}
+
 const Icons = {
   Classes: ClassesIcon,
   Tasks: TasksIcon,
@@ -1332,6 +1392,8 @@ const Icons = {
   Plus: PlusIcon,
   ArrowRight: ArrowRightIcon,
   ArrowLeft: ArrowLeftIcon,
+  ArrowDown: ArrowDownIcon,
+  ArrowUp: ArrowUpIcon,
   ChevronDown: ChevronDownIcon,
   ChevronUp: ChevronUpIcon,
   Mail: MailIcon,

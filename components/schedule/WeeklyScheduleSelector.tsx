@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, Pressable, Text, GestureResponderEvent } from 'react-native';
-import { format } from 'date-fns';
+import React, { useState, useRef, useEffect } from "react";
+import { Pressable } from "react-native";
+import { format } from "date-fns";
+import { Text, View, useTheme } from "tamagui";
 
 type TimeSlot = {
   hour: number;
@@ -18,10 +19,18 @@ type WeeklyScheduleSelectorProps = {
   helperText?: string;
 };
 
-export function WeeklyScheduleSelector({ value, onChange, helperText }: WeeklyScheduleSelectorProps) {
+export function WeeklyScheduleSelector({
+  value,
+  onChange,
+  helperText,
+}: WeeklyScheduleSelectorProps) {
+  const theme = useTheme();
   const [isDragging, setIsDragging] = useState(false);
   const [selectedState, setSelectedState] = useState(false);
-  const [lastTouchedSlot, setLastTouchedSlot] = useState<{ day: number; hour: number } | null>(null);
+  const [lastTouchedSlot, setLastTouchedSlot] = useState<{
+    day: number;
+    hour: number;
+  } | null>(null);
   const [timeSlots, setTimeSlots] = useState<DaySchedule[]>(value);
 
   // Add this useEffect to sync with incoming value prop
@@ -30,36 +39,42 @@ export function WeeklyScheduleSelector({ value, onChange, helperText }: WeeklySc
   }, [value]);
 
   // Store measurements for each slot
-  const slotRefs = useRef<{ [key: string]: { x: number; y: number; width: number; height: number } }>({});
+  const slotRefs = useRef<{
+    [key: string]: { x: number; y: number; width: number; height: number };
+  }>({});
 
-  const handleSlotInteraction = (day: number, hour: number, isStart: boolean = false) => {
+  const handleSlotInteraction = (
+    day: number,
+    hour: number,
+    isStart: boolean = false
+  ) => {
     if (lastTouchedSlot?.day === day && lastTouchedSlot?.hour === hour) {
       return;
     }
-    
+
     setLastTouchedSlot({ day, hour });
 
     if (isStart) {
       setIsDragging(true);
       const daySchedule = timeSlots[day];
-      const currentSlot = daySchedule.timeSlots.find(slot => slot.hour === hour);
+      const currentSlot = daySchedule.timeSlots.find(
+        (slot) => slot.hour === hour
+      );
       const newSelectedState = !currentSlot?.selected;
       setSelectedState(newSelectedState);
-      
+
       const newTimeSlots = timeSlots.map((daySchedule, dayIndex) => {
         if (dayIndex === day) {
           return {
             ...daySchedule,
-            timeSlots: daySchedule.timeSlots.map(slot => 
-              slot.hour === hour
-                ? { ...slot, selected: !slot.selected }
-                : slot
-            )
+            timeSlots: daySchedule.timeSlots.map((slot) =>
+              slot.hour === hour ? { ...slot, selected: !slot.selected } : slot
+            ),
           };
         }
         return daySchedule;
       });
-      
+
       setTimeSlots(newTimeSlots);
       onChange(newTimeSlots);
     } else if (isDragging) {
@@ -67,16 +82,14 @@ export function WeeklyScheduleSelector({ value, onChange, helperText }: WeeklySc
         if (dayIndex === day) {
           return {
             ...daySchedule,
-            timeSlots: daySchedule.timeSlots.map(slot => 
-              slot.hour === hour
-                ? { ...slot, selected: selectedState }
-                : slot
-            )
+            timeSlots: daySchedule.timeSlots.map((slot) =>
+              slot.hour === hour ? { ...slot, selected: selectedState } : slot
+            ),
           };
         }
         return daySchedule;
       });
-      
+
       setTimeSlots(newTimeSlots);
       onChange(newTimeSlots);
     }
@@ -96,7 +109,7 @@ export function WeeklyScheduleSelector({ value, onChange, helperText }: WeeklySc
         pageY >= layout.y &&
         pageY <= layout.y + layout.height
       ) {
-        const [day, hour] = key.split('-').map(Number);
+        const [day, hour] = key.split("-").map(Number);
         handleSlotInteraction(day, hour);
       }
     });
@@ -108,11 +121,11 @@ export function WeeklyScheduleSelector({ value, onChange, helperText }: WeeklySc
   };
 
   return (
-    <View 
+    <View
       style={{
-        backgroundColor: '$background',
+        backgroundColor: "$background",
         padding: 4,
-        width: '100%',
+        width: "100%",
         paddingLeft: 0,
         marginTop: -10,
       }}
@@ -120,28 +133,32 @@ export function WeeklyScheduleSelector({ value, onChange, helperText }: WeeklySc
       onTouchEnd={handleInteractionEnd}
     >
       {/* Days Header */}
-      <View style={{
-        flexDirection: 'row',
-        height: 30,
-        marginTop: -10,
-      }}>
-        {/* Empty space for time column - reduce this width */}
-        <View style={{ width: 28 }} />
-        
+      <View
+        style={{
+          flexDirection: "row",
+          height: 30,
+          marginTop: -10,
+        }}
+      >
+        <View style={{ width: 35 }} />
+
         {/* Day Labels */}
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-          <View 
-            key={day} 
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+          <View
+            key={day}
             style={{
               flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <Text style={{ 
-              fontSize: 12,
-              fontWeight: '600',
-            }}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "600",
+                color: theme.color.val,
+              }}
+            >
               {day}
             </Text>
           </View>
@@ -149,24 +166,37 @@ export function WeeklyScheduleSelector({ value, onChange, helperText }: WeeklySc
       </View>
 
       {/* Time Grid */}
-      <View style={{ 
-        height: 500,
-        marginTop: -5,
-      }}>
+      <View
+        style={{
+          height: 500,
+          marginTop: -5,
+        }}
+      >
         {Array.from({ length: 13 }, (_, hour) => (
-          <View key={hour} style={{
-            flexDirection: 'row',
-            height: 38,
-          }}>
-            {/* Time Label - reduce this width */}
-            <View style={{
-              width: 28,
-              justifyContent: 'center',
-              alignItems: 'flex-end',
-              paddingRight: 8,
-            }}>
-              <Text style={{ fontSize: 11 }}>
-                {format(new Date().setHours(hour + 8), 'h a')}
+          <View
+            key={hour}
+            style={{
+              flexDirection: "row",
+              height: 38,
+            }}
+          >
+            {/* Time Label */}
+            <View
+              style={{
+                width: 42,
+                justifyContent: "center",
+                alignItems: "flex-end",
+                paddingRight: 8,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 11,
+                  color: theme.color.val,
+                  minWidth: 27,
+                }}
+              >
+                {format(new Date().setHours(hour + 8), "h a")}
               </Text>
             </View>
 
@@ -181,7 +211,7 @@ export function WeeklyScheduleSelector({ value, onChange, helperText }: WeeklySc
                         x: pageX,
                         y: pageY,
                         width,
-                        height
+                        height,
                       };
                     });
                   }
@@ -190,10 +220,12 @@ export function WeeklyScheduleSelector({ value, onChange, helperText }: WeeklySc
                 style={({ pressed }) => ({
                   flex: 1,
                   borderWidth: 0.5,
-                  borderColor: '#e0e0e0',
+                  borderColor: theme.gray.val,
                   backgroundColor: timeSlots[day].timeSlots.find(
-                    slot => slot.hour === hour + 8
-                  )?.selected ? '#2196F3' : '#fff',
+                    (slot) => slot.hour === hour + 8
+                  )?.selected
+                    ? theme.primary.val
+                    : theme.background.val,
                 })}
               />
             ))}
@@ -201,17 +233,20 @@ export function WeeklyScheduleSelector({ value, onChange, helperText }: WeeklySc
         ))}
       </View>
 
-      {/* Helper Text - Better approach */}
       {helperText && (
-        <View style={{
-          paddingTop: 4,
-          alignItems: 'center',
-        }}>
-          <Text style={{ 
-            fontSize: 12,
-            color: '#666',
-            textAlign: 'center',
-          }}>
+        <View
+          style={{
+            paddingTop: 4,
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 12,
+              color: theme.color.val,
+              textAlign: "center",
+            }}
+          >
             {helperText}
           </Text>
         </View>

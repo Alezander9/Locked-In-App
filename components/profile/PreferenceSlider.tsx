@@ -59,7 +59,7 @@ export function PreferenceSlider({
   return (
     <YStack space="$1" style={{ paddingBottom }}>
       {label && (
-        <Text fontSize="$3" fontWeight="600" color="$gray">
+        <Text fontSize="$3" fontWeight="600" color="$color">
           {label}
         </Text>
       )}
