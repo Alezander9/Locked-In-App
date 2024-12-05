@@ -20,9 +20,7 @@ const initialState = {
   name: "",
   description: "",
   startDate: new Date(),
-  duration:
-    new Date(1970, 0, 1, 1, 0).getHours() * 60 +
-    new Date(1970, 0, 1, 1, 0).getMinutes(),
+  duration: 60,
   location: "",
   isPublic: true,
 };

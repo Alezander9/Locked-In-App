@@ -45,9 +45,9 @@ const ANIMATION_CONFIG = {
     },
     START_POSITION: -200,
     SPRING: {
-      DAMPING: 15,
-      STIFFNESS: 100,
-      MASS: 1,
+      damping: 15,
+      stiffness: 100,
+      mass: 1,
     },
     FADE_IN_DURATION: 600,
   },

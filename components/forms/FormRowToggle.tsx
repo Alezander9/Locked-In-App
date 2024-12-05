@@ -55,7 +55,7 @@ export const FormRowToggle = ({
             size="$6"
             backgroundColor={value ? "$blue" : "$gray"}
           >
-            <Switch.Thumb animation="quick" backgroundColor="$white" />
+            <Switch.Thumb backgroundColor="$white" />
           </Switch>
         </Stack>
       </FormRowContainer>

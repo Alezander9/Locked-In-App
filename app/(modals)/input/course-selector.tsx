@@ -21,12 +21,8 @@ export default function CourseSelectorModal() {
   const userCourses = useQuery(api.queries.getUserCourses) || [];
 
   const isEditMode = params.taskIndex === "edit";
-  const taskIndex =
-    params.taskIndex === "file"
-      ? "file"
-      : isEditMode
-        ? "edit"
-        : parseInt(params.taskIndex || "0");
+  const taskIndex: number | "file" =
+    params.taskIndex === "file" ? "file" : parseInt(params.taskIndex || "0");
 
   const handleSelect = (courseId: Id<"courses"> | undefined) => {
     if (!courseId) return;

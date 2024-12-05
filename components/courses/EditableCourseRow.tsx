@@ -71,7 +71,6 @@ export function EditableCourseRow({
       height={60}
       alignItems="center"
       opacity={isActive ? 0.5 : 1}
-      animation="quick"
     >
       <DragHandle onPressIn={drag}>
         <MenuIcon size={20} color={theme.separatorText.val} />
