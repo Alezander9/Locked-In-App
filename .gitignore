@@ -26,6 +26,7 @@ npm-debug.*
 
 # Generated files
 .tamagui/
+tamagui.config.json
 convex/_generated/
 tamagui-web.css
 
