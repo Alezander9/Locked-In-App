@@ -3,7 +3,7 @@ import { TouchableOpacity } from "react-native";
 import { ArrowLeftIcon } from "@/app/components/icons";
 import { useRouter } from "expo-router";
 import Icons from "@/app/components/icons";
-import { Text } from "tamagui";
+import { useTheme } from "tamagui";
 
 type ProfileCreationHeaderProps = {
   currentStep: number;
@@ -15,8 +15,8 @@ type ProfileCreationHeaderProps = {
   onImport?: () => void;
 };
 
-export function ProfileCreationHeader({ 
-  currentStep, 
+export function ProfileCreationHeader({
+  currentStep,
   totalSteps = 7,
   onBack,
   showAddClass = false,
@@ -25,6 +25,7 @@ export function ProfileCreationHeader({
   onImport,
 }: ProfileCreationHeaderProps) {
   const router = useRouter();
+  const theme = useTheme();
 
   const handleBack = () => {
     if (currentStep === 0) {
@@ -35,36 +36,32 @@ export function ProfileCreationHeader({
   };
 
   return (
-    <XStack 
-      justifyContent="space-between" 
-      alignItems="center" 
-      marginBottom="$6"
+    <XStack
+      justifyContent="space-between"
+      alignItems="center"
+      marginBottom="$2"
       width="100%"
+      padding="$2"
     >
       <XStack width={40} alignItems="flex-start">
-        <TouchableOpacity onPress={handleBack}>
-          <ArrowLeftIcon size={15} />
+        <TouchableOpacity
+          onPress={handleBack}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          style={{
+            paddingHorizontal: 10,
+          }}
+        >
+          <ArrowLeftIcon size={15} color={theme.primary.val} />
         </TouchableOpacity>
       </XStack>
 
-      <XStack 
-        flex={1} 
-        justifyContent="center"
-        alignItems="center"
-        space="$2"
-      >
-        {Array.from({length: totalSteps}, (_, index) => (
+      <XStack flex={1} justifyContent="center" alignItems="center" space="$2">
+        {Array.from({ length: totalSteps }, (_, index) => (
           <XStack key={index}>
             {index <= currentStep ? (
-              <Icons.ProgressDotFilled 
-                size={12}
-                color="#0F9ED5"
-              />
+              <Icons.ProgressDotFilled size={12} color="$primary" />
             ) : (
-              <Icons.ProgressDotEmpty
-                size={12}
-                color="$gray"
-              />
+              <Icons.ProgressDotEmpty size={12} color="$gray" />
             )}
           </XStack>
         ))}
@@ -73,12 +70,12 @@ export function ProfileCreationHeader({
       <XStack width={40} alignItems="flex-end">
         {showAddClass && (
           <TouchableOpacity onPress={onAddClass}>
-            <Icons.Plus size={24} color="#0F9ED5" />
+            <Icons.Plus size={24} color={theme.primary.val} />
           </TouchableOpacity>
         )}
         {showImport && (
           <TouchableOpacity onPress={onImport}>
-            <Icons.Import size={25} color="#0F9ED5" />
+            <Icons.Import size={25} color={theme.primary.val} />
           </TouchableOpacity>
         )}
       </XStack>

@@ -1,6 +1,8 @@
 import { XStack, YStack, Text } from "tamagui";
 import { Match } from "@/components/matches/MatchCard";
 import { StudyProfile } from "@/convex/types";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 type ProfileStatsProps = {
   matches: Match[];
@@ -12,10 +14,16 @@ export function ProfileStats({ matches, studyProfile }: ProfileStatsProps) {
     (match) => match.status === "accepted"
   );
 
+  const upcomingTasks = useQuery(api.queries.getUpcomingTasks, {
+    limit: 100,
+  });
+
+  const userCourses = useQuery(api.queries.getUserCoursesOrdered, {});
+
   const stats = {
     matches: String(acceptedMatches.length),
-    classes: String(studyProfile?.classes?.length || 0),
-    tasks: "0", // TODO: Implement tasks counter
+    classes: String(userCourses?.length || 0),
+    tasks: String(upcomingTasks?.length || 0),
   };
 
   const StatItem = ({ value, label }: { value: string; label: string }) => (

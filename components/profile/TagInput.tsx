@@ -1,4 +1,4 @@
-import { Input, Text, YStack, XStack, Circle } from "tamagui";
+import { Input, Text, YStack, XStack, Circle, useTheme } from "tamagui";
 import { useState, useRef } from "react";
 import { TextInput, TouchableOpacity } from "react-native";
 import Icons from "@/app/components/icons";
@@ -28,9 +28,11 @@ export function TagInput({
   const handleSubmit = () => {
     if (value.trim()) {
       onAddTag(value.trim());
-      onChangeText('');
+      onChangeText("");
     }
   };
+
+  const theme = useTheme();
 
   return (
     <YStack width="100%" space="$2">
@@ -55,14 +57,16 @@ export function TagInput({
           placeholderTextColor="$iosGray"
           textAlignVertical="center"
           style={{
-            color: '#000',
+            color: "#000",
             height: 48,
             lineHeight: 24,
             paddingBottom: 8,
           }}
         />
         {value.trim() && (
-          <TouchableOpacity onPress={() => value.trim() && onAddTag(value.trim())}>
+          <TouchableOpacity
+            onPress={() => value.trim() && onAddTag(value.trim())}
+          >
             <Circle
               size={30}
               backgroundColor="$blue10"
@@ -87,17 +91,17 @@ export function TagInput({
               alignItems="center"
               space="$1"
             >
-              <Text color="#0F9ED5">{tag}</Text>
+              <Text color="$primary">{tag}</Text>
               <TouchableOpacity onPress={() => onRemoveTag(index)}>
-                <Icons.X size={12} color="#0F9ED5" />
+                <Icons.X size={12} color={theme.primary.val} />
               </TouchableOpacity>
             </XStack>
           ))}
         </XStack>
       )}
 
-      <Text 
-        color={tags.length >= minTags ? "#22C55E" : "#EF4444"} 
+      <Text
+        color={tags.length >= minTags ? "#22C55E" : "#EF4444"}
         fontSize="$3"
         textAlign="center"
         marginTop="$2"

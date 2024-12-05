@@ -1,5 +1,5 @@
 import { Switch } from "react-native";
-import { Text, YStack, XStack } from "tamagui";
+import { Text, YStack, XStack, useTheme } from "tamagui";
 
 type CustomSwitchProps = {
   value: boolean;
@@ -12,8 +12,10 @@ export function CustomSwitch({
   value,
   onValueChange,
   subtitle,
-  helperText
+  helperText,
 }: CustomSwitchProps) {
+  const theme = useTheme();
+
   return (
     <YStack space="$1" marginVertical="$0">
       <XStack justifyContent="space-between" alignItems="center">
@@ -32,8 +34,8 @@ export function CustomSwitch({
         <Switch
           value={value}
           onValueChange={onValueChange}
-          trackColor={{ false: "#767577", true: "#0F9ED5" }}
-          thumbColor={value ? "#fff" : "#f4f3f4"}
+          trackColor={{ false: theme.gray.val, true: theme.primary.val }}
+          thumbColor={theme.white.val}
           ios_backgroundColor="iosGray"
         />
       </XStack>

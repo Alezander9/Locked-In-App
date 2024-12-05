@@ -43,9 +43,6 @@ export default function EventsScreen() {
   const handleMakeEvent = () => {
     router.push({
       pathname: "/(modals)/create-event",
-      params: {
-        presentation: "modal",
-      },
     });
   };
 
@@ -69,7 +66,7 @@ export default function EventsScreen() {
 
   return (
     <ScreenWrapper>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, marginTop: 10 }}>
         <YStack flex={1} backgroundColor="$background">
           <XStack
             marginLeft={50}

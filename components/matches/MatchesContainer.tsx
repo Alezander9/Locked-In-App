@@ -86,21 +86,23 @@ export function MatchesContainer({
     new Set()
   );
 
+  const userCourses = useQuery(api.queries.getUserCoursesOrdered, {});
+
   const sections = useMemo(() => {
-    if (!studyProfile?.classes?.length) return [];
+    if (!userCourses?.length) return [];
 
     if (!searchTerm.trim()) {
       // Group matches by course
-      const matchesByClass = studyProfile.classes
+      const matchesByClass = userCourses
         .map((classInfo) => {
           const classMatches = matches.filter(
             (match) =>
-              match.courseId === classInfo.name.toUpperCase() &&
+              match.courseId === classInfo.code?.toUpperCase() &&
               !deletedMatchIds.has(match.id)
           );
 
           return {
-            title: `Matches for ${classInfo.name}`,
+            title: `Matches for ${classInfo.code}`,
             data: classMatches,
           };
         })
@@ -120,7 +122,7 @@ export function MatchesContainer({
         },
       ];
     }
-  }, [matches, searchTerm, studyProfile?.classes, deletedMatchIds]);
+  }, [matches, searchTerm, userCourses, deletedMatchIds]);
 
   const handleDeleteMatch = (matchId: string) => {
     // Update both the matches state and deletedMatchIds

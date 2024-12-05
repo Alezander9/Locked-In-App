@@ -16,9 +16,13 @@ interface CourseFilter {
 
 interface CourseFilterBarProps {
   onFiltersChange: (activeCourseIds: Id<"courses">[]) => void;
+  exclusiveSelection?: boolean;
 }
 
-export function CourseFilterBar({ onFiltersChange }: CourseFilterBarProps) {
+export function CourseFilterBar({
+  onFiltersChange,
+  exclusiveSelection = false,
+}: CourseFilterBarProps) {
   const userCourses = useQuery(api.queries.getUserCoursesOrdered);
   const theme = useTheme();
   const [filters, setFilters] = useState<CourseFilter[]>([]);
@@ -35,19 +39,24 @@ export function CourseFilterBar({ onFiltersChange }: CourseFilterBarProps) {
         )
         .map((course) => ({
           courseId: course._id,
-          isActive: true,
+          isActive: !exclusiveSelection,
         }));
       setFilters(newFilters);
-      onFiltersChange(newFilters.map((f) => f.courseId));
+      onFiltersChange(
+        exclusiveSelection ? [] : newFilters.map((f) => f.courseId)
+      );
     }
-  }, [userCourses]);
+  }, [userCourses, exclusiveSelection]);
 
   const handleToggle = (courseId: Id<"courses">) => {
-    const newFilters = filters.map((filter) =>
-      filter.courseId === courseId
-        ? { ...filter, isActive: !filter.isActive }
-        : filter
-    );
+    const newFilters = filters.map((filter) => ({
+      ...filter,
+      isActive: exclusiveSelection
+        ? filter.courseId === courseId && !filter.isActive
+        : filter.courseId === courseId
+          ? !filter.isActive
+          : filter.isActive,
+    }));
     setFilters(newFilters);
 
     const activeCourseIds = newFilters

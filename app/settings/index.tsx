@@ -9,19 +9,59 @@ type DaySchedule = {
   timeSlots: TimeSlot[];
 };
 
-import { YStack, Text, XStack, ScrollView } from "tamagui";
+import { YStack, Text, XStack, ScrollView, useTheme } from "tamagui";
 import { ScreenWrapper } from "@/components/background/ScreenWrapper";
-import { useAuth } from "@clerk/clerk-expo";
 import { Button } from "@/components/buttons/CustomButton";
 import { CustomSwitch } from "@/components/profile/CustomSwitch";
 import { useState } from "react";
 import { LinkIcon } from "@/app/components/icons";
-import { TextInput } from "react-native";
+import { SafeAreaView, TextInput } from "react-native";
 import { useRouter } from "expo-router";
 
+// Define reusable SettingsSection component
+const SettingsSection = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) => (
+  <YStack>
+    <Text fontSize="$5" fontWeight="bold">
+      {title}
+    </Text>
+    <YStack borderRadius="$4" backgroundColor="$background">
+      {children}
+    </YStack>
+  </YStack>
+);
+
+// Define reusable SettingsRow component
+const SettingsRow = ({
+  label,
+  children,
+  onPress,
+}: {
+  label: string;
+  children: React.ReactNode;
+  onPress: () => void;
+}) => (
+  <XStack
+    justifyContent="space-between"
+    alignItems="center"
+    paddingVertical="$3"
+    paddingHorizontal="$3"
+    pressStyle={{ opacity: 0.8 }}
+    onPress={onPress}
+  >
+    <Text fontSize="$4">{label}</Text>
+    {children}
+  </XStack>
+);
+
 export default function SettingsScreen() {
-  const { signOut } = useAuth();
   const router = useRouter();
+  const theme = useTheme();
   const [showEmail, setShowEmail] = useState(false);
   const [showNumber, setShowNumber] = useState(false);
   const [notifications, setNotifications] = useState(false);
@@ -48,112 +88,92 @@ export default function SettingsScreen() {
 
   return (
     <ScreenWrapper>
-      <ScrollView>
-        <YStack flex={1} padding="$4" space="$6">
-          {/* General Settings Section */}
-          <YStack space="$4">
-            <Text fontSize="$5" fontWeight="bold">
-              General Settings
-            </Text>
+      <SafeAreaView style={{ flex: 1 }}>
+        <XStack
+          borderBottomColor="$borderColor"
+          borderBottomWidth={1}
+          justifyContent="space-between"
+          alignItems="center"
+          marginBottom="$4"
+        >
+          <Text
+            onPress={() => router.back()}
+            color="$primary"
+            fontSize="$4"
+            padding="$4"
+            width={100}
+            textAlign="left"
+          >
+            Back
+          </Text>
+          <Text fontSize="$4" fontWeight="$4">
+            Settings
+          </Text>
+          <Text width={100} />
+        </XStack>
 
-            <YStack borderRadius="$4" backgroundColor="$background">
-              <XStack
-                justifyContent="space-between"
-                alignItems="center"
-                paddingVertical="$3"
-                paddingHorizontal="$3"
-              >
-                <Text fontSize="$4">Share Location</Text>
+        <ScrollView>
+          <YStack flex={1} padding="$4" space="$6">
+            {/* General Settings Section */}
+            <SettingsSection title="General Settings">
+              <SettingsRow label="Share Location" onPress={() => {}}>
                 <CustomSwitch
                   value={notifications}
                   onValueChange={setNotifications}
                   helperText="Receive notifications about matches and messages"
                 />
-              </XStack>
+              </SettingsRow>
 
-              <YStack height={0.5} backgroundColor="$iosGray2" />
+              <YStack height={0.5} backgroundColor="$lightSeparator" />
 
-              <XStack
-                justifyContent="space-between"
-                alignItems="center"
-                paddingVertical="$3"
-                paddingHorizontal="$3"
-              >
-                <Text fontSize="$4">Sync Contacts</Text>
+              <SettingsRow label="Sync Contacts" onPress={() => {}}>
                 <CustomSwitch
                   value={nightMode}
                   onValueChange={setNightMode}
                   helperText="Enable dark theme for the app"
                 />
-              </XStack>
+              </SettingsRow>
 
-              <YStack height={0.5} backgroundColor="$iosGray2" />
+              <YStack height={0.5} backgroundColor="$lightSeparator" />
 
-              <XStack
-                justifyContent="space-between"
-                alignItems="center"
-                paddingVertical="$3"
-                paddingHorizontal="$3"
-              >
-                <Text fontSize="$4">Language</Text>
+              <SettingsRow label="Language" onPress={() => {}}>
                 <Text fontSize="$4">English</Text>
-              </XStack>
-            </YStack>
-          </YStack>
+              </SettingsRow>
+            </SettingsSection>
 
-          {/* Section Separator */}
-          <YStack height={2} backgroundColor="$gray" />
+            {/* Section Separator */}
+            <YStack height={2} backgroundColor="$gray" />
 
-          {/* Account Settings Section */}
-          <YStack space="$4">
-            <Text fontSize="$5" fontWeight="bold">
-              Account Settings
-            </Text>
-
-            <YStack borderRadius="$4" backgroundColor="$background">
-              <XStack
-                justifyContent="space-between"
-                alignItems="center"
-                paddingVertical="$3"
-                paddingHorizontal="$3"
-              >
-                <Text fontSize="$4">Show Email</Text>
+            {/* Account Settings Section */}
+            <SettingsSection title="Account Settings">
+              <SettingsRow label="Show Email" onPress={() => {}}>
                 <CustomSwitch
                   value={showEmail}
                   onValueChange={setShowEmail}
                   helperText="Allow other users to see your email address"
                 />
-              </XStack>
+              </SettingsRow>
 
-              <YStack height={0.5} backgroundColor="$iosGray2" />
+              <YStack height={0.5} backgroundColor="$lightSeparator" />
 
-              <XStack
-                justifyContent="space-between"
-                alignItems="center"
-                paddingVertical="$3"
-                paddingHorizontal="$3"
-              >
-                <Text fontSize="$4">Show Number</Text>
+              <SettingsRow label="Show Number" onPress={() => {}}>
                 <CustomSwitch
                   value={showNumber}
                   onValueChange={setShowNumber}
                   helperText="Allow other users to see your phone number"
                 />
-              </XStack>
+              </SettingsRow>
 
-              <YStack height={0.5} backgroundColor="$iosGray2" />
+              <YStack height={0.5} backgroundColor="$lightSeparator" />
 
-              <XStack
-                justifyContent="space-between"
-                alignItems="center"
-                paddingVertical="$3"
-                paddingHorizontal="$3"
-                pressStyle={{ opacity: 0.8 }}
+              <SettingsRow
+                label="Instagram Account"
                 onPress={() => setInstagramLinked(!instagramLinked)}
               >
-                <Text fontSize="$4">Instagram Account</Text>
                 <XStack space="$2" alignItems="center">
-                  {instagramLinked && <LinkIcon size={16} color="#0F9ED5" />}
+                  {instagramLinked && (
+                    <LinkIcon size={16} color={theme.primary.val} />
+                  )}
                   <Text
                     fontSize="$4"
                     color={instagramLinked ? undefined : "$iosGray"}
@@ -161,21 +181,18 @@ export default function SettingsScreen() {
                     {instagramLinked ? "Linked" : "Not Linked"}
                   </Text>
                 </XStack>
-              </XStack>
+              </SettingsRow>
 
-              <YStack height={0.5} backgroundColor="$iosGray2" />
+              <YStack height={0.5} backgroundColor="$lightSeparator" />
 
-              <XStack
-                justifyContent="space-between"
-                alignItems="center"
-                paddingVertical="$3"
-                paddingHorizontal="$3"
-                pressStyle={{ opacity: 0.8 }}
+              <SettingsRow
+                label="LinkedIn Account"
                 onPress={() => setLinkedinLinked(!linkedinLinked)}
               >
-                <Text fontSize="$4">LinkedIn Account</Text>
                 <XStack space="$2" alignItems="center">
-                  {linkedinLinked && <LinkIcon size={16} color="#0F9ED5" />}
+                  {linkedinLinked && (
+                    <LinkIcon size={16} color={theme.primary.val} />
+                  )}
                   <Text
                     fontSize="$4"
                     color={linkedinLinked ? undefined : "$iosGray"}
@@ -183,78 +200,66 @@ export default function SettingsScreen() {
                     {linkedinLinked ? "Linked" : "Not Linked"}
                   </Text>
                 </XStack>
-              </XStack>
-            </YStack>
+              </SettingsRow>
+            </SettingsSection>
+
+            {/* Section Separator */}
+            <YStack height={2} backgroundColor="$gray" />
+
+            {/* Study Profile Settings Section */}
+            <SettingsSection title="Study Profile Settings">
+              <SettingsRow
+                label="General Preferences"
+                onPress={() => {
+                  router.push({
+                    pathname: "/profile",
+                    params: { step: "general_preferences" },
+                  });
+                }}
+              >
+                <Text fontSize="$4" color="$primary">
+                  Edit →
+                </Text>
+              </SettingsRow>
+
+              <YStack height={0.5} backgroundColor="$lightSeparator" />
+
+              <SettingsRow
+                label="Class-Specific Preferences"
+                onPress={() => {
+                  router.push({
+                    pathname: "/profile",
+                    params: { step: "course_preferences" },
+                  });
+                }}
+              >
+                <Text fontSize="$4" color="$primary">
+                  Edit →
+                </Text>
+              </SettingsRow>
+
+              <YStack height={0.5} backgroundColor="$lightSeparator" />
+
+              <SettingsRow
+                label="Schedule"
+                onPress={() => {
+                  router.push({
+                    pathname: "/profile",
+                    params: { step: "schedule" },
+                  });
+                }}
+              >
+                <Text fontSize="$4" color="$primary">
+                  Edit →
+                </Text>
+              </SettingsRow>
+            </SettingsSection>
+
+            {/* Bottom padding */}
+            <YStack height={40} />
           </YStack>
-
-          {/* Section Separator */}
-          <YStack height={2} backgroundColor="$gray" />
-
-          {/* Study Profile Settings Section */}
-          <YStack space="$4">
-            <Text fontSize="$5" fontWeight="bold">
-              Study Profile Settings
-            </Text>
-
-            <YStack borderRadius="$4" backgroundColor="$background">
-              <XStack
-                justifyContent="space-between"
-                alignItems="center"
-                paddingVertical="$3"
-                paddingHorizontal="$3"
-                pressStyle={{ opacity: 0.8 }}
-                onPress={() => {
-                  router.push("/settings/schedule");
-                }}
-              >
-                <Text fontSize="$4">Schedule</Text>
-                <Text fontSize="$4" color="#0F9ED5">
-                  Edit →
-                </Text>
-              </XStack>
-
-              <YStack height={0.5} backgroundColor="$iosGray2" />
-
-              <XStack
-                justifyContent="space-between"
-                alignItems="center"
-                paddingVertical="$3"
-                paddingHorizontal="$3"
-                pressStyle={{ opacity: 0.8 }}
-                onPress={() => {
-                  router.push("/settings/generalPreferences");
-                }}
-              >
-                <Text fontSize="$4">General Preferences</Text>
-                <Text fontSize="$4" color="#0F9ED5">
-                  Edit →
-                </Text>
-              </XStack>
-
-              <YStack height={0.5} backgroundColor="$iosGray2" />
-
-              <XStack
-                justifyContent="space-between"
-                alignItems="center"
-                paddingVertical="$3"
-                paddingHorizontal="$3"
-                pressStyle={{ opacity: 0.8 }}
-                onPress={() => {
-                  router.push("/settings/classPreferences");
-                }}
-              >
-                <Text fontSize="$4">Class-Specific Preferences</Text>
-                <Text fontSize="$4" color="#0F9ED5">
-                  Edit →
-                </Text>
-              </XStack>
-            </YStack>
-          </YStack>
-
-          {/* Bottom padding */}
-          <YStack height={40} />
-        </YStack>
-      </ScrollView>
+        </ScrollView>
+      </SafeAreaView>
     </ScreenWrapper>
   );
 }

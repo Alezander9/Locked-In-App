@@ -51,7 +51,6 @@ export function TaskCard({
       pathname: "/(modals)/edit-task",
       params: {
         taskId: _id,
-        presentation: "modal",
       },
     });
   };

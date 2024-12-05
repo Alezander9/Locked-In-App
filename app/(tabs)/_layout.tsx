@@ -18,6 +18,8 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const HEADERS_SHOWN = true;
+
   return (
     <YStack flex={1}>
       <Tabs
@@ -31,11 +33,19 @@ export default function TabLayout() {
           },
           // Header styling
           headerStyle: {
-            backgroundColor: theme.bg.val,
+            backgroundColor: theme.blue.val,
+            height: 80,
           },
-          headerTintColor: theme.color.val,
           headerTitleStyle: {
-            color: theme.color.val,
+            color: theme.white.val,
+            fontSize: 24,
+          },
+          // Adjust header title position
+          headerTitleAlign: "center",
+          // Optional: Add padding/margin to the title
+          headerTitleContainerStyle: {
+            paddingTop: 0,
+            paddingLeft: 0,
           },
           // Header border
           headerShadowVisible: false,
@@ -49,7 +59,7 @@ export default function TabLayout() {
             tabBarIcon: ({ color, focused }) => (
               <EventIcon color={color} size={28} />
             ),
-            headerShown: false,
+            headerShown: HEADERS_SHOWN,
           }}
         />
         <Tabs.Screen
@@ -60,7 +70,7 @@ export default function TabLayout() {
             tabBarIcon: ({ color, focused }) => (
               <TasksIcon color={color} size={30} />
             ),
-            headerShown: false,
+            headerShown: HEADERS_SHOWN,
           }}
         />
         <Tabs.Screen
@@ -71,7 +81,7 @@ export default function TabLayout() {
             tabBarIcon: ({ color, focused }) => (
               <GroupsIcon color={color} size={38} />
             ),
-            headerShown: false,
+            headerShown: HEADERS_SHOWN,
           }}
         />
       </Tabs>
@@ -79,7 +89,7 @@ export default function TabLayout() {
         onPress={() => setIsSidebarOpen(true)}
         style={{
           position: "absolute",
-          top: 42,
+          top: HEADERS_SHOWN ? 82 : 42, // previous 42 before headers added, 82 with headers
           left: 4,
           zIndex: 1,
           padding: 10,

@@ -183,14 +183,14 @@ export const updateStudyProfile = mutation({
           slots: v.array(v.number()),
         })
       ),
-      classes: v.array(
+      coursePreferences: v.array(
         v.object({
-          name: v.string(),
+          courseId: v.id("courses"),
           weeklyHours: v.number(),
           deadlinePreference: v.number(),
+          noiseLevel: v.number(),
           targetGrade: v.string(),
           expectedGrade: v.string(),
-          noiseLevel: v.number(),
         })
       ),
       additionalInfo: v.string(),
@@ -198,13 +198,13 @@ export const updateStudyProfile = mutation({
       syncContacts: v.boolean(),
     }),
   },
+
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error("Called updateStudyProfile without authentication");
     }
 
-    // Get the user ID from their clerk ID
     const user = await ctx.db
       .query("users")
       .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
@@ -214,69 +214,101 @@ export const updateStudyProfile = mutation({
       throw new Error("User not found");
     }
 
-    // Update the user's study profile
+    // For each course preference, verify the course exists and user has access
+    await Promise.all(
+      args.studyProfile.coursePreferences.map(async (pref) => {
+        const course = await ctx.db.get(pref.courseId);
+        if (!course) {
+          throw new Error(`Course not found: ${pref.courseId}`);
+        }
+
+        const userCourse = await ctx.db
+          .query("userCourses")
+          .withIndex("by_userID_courseID", (q) =>
+            q.eq("userId", user._id).eq("courseId", pref.courseId)
+          )
+          .first();
+
+        if (!userCourse) {
+          throw new Error(
+            `User does not have access to course: ${pref.courseId}`
+          );
+        }
+      })
+    );
+
+    // Transform schedule data
+    const availableTimeSlots = args.studyProfile.availableTimeSlots.filter(
+      (slot) => slot.slots.length > 0
+    );
+
+    // Update the profile
     await ctx.db.patch(user._id, {
-      studyProfile: args.studyProfile,
-      completedOnboarding: true, // Also mark onboarding as complete
+      studyProfile: {
+        ...args.studyProfile,
+        availableTimeSlots,
+      },
+      completedOnboarding: true,
     });
 
     return user._id;
   },
 });
 
-export const deleteClass = mutation({
-  args: {
-    studyProfile: v.object({
-      dorm: v.string(),
-      studyLocations: v.array(v.string()),
-      alertnessPreference: v.number(),
-      punctualityPreference: v.number(),
-      learningPreferences: v.record(v.string(), v.number()),
-      availableTimeSlots: v.array(
-        v.object({
-          day: v.string(),
-          slots: v.array(v.number()),
-        })
-      ),
-      classes: v.array(
-        v.object({
-          name: v.string(),
-          weeklyHours: v.number(),
-          deadlinePreference: v.number(),
-          targetGrade: v.string(),
-          expectedGrade: v.string(),
-          noiseLevel: v.number(),
-        })
-      ),
-      additionalInfo: v.string(),
-      shareLocation: v.boolean(),
-      syncContacts: v.boolean(),
-    }),
-  },
-  handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Called deleteClass without authentication");
-    }
+// export const deleteClass = mutation({
+//   args: {
+//     studyProfile: v.object({
+//       dorm: v.string(),
+//       studyLocations: v.array(v.string()),
+//       alertnessPreference: v.number(),
+//       punctualityPreference: v.number(),
+//       learningPreferences: v.record(v.string(), v.number()),
+//       availableTimeSlots: v.array(
+//         v.object({
+//           day: v.string(),
+//           slots: v.array(v.number()),
+//         })
+//       ),
+//       classes: v.array(
+//         v.object({
+//           name: v.string(),
+//           weeklyHours: v.number(),
+//           deadlinePreference: v.number(),
+//           targetGrade: v.string(),
+//           expectedGrade: v.string(),
+//           noiseLevel: v.number(),
+//         })
+//       ),
+//       additionalInfo: v.string(),
+//       shareLocation: v.boolean(),
+//       syncContacts: v.boolean(),
+//     }),
+//   },
+//   handler: async (ctx, args) => {
+//     const identity = await ctx.auth.getUserIdentity();
+//     if (!identity) {
+//       throw new Error("Called deleteClass without authentication");
+//     }
 
-    // Get the user ID from their clerk ID
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
-      .first();
+//     // Get the user ID from their clerk ID
+//     const user = await ctx.db
+//       .query("users")
+//       .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+//       .first();
 
-    if (!user) {
-      throw new Error("User not found");
-    }
+//     if (!user) {
+//       throw new Error("User not found");
+//     }
 
-    // Update the user's study profile
-    await ctx.db.patch(user._id, {
-      studyProfile: args.studyProfile,
-    });
+//     // Update the user's study profile
+//     await ctx.db.patch(user._id, {
+//       studyProfile: args.studyProfile,
+//     });
 
-    return user._id;
-  },
-});
+//     return user._id;
+//   },
+// });
+
 export const generateMatches = mutation({
   args: {
     courseId: v.string(),

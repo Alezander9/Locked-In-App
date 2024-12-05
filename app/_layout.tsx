@@ -25,7 +25,7 @@ import { useCallback, useEffect, useState } from "react";
 import { AnimatedSplash } from "@/components/animations/AnimatedSplash";
 import { Image, TouchableOpacity, Text } from "react-native";
 import { ToastProvider, useToast } from "@/features/toast";
-import { StudyProfileProvider } from "@/app/context/StudyProfileContext";
+import { StudyProfileProvider } from "@/contexts/StudyProfileContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -200,99 +200,7 @@ export default function RootLayout() {
                       <Stack.Screen
                         name="settings/index"
                         options={{
-                          presentation: "card",
-                          headerShown: true,
                           title: "Settings",
-                          headerBackVisible: true,
-                          headerBackTitle: "Back",
-                        }}
-                      />
-
-                      {/* Add Schedule Screen */}
-                      <Stack.Screen
-                        name="settings/schedule"
-                        options={{
-                          presentation: "card",
-                          headerShown: true,
-                          title: "Schedule",
-                          headerBackVisible: true,
-                          headerBackTitle: "Back",
-                        }}
-                      />
-
-                      {/* Add General Preferences Screen */}
-                      <Stack.Screen
-                        name="settings/generalPreferences"
-                        options={{
-                          presentation: "card",
-                          headerShown: true,
-                          title: "General Preferences",
-                          headerBackVisible: true,
-                          headerBackTitle: "Back",
-                        }}
-                      />
-
-                      {/* Add Class Preferences Screen */}
-                      <Stack.Screen
-                        name="settings/classPreferences"
-                        options={({ navigation, route }) => ({
-                          presentation: "card",
-                          headerShown: true,
-                          title: "Class Preferences",
-                          headerBackVisible: true,
-                          headerBackTitle: "Back",
-                          headerRight: () => (
-                            <TouchableOpacity
-                              onPress={() => {
-                                // @ts-ignore - we know this exists because we set it
-                                route.params?.onHeaderPress?.();
-                              }}
-                              style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                marginRight: 10,
-                              }}
-                            >
-                              <Text
-                                style={{ marginRight: 8, color: "#0F9ED5" }}
-                              >
-                                {/* @ts-ignore - we know this exists */}
-                                {route.params?.currentClassName ||
-                                  "Select Class"}
-                              </Text>
-                              <Ionicons
-                                name="chevron-down"
-                                size={24}
-                                color="#0F9ED5"
-                              />
-                            </TouchableOpacity>
-                          ),
-                        })}
-                      />
-
-                      {/* Modal screens */}
-                      <Stack.Screen
-                        name="(modals)/create-event/index"
-                        options={{
-                          presentation: "modal",
-                          headerShown: true,
-                          title: "Create Event",
-                        }}
-                      />
-
-                      <Stack.Screen
-                        name="(modals)/input/date-time"
-                        options={{
-                          presentation: "modal",
-                          headerShown: true,
-                        }}
-                      />
-
-                      <Stack.Screen
-                        name="(modals)/input/duration"
-                        options={{
-                          presentation: "modal",
-                          headerShown: true,
                         }}
                       />
 

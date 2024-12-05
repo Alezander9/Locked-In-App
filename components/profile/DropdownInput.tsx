@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { Text, YStack } from "tamagui";
-import { StyleSheet, View } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
+import { StyleSheet, View } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
 
 type DropdownInputProps = {
   label: string;
@@ -28,10 +28,7 @@ export function DropdownInput({
   };
 
   return (
-    <YStack 
-      space="$1" 
-      marginBottom="$3"
-    >
+    <YStack space="$1" marginBottom="$3">
       <Text fontSize="$3" fontWeight="600" color="$gray">
         {label}
       </Text>
@@ -44,7 +41,7 @@ export function DropdownInput({
           onOpen={handleOpen}
           setValue={(callback) => {
             const newValue = callback(value);
-            if (typeof newValue === 'string') {
+            if (typeof newValue === "string") {
               onValueChange(newValue);
             }
           }}
@@ -56,7 +53,7 @@ export function DropdownInput({
           showTickIcon
           placeholder={placeholder}
           placeholderStyle={{
-            color: '#999',
+            color: "$gray",
             fontSize: 16,
           }}
         />
@@ -67,20 +64,20 @@ export function DropdownInput({
 
 const styles = StyleSheet.create({
   dropdownContainer: {
-    width: '100%',
+    width: "100%",
   },
   dropdown: {
-    borderColor: '#E5E5E5',
+    borderColor: "#E5E5E5",
     borderRadius: 8,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     height: 45,
   },
   dropdownList: {
-    borderColor: '#E5E5E5',
-    backgroundColor: 'white',
+    borderColor: "#E5E5E5",
+    backgroundColor: "white",
   },
   dropdownText: {
     fontSize: 16,
-    color: '#333',
+    color: "#333",
   },
 });

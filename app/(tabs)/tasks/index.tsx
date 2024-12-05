@@ -74,9 +74,6 @@ export default function TasksScreen() {
   const handleMakeTasks = () => {
     router.push({
       pathname: "/(modals)/create-tasks",
-      params: {
-        presentation: "modal",
-      },
     });
   };
 
@@ -99,7 +96,7 @@ export default function TasksScreen() {
 
   return (
     <ScreenWrapper>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, marginTop: 10 }}>
         <YStack flex={1} backgroundColor="$background">
           {/* Search and Add Button */}
           <XStack

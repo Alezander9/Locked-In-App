@@ -1,4 +1,4 @@
-import { Stack, Text, styled, useTheme } from "tamagui";
+import { Stack, Text, YStack, styled, useTheme } from "tamagui";
 import { GestureResponderEvent } from "react-native";
 import { ArrowRightIcon } from "@/app/components/icons";
 
@@ -29,6 +29,7 @@ interface FormRowProps {
   value: string;
   onPress?: (event: GestureResponderEvent) => void;
   showArrow?: boolean;
+  description?: string;
 }
 
 export const FormRow = ({
@@ -36,21 +37,34 @@ export const FormRow = ({
   value,
   onPress,
   showArrow = true,
+  description,
 }: FormRowProps) => {
   const theme = useTheme();
   return (
-    <FormRowContainer
-      pressStyle={{
-        opacity: 0.7,
-        backgroundColor: "$bg",
-      }}
-      onPress={onPress}
-    >
-      <Label>{label}</Label>
-      <Stack flexDirection="row" alignItems="center">
-        <Value>{value}</Value>
-        {showArrow && <ArrowRightIcon size={8} color={theme.primary.val} />}
-      </Stack>
-    </FormRowContainer>
+    <YStack>
+      <FormRowContainer
+        pressStyle={{
+          opacity: 0.7,
+          backgroundColor: "$bg",
+        }}
+        onPress={onPress}
+      >
+        <Label>{label}</Label>
+        <Stack flexDirection="row" alignItems="center">
+          <Value>{value}</Value>
+          {showArrow && <ArrowRightIcon size={8} color={theme.primary.val} />}
+        </Stack>
+      </FormRowContainer>
+      {description && (
+        <Text
+          color="$gray"
+          fontSize={13}
+          paddingHorizontal={16}
+          paddingVertical={6}
+        >
+          {description}
+        </Text>
+      )}
+    </YStack>
   );
 };

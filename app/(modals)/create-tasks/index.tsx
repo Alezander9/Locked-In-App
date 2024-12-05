@@ -264,6 +264,11 @@ export default function CreateTasksModal() {
                   label="Upload Syllabus/Assignments"
                   value={selectedFile || "No file selected"}
                   onPress={handleFileUpload}
+                  description={
+                    selectedFile
+                      ? ""
+                      : "AI Task Extraction may fail to parse files or make mistakes. Double check extracted tasks."
+                  }
                 />
                 {selectedFile && (
                   <FormRowSelector

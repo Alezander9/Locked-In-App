@@ -2,8 +2,6 @@ import { YStack, XStack, Text, Image } from "tamagui";
 import {
   CheckIcon,
   XIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
   MailIcon,
   MessageIcon,
   LinkedinIcon,
@@ -376,7 +374,7 @@ export function MatchCard({
   const deleteMatch = useMutation(api.mutations.deleteMatch);
 
   const handleCreateProfile = () => {
-    router.replace("/(auth)/profile");
+    router.replace("/profile");
   };
 
   const handleRemoveMatch = (e: any) => {

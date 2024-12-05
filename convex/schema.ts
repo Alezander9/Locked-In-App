@@ -32,14 +32,14 @@ export default defineSchema({
             slots: v.array(v.number()),
           })
         ),
-        classes: v.array(
+        coursePreferences: v.array(
           v.object({
-            name: v.string(),
+            courseId: v.id("courses"),
             weeklyHours: v.number(),
             deadlinePreference: v.number(),
+            noiseLevel: v.number(),
             targetGrade: v.string(),
             expectedGrade: v.string(),
-            noiseLevel: v.number(),
           })
         ),
         additionalInfo: v.string(),
@@ -77,12 +77,12 @@ export default defineSchema({
   }).index("by_date", ["date"]),
 
   matches: defineTable({
-    userId: v.id("users"),          // The user who received the match
-    matchedUserId: v.id("users"),   // The user they matched with
-    matchScore: v.number(),         // Compatibility score (0-100)
-    matchReason: v.string(),        // Why they were matched
-    status: v.string(),             // "pending", "accepted", "rejected"
-    courseId: v.string(),           // The course they matched for
-    createdAt: v.number(),          // Timestamp
-  }).index("by_userId", ["userId"]) // Index to quickly find user's matches
+    userId: v.id("users"), // The user who received the match
+    matchedUserId: v.id("users"), // The user they matched with
+    matchScore: v.number(), // Compatibility score (0-100)
+    matchReason: v.string(), // Why they were matched
+    status: v.string(), // "pending", "accepted", "rejected"
+    courseId: v.string(), // The course they matched for
+    createdAt: v.number(), // Timestamp
+  }).index("by_userId", ["userId"]), // Index to quickly find user's matches
 });
