@@ -23,7 +23,10 @@
         "foregroundImage": "./assets/images/LockedInLogo1024x1024.png",
         "backgroundColor": "#F7F4F1"
       },
-      "permissions": ["android.permission.RECORD_AUDIO"]
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -46,6 +49,12 @@
       "eas": {
         "projectId": "65bbf7a4-f079-48cc-8c0d-162ba4e56264"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/65bbf7a4-f079-48cc-8c0d-162ba4e56264"
     }
   }
 }
