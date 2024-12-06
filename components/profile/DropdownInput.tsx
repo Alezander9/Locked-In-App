@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Text, YStack, styled, useTheme } from "tamagui";
+import { Text, YStack, useTheme } from "tamagui";
 import { View, StyleProp, ViewStyle } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { CheckIcon } from "@/app/components/icons";
-import { ArrowDownIcon, ArrowUpIcon } from "@/app/components/icons";
+import { CheckIcon, ArrowDownIcon, ArrowUpIcon } from "@/app/components/icons";
 
 type DropdownInputProps = {
   label: string;
@@ -13,13 +12,6 @@ type DropdownInputProps = {
   onOpen?: () => void;
   placeholder?: string;
 };
-
-const StyledDropDownPicker = styled(DropDownPicker, {
-  borderColor: "$color",
-  borderRadius: 8,
-  backgroundColor: "$lightSeparator",
-  height: 45,
-});
 
 export function DropdownInput({
   label,
@@ -54,7 +46,7 @@ export function DropdownInput({
         {label}
       </Text>
       <View style={{ width: "100%", zIndex: open ? 2000 : 1000 }}>
-        <StyledDropDownPicker
+        <DropDownPicker
           open={open}
           value={value}
           items={items}
@@ -81,6 +73,8 @@ export function DropdownInput({
           style={{
             backgroundColor: theme.lightSeparator.val,
             borderColor: theme.color.val,
+            borderRadius: 8,
+            height: 45,
           }}
           dropDownContainerStyle={{
             backgroundColor: theme.lightSeparator.val,

@@ -4,7 +4,7 @@
     "slug": "Locked-In-App",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/LockedInLogoSplash.png",
+    "icon": "./assets/images/LockedInLogo1024x1024.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

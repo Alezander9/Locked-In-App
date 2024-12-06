@@ -39,6 +39,7 @@ export default function StudyProfileCreation() {
   // Add new useEffect for profile initialization
   useEffect(() => {
     if (user?.studyProfile) {
+      console.log("[Debug] Initializing with existing profile:", user.studyProfile);
       initializeWithExistingProfile(user.studyProfile);
     }
   }, [user]);
@@ -91,15 +92,15 @@ export default function StudyProfileCreation() {
   const handleContinue = async () => {
     if (currentStep === PROFILE_STEPS.length - 1) {
       try {
+        console.log("[Debug] Starting final step submission");
         setIsLockAnimating(true);
         setShowProgress(true);
 
-        // Fire and forget mutation
         const submitData = async () => {
           try {
-            // Get profile data from store
+            console.log("[Debug] Beginning profile submission");
             const { formData } = useProfileStore.getState();
-
+            
             // Transform schedule data to the format the mutation expects
             const availableTimeSlots = formData.schedule
               .map((day) => ({
@@ -118,7 +119,6 @@ export default function StudyProfileCreation() {
               punctualityPreference: formData.punctualityPreference,
               learningPreferences: formData.learningPreferences,
               availableTimeSlots,
-              // Add course preferences
               coursePreferences: formData.coursePreferences.map((pref) => ({
                 courseId: pref.courseId,
                 weeklyHours: pref.weeklyHours,
@@ -132,32 +132,37 @@ export default function StudyProfileCreation() {
               syncContacts: formData.syncContacts,
             };
 
-            // Submit the data
-            await updateStudyProfile({
-              studyProfile: profileData,
-            });
+            // Start navigation
+            setTimeout(() => {
+              console.log("[Debug] Executing navigation to groups");
+              router.replace("/(tabs)/groups");
+              
+              // Call mutation after navigation starts
+              setTimeout(async () => {
+                console.log("[Debug] Calling updateStudyProfile mutation");
+                await updateStudyProfile({
+                  studyProfile: profileData,
+                });
+              }, 100); // Small delay after navigation starts
+              
+            }, ANIMATION.PROGRESS_DURATION);
+            
           } catch (error) {
-            console.error("Profile submission failed:", error);
-            // Surface the error to the user
+            console.error("[Debug] Profile submission failed:", error);
             setIsLockAnimating(false);
             setShowProgress(false);
-            // Could add a toast or error message here
           }
         };
 
-        // Start submission
-        submitData();
-
-        // Navigate after animation completes
-        setTimeout(() => {
-          router.replace("/(tabs)/groups");
-        }, ANIMATION.PROGRESS_DURATION);
+        await submitData();
+        
       } catch (error) {
-        console.error("Failed to submit profile:", error);
+        console.error("[Debug] Outer submission error:", error);
         setIsLockAnimating(false);
         setShowProgress(false);
       }
     } else {
+      console.log("[Debug] Moving to next step:", currentStep + 1);
       nextStep();
     }
   };
@@ -178,6 +183,10 @@ export default function StudyProfileCreation() {
   // Add step navigation effect
   useEffect(() => {
     if (step && STEP_MAPPING[step as keyof typeof STEP_MAPPING] !== undefined) {
+      console.log("[Debug] Step navigation triggered:", {
+        incomingStep: step,
+        mappedStep: STEP_MAPPING[step as keyof typeof STEP_MAPPING]
+      });
       setCurrentStep(STEP_MAPPING[step as keyof typeof STEP_MAPPING]);
     }
   }, [step]);

@@ -11,14 +11,22 @@ import {
 import { useTheme, YStack } from "tamagui";
 import { SettingsSidebar } from "@/components/settings/SettingsSidebar";
 import { useState } from "react";
-import { TouchableOpacity, Image } from "react-native";
+import { TouchableOpacity, Image, Platform } from "react-native";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
   const theme = useTheme();
   const colorScheme = useColorScheme();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const HEADERS_SHOWN = true;
+
+  const getHeaderHeight = () => {
+    const baseHeight = 42; 
+    const topInset = insets.top;
+    return baseHeight + topInset;
+  };
 
   return (
     <YStack flex={1}>
@@ -34,21 +42,17 @@ export default function TabLayout() {
           // Header styling
           headerStyle: {
             backgroundColor: theme.blue.val,
-            height: 80,
+            height: getHeaderHeight(),
           },
           headerTitleStyle: {
             color: theme.white.val,
             fontSize: 24,
           },
-          // Adjust header title position
-          headerTitleAlign: "center",
-          // Optional: Add padding/margin to the title
           headerTitleContainerStyle: {
             paddingTop: 0,
-            paddingLeft: 0,
           },
-          // Header border
-          headerShadowVisible: false,
+          headerTitleAlign: "center",
+          headerStatusBarHeight: insets.top,
         }}
       >
         <Tabs.Screen
@@ -89,7 +93,7 @@ export default function TabLayout() {
         onPress={() => setIsSidebarOpen(true)}
         style={{
           position: "absolute",
-          top: HEADERS_SHOWN ? 82 : 42, // previous 42 before headers added, 82 with headers
+          top: HEADERS_SHOWN ? getHeaderHeight() + 2 : insets.top + 2,
           left: 4,
           zIndex: 1,
           padding: 10,
