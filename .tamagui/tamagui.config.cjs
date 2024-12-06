@@ -934,7 +934,7 @@ var require_constants = __commonJS({
     var isWebTouchable3 = isClient4 && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
     var isTouchable3 = !isWeb7 || isWebTouchable3;
     var isAndroid6 = false;
-    var isIos2 = false;
+    var isIos2 = process.env.TEST_NATIVE_PLATFORM === "ios";
     var currentPlatform2 = "web";
   }
 });
@@ -1248,6 +1248,8 @@ var require_validStyleProps = __commonJS({
       ...tokenCategories2.radius,
       ...stylePropsTransform2,
       ...stylePropsUnitless2,
+      boxShadow: true,
+      filter: true,
       // RN doesn't support specific border styles per-edge
       transition: true,
       textWrap: true,
@@ -1267,7 +1269,6 @@ var require_validStyleProps = __commonJS({
       borderLeftStyle: true,
       borderRightStyle: true,
       borderTopStyle: true,
-      boxShadow: true,
       boxSizing: true,
       caretColor: true,
       clipPath: true,
@@ -1275,7 +1276,6 @@ var require_validStyleProps = __commonJS({
       containerType: true,
       content: true,
       cursor: true,
-      filter: true,
       float: true,
       mask: true,
       maskBorder: true,
@@ -26914,7 +26914,7 @@ var isChrome = typeof navigator < "u" && /Chrome/.test(navigator.userAgent || ""
 var isWebTouchable = isClient && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 var isTouchable = !isWeb || isWebTouchable;
 var isAndroid = false;
-var isIos = false;
+var isIos = process.env.TEST_NATIVE_PLATFORM === "ios";
 var currentPlatform = "web";
 
 // node_modules/@tamagui/adapt/dist/esm/Adapt.mjs
@@ -27251,6 +27251,8 @@ var stylePropsView = {
   ...tokenCategories.radius,
   ...stylePropsTransform,
   ...stylePropsUnitless,
+  boxShadow: true,
+  filter: true,
   // RN doesn't support specific border styles per-edge
   transition: true,
   textWrap: true,
@@ -27270,7 +27272,6 @@ var stylePropsView = {
   borderLeftStyle: true,
   borderRightStyle: true,
   borderTopStyle: true,
-  boxShadow: true,
   boxSizing: true,
   caretColor: true,
   clipPath: true,
@@ -27278,7 +27279,6 @@ var stylePropsView = {
   containerType: true,
   content: true,
   cursor: true,
-  filter: true,
   float: true,
   mask: true,
   maskBorder: true,
@@ -28642,11 +28642,11 @@ function useFocusScope(props, forwardedRef) {
     forceUnmount,
     children,
     ...scopeProps
-  } = props, [container, setContainer] = React19.useState(null), onMountAutoFocus = useEvent2(onMountAutoFocusProp), onUnmountAutoFocus = useEvent2(onUnmountAutoFocusProp), lastFocusedElementRef = React19.useRef(null), composedRefs = useComposedRefs(forwardedRef, (node) => {
+  } = props, [container, setContainer] = React19.useState(null), onMountAutoFocus = useEvent2(onMountAutoFocusProp), onUnmountAutoFocus = useEvent2(onUnmountAutoFocusProp), lastFocusedElementRef = React19.useRef(null), setContainerTransition = React19.useCallback((node) => {
     startTransition(() => {
       setContainer(node);
     });
-  }), focusScope = React19.useRef({
+  }, [setContainer]), composedRefs = useComposedRefs(forwardedRef, setContainerTransition), focusScope = React19.useRef({
     paused: false,
     pause() {
       this.paused = true;
@@ -31333,7 +31333,11 @@ function useCheckbox(props, [checked, setChecked], ref) {
     value = "on",
     onCheckedChange,
     ...checkboxProps
-  } = props, [button, setButton] = import_react27.default.useState(null), composedRefs = useComposedRefs(ref, (node) => setButton(node)), hasConsumerStoppedPropagationRef = import_react27.default.useRef(false), isFormControl = isWeb ? button ? !!button.closest("form") : true : false, labelId = useLabelContext(button), labelledBy = ariaLabelledby || labelId;
+  } = props, [button, setButton] = import_react27.default.useState(null), composedRefs = useComposedRefs(ref, setButton), hasConsumerStoppedPropagationRef = import_react27.default.useRef(false), isFormControl = isWeb ? button ? !!button.closest("form") : true : false, labelId = useLabelContext(button), labelledBy = ariaLabelledby || labelId, parentKeyDown = props.onKeyDown, handleKeyDown = (0, import_react27.useMemo)(() => composeEventHandlers(parentKeyDown, (event) => {
+    event.key === "Enter" && event.preventDefault();
+  }), [parentKeyDown]), handlePress = (0, import_react27.useMemo)(() => composeEventHandlers(props.onPress, (event) => {
+    setChecked((prevChecked) => isIndeterminate(prevChecked) ? true : !prevChecked), isFormControl && "isPropagationStopped" in event && (hasConsumerStoppedPropagationRef.current = event.isPropagationStopped(), hasConsumerStoppedPropagationRef.current || event.stopPropagation());
+  }), [isFormControl]);
   return {
     bubbleInput: isWeb && isFormControl ? /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(BubbleInput, {
       isHidden: true,
@@ -31357,13 +31361,9 @@ function useCheckbox(props, [checked, setChecked], ref) {
         "data-state": getState2(checked),
         "data-disabled": disabled ? "" : void 0,
         disabled,
-        onKeyDown: composeEventHandlers(props.onKeyDown, (event) => {
-          event.key === "Enter" && event.preventDefault();
-        })
+        onKeyDown: handleKeyDown
       },
-      onPress: composeEventHandlers(props.onPress, (event) => {
-        setChecked((prevChecked) => isIndeterminate(prevChecked) ? true : !prevChecked), isFormControl && "isPropagationStopped" in event && (hasConsumerStoppedPropagationRef.current = event.isPropagationStopped(), hasConsumerStoppedPropagationRef.current || event.stopPropagation());
-      })
+      onPress: handlePress
     }
   };
 }
@@ -40229,9 +40229,9 @@ var SelectItem = ListItemFrame.styleable(function(props, forwardedRef) {
   }), [index5]), React59.useEffect(() => valueSubscribe((val) => {
     setSelected(val === value);
   }), [value]);
-  const textId = React59.useId(), composedRefs = useComposedRefs(forwardedRef, (node) => {
+  const textId = React59.useId(), refCallback = React59.useCallback((node) => {
     isWeb && node instanceof HTMLElement && listRef && (listRef.current[index5] = node);
-  });
+  }, []), composedRefs = useComposedRefs(forwardedRef, refCallback);
   useIsomorphicLayoutEffect(() => {
     setValueAtIndex(index5, value);
   }, [index5, setValueAtIndex, value]);
@@ -40551,7 +40551,7 @@ var SelectViewport = SelectViewportFrame.styleable(function(props, forwardedRef)
     // remove this, it was set to "Select" always
     className,
     ...floatingProps
-  } = itemContext.interactions.getFloatingProps(), composedRefs = composeRefs(forwardedRef, (_a = context.floatingContext) == null ? void 0 : _a.refs.setFloating);
+  } = itemContext.interactions.getFloatingProps(), composedRefs = useComposedRefs(forwardedRef, (_a = context.floatingContext) == null ? void 0 : _a.refs.setFloating);
   return /* @__PURE__ */ (0, import_jsx_runtime47.jsxs)(import_jsx_runtime47.Fragment, {
     children: [!disableScroll && !props.unstyled && /* @__PURE__ */ (0, import_jsx_runtime47.jsx)("style", {
       dangerouslySetInnerHTML: {
