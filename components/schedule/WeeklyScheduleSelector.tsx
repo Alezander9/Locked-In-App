@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Pressable } from "react-native";
+import { Pressable, Dimensions } from "react-native";
 import { format } from "date-fns";
 import { Text, View, useTheme } from "tamagui";
 
@@ -25,6 +25,11 @@ export function WeeklyScheduleSelector({
   helperText,
 }: WeeklyScheduleSelectorProps) {
   const theme = useTheme();
+  const screenWidth = Dimensions.get('window').width;
+  const SCREENMARGIN = 60;
+  const timeLabelWidth = 42;
+  const slotWidth = (screenWidth - SCREENMARGIN - timeLabelWidth) / 7; // Calculate slot width
+
   const [isDragging, setIsDragging] = useState(false);
   const [selectedState, setSelectedState] = useState(false);
   const [lastTouchedSlot, setLastTouchedSlot] = useState<{
@@ -33,12 +38,10 @@ export function WeeklyScheduleSelector({
   } | null>(null);
   const [timeSlots, setTimeSlots] = useState<DaySchedule[]>(value);
 
-  // Add this useEffect to sync with incoming value prop
   useEffect(() => {
     setTimeSlots(value);
   }, [value]);
 
-  // Store measurements for each slot
   const slotRefs = useRef<{
     [key: string]: { x: number; y: number; width: number; height: number };
   }>({});
@@ -101,7 +104,6 @@ export function WeeklyScheduleSelector({
     const touch = e.nativeEvent.touches[0];
     const { pageX, pageY } = touch;
 
-    // Check all slots to see if they're under the touch point
     Object.entries(slotRefs.current).forEach(([key, layout]) => {
       if (
         pageX >= layout.x &&
@@ -125,29 +127,27 @@ export function WeeklyScheduleSelector({
       style={{
         backgroundColor: "$background",
         padding: 4,
-        width: "100%",
+        width: screenWidth,
         paddingLeft: 0,
         marginTop: -10,
       }}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleInteractionEnd}
     >
-      {/* Days Header */}
       <View
         style={{
           flexDirection: "row",
           height: 30,
           marginTop: -10,
+          width: '100%',
         }}
       >
-        <View style={{ width: 35 }} />
-
-        {/* Day Labels */}
+        <View style={{ width: timeLabelWidth }} />
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <View
             key={day}
             style={{
-              flex: 1,
+              width: slotWidth,
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -165,11 +165,11 @@ export function WeeklyScheduleSelector({
         ))}
       </View>
 
-      {/* Time Grid */}
       <View
         style={{
           height: 500,
           marginTop: -5,
+          width: '100%',
         }}
       >
         {Array.from({ length: 13 }, (_, hour) => (
@@ -177,13 +177,13 @@ export function WeeklyScheduleSelector({
             key={hour}
             style={{
               flexDirection: "row",
-              height: 38,
+              height: 34,
+              width: '100%',
             }}
           >
-            {/* Time Label */}
             <View
               style={{
-                width: 42,
+                width: timeLabelWidth,
                 justifyContent: "center",
                 alignItems: "flex-end",
                 paddingRight: 8,
@@ -200,7 +200,6 @@ export function WeeklyScheduleSelector({
               </Text>
             </View>
 
-            {/* Time Slots */}
             {Array.from({ length: 7 }, (_, day) => (
               <Pressable
                 key={`${day}-${hour}`}
@@ -218,7 +217,7 @@ export function WeeklyScheduleSelector({
                 }}
                 onPressIn={() => handleSlotInteraction(day, hour + 8, true)}
                 style={({ pressed }) => ({
-                  flex: 1,
+                  width: slotWidth,
                   borderWidth: 0.5,
                   borderColor: theme.gray.val,
                   backgroundColor: timeSlots[day].timeSlots.find(
